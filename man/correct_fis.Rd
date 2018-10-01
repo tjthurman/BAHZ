@@ -7,23 +7,17 @@
 correct_fis(.df)
 }
 \arguments{
-\item{.df}{A data frame, containing a column named Fis.
-Meant to be run as part of a dplyr pipeline}
+\item{.df}{A data frame, containing a column named Fis (this is not checked).}
 }
 \value{
-TO ADD
+The supplied data frame, with a corrected Fis column
 }
 \description{
-A quick little function to turn NaNs and negative numbers into 0
+A function that corrects Fis estimates which are negative or NaN, turns them
+to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
+pipeline.
 }
 \details{
-DETAILS TO BE ADDED. LINK TO THE GENERAL CLINE EQUATION FUNCTION, MAYBE MOVE
-THE CLINE PARAMETER DEFINITIONS THERE.
-}
-\examples{
-# to be added
-
-
-
+Used interanlly, in \link{sim_data_from_cline}.
 }
 \keyword{internal}

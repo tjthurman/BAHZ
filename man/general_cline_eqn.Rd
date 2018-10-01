@@ -2,43 +2,59 @@
 % Please edit documentation in R/general_cline_eqn.R
 \name{general_cline_eqn}
 \alias{general_cline_eqn}
-\title{Calculate values from cline equations}
+\title{Calculate allele frequency at a position on a cline}
 \usage{
-general_cline_eqn(transectDist, decrease = F, center, width, pmin = 0,
+general_cline_eqn(transectDist, decrease, center, width, pmin = 0,
   pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
   tauR = NULL)
 }
 \arguments{
-\item{transectDist}{The distances along the transect for the sampling
-sites to be simulated. A numeric vector.}
+\item{transectDist}{The position at which to evaluate the cline equation.}
 
 \item{decrease}{Is the cline decreasing in frequency? \code{TRUE} or
-\code{FALSE} (Default = F).}
+\code{FALSE}.}
 
 \item{center}{The location of the cline center, in the same distance units as
-\code{transect_distances}. Numeric.}
+\code{transectDist}. Numeric, must be greater than 0.}
 
 \item{width}{The width of the cline, in the same distance units as
-\code{transect_distances}. Numeric.}
+\code{transectDist}. Numeric, must be greater than 0.}
 
-\item{pmin, pmax}{The minimum and maximum allele frequency values across the
-cline. Must be between 0 and 1 (inclusive). Numeric.}
+\item{pmin, pmax}{Optional. The minimum and maximum allele frequency values
+in the tails of the cline. Default values are \code{0} and \code{1}, respectively.
+Must be between 0 and 1 (inclusive). Numeric.}
 
-\item{deltaL, tauL}{TO BE ADDED}
+\item{deltaL, tauL}{Optional delta and tau parameters which describe the left
+exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+tails). Numeric. tauL must be between 0 and 1 (inclusive).}
 
-\item{deltaR, tauR}{TO BE ADDED}
+\item{deltaR, tauR}{Optional delta and tau parameters which describe the right
+exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 }
 \value{
-TO ADD
+The allele frequency at that point of the cline.
 }
 \description{
-DESCRIPTION TO BE ADDED
+A flexible function to evaluate hybrid zone genetic cline equations, with or
+without introgression tails.
 }
 \details{
 DETAILS TO BE ADDED.
 }
 \examples{
-# to be added
+# Calculate the allele frequency at x = 100 for an increasing cline
+with a center at x = 125, a width of 40, and no tails.
 
+general_cline_eqn(transectDist = 100, decrease = F,
+                  center = 125, width = 40)
+
+# Calculate the allele frequency at x = 84 for a decreasing cline
+with a center at 76, a width of 22, and a right tail
+with deltaR = 7.5, tauR = 0.45.
+
+general_cline_eqn(transectDist = 84, decrease = F,
+                 center = 76, width = 22,
+                 deltaR = 7.5, tauR = .45)
 
 }

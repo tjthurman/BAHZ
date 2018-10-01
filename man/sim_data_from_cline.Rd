@@ -4,13 +4,13 @@
 \alias{sim_data_from_cline}
 \title{Simulate genetic data from a cline}
 \usage{
-sim_data_from_cline(transect_distances, n_ind, Fis, decrease = F, center,
+sim_data_from_cline(transect_distances, n_ind, Fis, decrease, center,
   width, pmin = 0, pmax = 1, deltaL = NULL, tauL = NULL,
   deltaR = NULL, tauR = NULL)
 }
 \arguments{
-\item{transect_distances}{The distances along the transect for the sampling
-sites to be simulated. A numeric vector.}
+\item{transect_distances}{The distances along the transect for the simulated
+sampling sites. A numeric vector.}
 
 \item{n_ind}{The number of diploid individuals sampled at each site. Either a
 single numeric value (for constant sampling), or a numeric vector equal in
@@ -20,41 +20,56 @@ length to \code{transect_distances}.}
 and 1 (inclusive). Either a single numeric value (for constant inbreeding),
 or a numeric vector equal in length to \code{transect_distances}.}
 
-\item{decrease}{Is the cline decreasing in frequency? \code{TRUE} or
-\code{FALSE} (Default = F).}
-
 \item{center}{The location of the cline center, in the same distance units as
-\code{transect_distances}. Numeric.}
+\code{transect_distances}. Numeric, must be greater than 0.}
 
 \item{width}{The width of the cline, in the same distance units as
-\code{transect_distances}. Numeric.}
+\code{transect_distances}. Numeric, must be greater than 0.}
 
-\item{pmin}{The minimum and maximum allele frequency values across the
-cline. Must be between 0 and 1 (inclusive). Numeric.}
+\item{pmin, pmax}{Optional. The minimum and maximum allele frequency values
+in the tails of the cline. Default values are \code{0} and \code{1}, respectively.
+Must be between 0 and 1 (inclusive). Numeric.}
 
-\item{pmax}{The minimum and maximum allele frequency values across the
-cline. Must be between 0 and 1 (inclusive). Numeric.}
+\item{deltaL, tauL}{Optional delta and tau parameters which describe the left
+exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+tails). Numeric. tauL must be between 0 and 1 (inclusive).}
 
-\item{deltaL}{TO BE ADDED}
-
-\item{tauL}{TO BE ADDED}
-
-\item{deltaR}{TO BE ADDED}
-
-\item{tauR}{TO BE ADDED}
+\item{deltaR, tauR}{Optional delta and tau parameters which describe the right
+exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 }
 \value{
-TO ADD
+A data frame of simulated genetic data sampled from the cline. Columns are:
+\itemize{
+\item site: The site numbers, given sequentially starting at 1.
+\item transect.Dist: The distance along the cline for each site.
+\item cline.p: The expected allele frequency for each site, given its position on the cline.
+\item cline.f: The expected coefficient of inbreeding for each site.
+\item AA, AA, aa: The simulated number of homozygotes and heterozygotes for each site.
+\item N: The number of individuals sampled for each site.
+\item emp.p: The observed allele frequency for each site (includes sampling error).
+\item emp.f: The observed Fis for each site (includes sampling error).
+}
 }
 \description{
-DESCRIPTION TO BE ADDED
+This function generates a dataframe with simulated genotypic data sampled
+from a genetic cline. The sampling sites, number of individuals, level of
+inbreeding, and cline parameters are supplied by the user. Cline parameters
+are flexible, and can model both sigmoid clines and stepped clines with
+introgresison tails.
 }
 \details{
-DETAILS TO BE ADDED. LINK TO THE GENERAL CLINE EQUATION FUNCTION, MAYBE MOVE
-THE CLINE PARAMETER DEFINITIONS THERE.
+DETAILS TO BE ADDED. \code{\link{general_cline_eqn}}.
 }
 \examples{
-# to be added
+# Simulate genotype data from a cline with center at 100, width of 30.
+# Sites are 20 units apart, from 0 to 200.
+# 20 individuals are sampled at each site.
+# Inbreeding is constant at Fis = 0.1.
 
+set.seed(123)
+sim_data_from_cline(transect_distance =seq(0,200,20), n_ind = 20,
+                    Fis = 0.1, decrease = T,
+                    center = 100, width = 30)
 
 }

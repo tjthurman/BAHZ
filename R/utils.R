@@ -21,20 +21,17 @@ NULL
 #
 #' Correct Fis estimates
 #'
-#' A quick little function to turn NaNs and negative numbers into 0
+#' A function that corrects Fis estimates which are negative or NaN, turns them
+#' to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
+#' pipeline.
 #'
-#' DETAILS TO BE ADDED. LINK TO THE GENERAL CLINE EQUATION FUNCTION, MAYBE MOVE
-#' THE CLINE PARAMETER DEFINITIONS THERE.
+#' Used interanlly, in \link{sim_data_from_cline}.
+#'
 #' @keywords internal
 #'
-#' @param .df A data frame, containing a column named Fis.
-#' Meant to be run as part of a dplyr pipeline
+#' @param .df A data frame, containing a column named Fis (this is not checked).
 #'
-#' @return TO ADD
-#'
-#' @examples
-#' # to be added
-#'
+#' @return The supplied data frame, with a corrected Fis column
 #'
 #'
 
