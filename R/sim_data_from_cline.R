@@ -18,6 +18,8 @@
 #' @param Fis The inbreeding coefficient, Fis, for each site. Must be between 0
 #'   and 1 (inclusive). Either a single numeric value (for constant inbreeding),
 #'   or a numeric vector equal in length to \code{transect_distances}.
+#' @param decrease Is the cline decreasing in frequency? \code{TRUE} or
+#'   \code{FALSE}.
 #' @param center The location of the cline center, in the same distance units as
 #'   \code{transect_distances}. Numeric, must be greater than 0.
 #' @param width The width of the cline, in the same distance units as

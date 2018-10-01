@@ -20,6 +20,9 @@ length to \code{transect_distances}.}
 and 1 (inclusive). Either a single numeric value (for constant inbreeding),
 or a numeric vector equal in length to \code{transect_distances}.}
 
+\item{decrease}{Is the cline decreasing in frequency? \code{TRUE} or
+\code{FALSE}.}
+
 \item{center}{The location of the cline center, in the same distance units as
 \code{transect_distances}. Numeric, must be greater than 0.}
 
@@ -59,7 +62,7 @@ are flexible, and can model both sigmoid clines and stepped clines with
 introgresison tails.
 }
 \details{
-DETAILS TO BE ADDED. \code{\link{general_cline_eqn}}.
+DETAILS TO BE ADDED. SHOULD PUT EQUATIONS IN \code{\link{general_cline_eqn}} AND LINK TO IT.
 }
 \examples{
 # Simulate genotype data from a cline with center at 100, width of 30.

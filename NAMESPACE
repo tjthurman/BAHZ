@@ -2,6 +2,7 @@
 
 export("%>%")
 export(general_cline_eqn)
+export(make_prior_config)
 export(sim_data_from_cline)
 importFrom(magrittr,"%>%")
 importFrom(stats,"rmultinom")

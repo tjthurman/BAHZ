@@ -40,18 +40,18 @@ A flexible function to evaluate hybrid zone genetic cline equations, with or
 without introgression tails.
 }
 \details{
-DETAILS TO BE ADDED.
+DETAILS TO BE ADDED. SPECIFICALLY, SOME NOTES ON EQUATIONS.
 }
 \examples{
 # Calculate the allele frequency at x = 100 for an increasing cline
-with a center at x = 125, a width of 40, and no tails.
+# with a center at x = 125, a width of 40, and no tails.
 
 general_cline_eqn(transectDist = 100, decrease = F,
                   center = 125, width = 40)
 
 # Calculate the allele frequency at x = 84 for a decreasing cline
-with a center at 76, a width of 22, and a right tail
-with deltaR = 7.5, tauR = 0.45.
+# with a center at 76, a width of 22, and a right tail
+# with deltaR = 7.5, tauR = 0.45.
 
 general_cline_eqn(transectDist = 84, decrease = F,
                  center = 76, width = 22,
