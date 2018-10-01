@@ -1,16 +1,19 @@
 Package: cap
 Type: Package
-Title: Cline analysis package. Will remake with a better name once I figure that out. 
-Version: 0.0.9
-Authors@R: 
+Title: Cline analysis package. Will remake with a better name once I figure that out
+Version: 0.0.0.9000
+Authors@R:
     person(given = "Timothy",
              family = "Thurman",
              role = c("aut", "cre"),
              email = "timothy.j.thurman@gmail.com")
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: A package to fit hybrid zone cline models in a Bayesian framework. Working title.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
+Imports: 
+    assertthat,
+    dplyr,
+    magrittr

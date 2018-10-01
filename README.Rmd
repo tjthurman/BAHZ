@@ -20,8 +20,15 @@ The goal of cap is to ...
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Note:
+Current dependencies:
+yaml
+rstan (ONLY IF I WRITE A WRAPPER FUNCTION)
+assert_that
+dplyr (currently in sim_data_from_cline, could possibly re-write to avoid depencency)
+magrittr (currently in sim_data_from_cline, could possibly re-write to avoid depencency), or could:
+@importFrom magrittr %>%. 
+tidyr (for unite in create_cline_models, could maybe use paste)
 
-```{r example}
-## basic example code
-```
+
+
