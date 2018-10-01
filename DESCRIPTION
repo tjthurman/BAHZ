@@ -1,13 +1,13 @@
-Package: cap
+Package: bahz
 Type: Package
-Title: Cline analysis package. Will remake with a better name once I figure that out
+Title: BAHZ: Bayesian Analysis of Hybrid Zones
 Version: 0.0.0.9000
 Authors@R:
     person(given = "Timothy",
              family = "Thurman",
              role = c("aut", "cre"),
              email = "timothy.j.thurman@gmail.com")
-Description: A package to fit hybrid zone cline models in a Bayesian framework. Working title.
+Description: A package to fit hybrid zone cline models in a Bayesian framework.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
