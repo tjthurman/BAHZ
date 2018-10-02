@@ -63,7 +63,7 @@ create_cline_models <- function(prior_file) {
 
   result_models$bi_left_inc <- paste(bi_left_inc_before_priors,
                                      priors.all, priors.left,
-                                     "}\n", bi_left_inc_after_priors, sep = "")
+                                     bi_left_inc_after_priors, sep = "")
 
   return(result_models)
 }
