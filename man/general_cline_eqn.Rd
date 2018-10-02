@@ -43,6 +43,7 @@ without introgression tails.
 DETAILS TO BE ADDED. SPECIFICALLY, SOME NOTES ON EQUATIONS.
 }
 \examples{
+\dontrun{
 # Calculate the allele frequency at x = 100 for an increasing cline
 # with a center at x = 125, a width of 40, and no tails.
 
@@ -53,8 +54,9 @@ general_cline_eqn(transectDist = 100, decrease = F,
 # with a center at 76, a width of 22, and a right tail
 # with deltaR = 7.5, tauR = 0.45.
 
-general_cline_eqn(transectDist = 84, decrease = F,
+general_cline_eqn(transectDist = 84, decrease = TRUE,
                  center = 76, width = 22,
                  deltaR = 7.5, tauR = .45)
+}
 
 }

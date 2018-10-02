@@ -1,5 +1,5 @@
 #' cap.
 #'
-#' @name cap-packge
+#' @name bahz-packge
 #' @docType package
 

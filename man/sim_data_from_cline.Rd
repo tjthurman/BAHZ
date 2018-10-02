@@ -72,7 +72,7 @@ DETAILS TO BE ADDED. SHOULD PUT EQUATIONS IN \code{\link{general_cline_eqn}} AND
 
 set.seed(123)
 sim_data_from_cline(transect_distance =seq(0,200,20), n_ind = 20,
-                    Fis = 0.1, decrease = T,
+                    Fis = 0.1, decrease = TRUE,
                     center = 100, width = 30)
 
 }
