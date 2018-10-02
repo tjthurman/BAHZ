@@ -58,11 +58,12 @@ create_cline_models <- function(prior_file) {
   priors.f <- p.f
 
   # Structure of Stan file: data, parameters, transformed parameters, model, generated quantities
-  result_models$bi_none_inc <- paste(bi_none_inc_before_priors, "}\n",
-                                    priors.all, bi_none_inc_after_priors, sep = "")
+  result_models$bi_none_inc <- paste(bi_none_inc_before_priors,
+                                    priors.all,  bi_none_inc_after_priors, sep = "")
 
-  result_models$bi_left_inc <- paste(bi_left_inc_before_priors, "}\n",
-                                     priors.all, bi_left_inc_after_priors, sep = "")
+  result_models$bi_left_inc <- paste(bi_left_inc_before_priors,
+                                     priors.all, priors.left,
+                                     "}\n", bi_left_inc_after_priors, sep = "")
 
   return(result_models)
 }
