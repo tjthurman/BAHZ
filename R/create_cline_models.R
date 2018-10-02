@@ -66,4 +66,3 @@ create_cline_models <- function(prior_file) {
 
   return(result_models)
 }
-create_cline_models("prior_config_template.yaml")
