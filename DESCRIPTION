@@ -17,5 +17,6 @@ Imports:
     assertthat,
     dplyr,
     magrittr,
-    tidyr,
+    methods,
+    rstan,
     yaml

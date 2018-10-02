@@ -4,7 +4,6 @@
 #'
 #' DETAILS TO BE ADDED.
 #'
-#' @importFrom tidyr "unite"
 #' @importFrom magrittr "%>%"
 #'
 #' @param prior_file The path to the \code{.yaml} file which contains the
@@ -20,11 +19,11 @@
 
 create_cline_models <- function(prior_file) {
   # Set up the list that will hold all the model results
-  model_names <- expand.grid(c("bi", "multi"),
+  possibilites <- expand.grid(c("bi", "multi"),
                              c("none", "left", "right", "mirror", "ind"),
-                             c("inc", "dec")) %>%
-    tidyr::unite(c(Var1, Var2, Var2)) %>%
-    as.matrix(.)
+                             c("inc", "dec"))
+  model_names <- paste(possibilites[,1], possibilites[,2], possibilites[,3], sep = "_")
+
   result_models <- as.list(rep("NULL", times = length(model_names)))
   names(result_models) <- model_names
 
@@ -43,6 +42,12 @@ create_cline_models <- function(prior_file) {
   }
 
   # Turn the yaml file parameters into proper lines of stan code to be pasted in to the models
+  # A possible hack to get around the undefined global variable issue with R CMD Check:
+  p.center <- p.deltaL <- p.deltaM <-p.deltaR <- p.f <- NULL
+  p.pmax <-p.pmin <- p.tauL <- NULL
+  p.tauM <- p.tauR <-p.width <- NULL
+  # Seems to have worked.
+
   i <- 1
   for (i in 1:length(names(priors))) {
     param <- names(priors)[i]

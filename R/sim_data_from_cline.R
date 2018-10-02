@@ -9,6 +9,7 @@
 #' DETAILS TO BE ADDED. SHOULD PUT EQUATIONS IN \code{\link{general_cline_eqn}} AND LINK TO IT.
 #'
 #' @importFrom stats "rmultinom"
+#' @importFrom magrittr "%>%"
 #'
 #' @param transect_distances The distances along the transect for the simulated
 #'   sampling sites. A numeric vector.
@@ -34,7 +35,6 @@
 #'   exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
 #'   tails). Numeric. tauR must be between 0 and 1 (inclusive).
 #'
-#' @importFrom magrittr "%>%"
 #'
 #' @return A data frame of simulated genetic data sampled from the cline. Columns are:
 #'     \itemize{
@@ -60,7 +60,7 @@
 #' sim_data_from_cline(transect_distance =seq(0,200,20), n_ind = 20,
 #'                     Fis = 0.1, decrease = TRUE,
 #'                     center = 100, width = 30)
-#'
+#' # importFrom rlang ".data"
 
 sim_data_from_cline <- function(transect_distances, n_ind,
                                 Fis, decrease,
@@ -124,16 +124,29 @@ sim_data_from_cline <- function(transect_distances, n_ind,
     fk.dt$N[row] <- sum(genotypes)
   }
 
+  # A possible way out of the R CMD CHECK problems with no visible bindings for these variables
+  # Could I also just use quotes somehow?
+  # mean_nm <- "mean"
+  # count_nm <- "count"
+  #
+  # mtcars %>%
+  #   group_by(am) %>%
+  #   summarise(
+  #     !! mean_nm := mean(cyl),
+  #     !! count_nm := n()
+  #   )
 
+  # Other possible ways to fix: adding .data$ in front of all the column names
+  # but then .data is an undefined global variable... At least it is reduced down.
 # Calculate empirical p and Fis value from the simulated data
 fk.dt <- fk.dt %>%
-  dplyr::mutate(emp.p = (2*AA + Aa)/(2*N)) %>%
-  dplyr::mutate(Hexp = 2*emp.p*(1-emp.p),
-         Hobs = Aa/N) %>%
-  dplyr::mutate(Fis = (Hexp - Hobs)/Hexp) %>%
+  dplyr::mutate(emp.p = (2*.data$AA + .data$Aa)/(2*.data$N)) %>%
+  dplyr::mutate(Hexp = 2*.data$emp.p*(1-.data$emp.p),
+                Hobs = .data$Aa/.data$N) %>%
+  dplyr::mutate(Fis = (.data$Hexp - .data$Hobs)/.data$Hexp) %>%
   correct_fis(.) %>%
-  dplyr::rename(emp.f = Fis) %>%
-  dplyr::select(-Hexp, -Hobs)
+  dplyr::rename(emp.f = .data$Fis) %>%
+  dplyr::select(-.data$Hexp, -.data$Hobs)
 
   # Do some rounding
   fk.dt$cline.p <- round(fk.dt$cline.p, digits = 3)
