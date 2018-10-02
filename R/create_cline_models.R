@@ -29,7 +29,7 @@ create_cline_models <- function(prior_file) {
   names(result_models) <- model_names
 
   # Load in the priors from the prior file
-  priors <- yaml.load_file(prior_file, as.named.list = T)
+  priors <- yaml::yaml.load_file(prior_file, as.named.list = T)
   # ADD a check to make sure it is 11 long, and all the right names are there
 
   assertthat::assert_that(length(priors) == 11, msg = "Improper number of priors, there should be 11!\nDouble-check your prior file")
@@ -64,6 +64,15 @@ create_cline_models <- function(prior_file) {
   result_models$bi_left_inc <- paste(bi_left_inc_before_priors,
                                      priors.all, priors.left,
                                      bi_left_inc_after_priors, sep = "")
+  result_models$bi_right_inc <- paste(bi_right_inc_before_priors,
+                                     priors.all, priors.right,
+                                     bi_right_inc_after_priors, sep = "")
+  result_models$bi_mirror_inc <- paste(bi_mirror_inc_before_priors,
+                                     priors.all, priors.mirror,
+                                     bi_mirror_inc_after_priors, sep = "")
+  result_models$bi_ind_inc <- paste(bi_ind_inc_before_priors,
+                                    priors.all, priors.left,
+                                    priors.right, bi_ind_inc_after_priors, sep = "")
 
   return(result_models)
 }
