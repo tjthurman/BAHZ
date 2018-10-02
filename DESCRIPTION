@@ -16,4 +16,6 @@ RoxygenNote: 6.1.0
 Imports: 
     assertthat,
     dplyr,
-    magrittr
+    magrittr,
+    tidyr,
+    yaml
