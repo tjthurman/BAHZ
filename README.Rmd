@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "README-"
 )
+write.
 ```
 
 # cap
@@ -19,6 +20,14 @@ knitr::opts_chunk$set(
 The goal of cap is to ...
 
 ## Example
+
+for stan models, can print them in readable form with
+
+cat(model$model)
+
+Can write them to a file to be edited yourslef with:
+# definitely write.file from reader, maybe write from base?
+write
 
 Note:
 Current dependencies:
@@ -28,7 +37,7 @@ assert_that
 dplyr (currently in sim_data_from_cline, could possibly re-write to avoid depencency)
 magrittr (currently in sim_data_from_cline, could possibly re-write to avoid depencency), or could:
 @importFrom magrittr %>%. 
-tidyr (for unite in create_cline_models, could maybe use paste)
+
 
 
 

@@ -15,8 +15,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
 Imports: 
     assertthat,
+    coda,
     dplyr,
     magrittr,
-    methods,
     rstan,
     yaml
