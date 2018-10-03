@@ -5,6 +5,7 @@
 #' DETAILS TO BE ADDED. LINK TO RSTAN SUMMARY METHOD, CODA HPDI, MAYBE SOME
 #' PAPERS ON WHAT THE THINGS ARE.
 #'
+#' @importClassesFrom rstan stanfit
 #'
 #' @param stanfit A stanfit object holding your model results.
 #'
@@ -55,22 +56,22 @@ cline_summary <- function(stanfit, prob = .95, method = "ET", all = F) {
     keep <- names(stanfit)
   }
 
-  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)[1] %>%
-    as.data.frame(.) %>%
-    round(., digits = 2) %>%
-    dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
-    cbind(keep, .)
+  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)$summary %>%
+     as.data.frame(.) %>%
+     round(., digits = 2) %>%
+     dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
+     cbind(keep, .)
 
-  if (method == "HPDI") {
-    hpd_cols <- as.matrix(stanfit, pars = keep) %>%
-      coda::as.mcmc(.) %>%
-      coda::HPDinterval(obj = ., prob = prob) %>%
-      round(., digits = 2) %>%
-      as.matrix(.)
-    res[,5:6] <- hpd_cols
-  }
+   if (method == "HPDI") {
+     hpd_cols <- as.matrix(stanfit, pars = keep) %>%
+       coda::as.mcmc(.) %>%
+       coda::HPDinterval(obj = ., prob = prob) %>%
+       round(., digits = 2) %>%
+       as.matrix(.)
+     res[,5:6] <- hpd_cols
+   }
 
-  names(res)[c(1,5,6)] <- c("param", low.name, up.name)
+   names(res)[c(1,5,6)] <- c("param", low.name, up.name)
 
   res
 }
