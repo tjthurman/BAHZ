@@ -4,7 +4,6 @@
 #'
 #' DETAILS TO BE ADDED.
 #'
-#' @importFrom tidyr "unite"
 #' @importFrom magrittr "%>%"
 #'
 #' @param prior_file The path to the \code{.yaml} file which contains the
@@ -20,16 +19,16 @@
 
 create_cline_models <- function(prior_file) {
   # Set up the list that will hold all the model results
-  model_names <- expand.grid(c("bi", "multi"),
+  possibilites <- expand.grid(c("bi", "multi"),
                              c("none", "left", "right", "mirror", "ind"),
-                             c("inc", "dec")) %>%
-    tidyr::unite(c(Var1, Var2, Var2)) %>%
-    as.matrix(.)
+                             c("inc", "dec"))
+  model_names <- paste(possibilites[,1], possibilites[,2], possibilites[,3], sep = "_")
+
   result_models <- as.list(rep("NULL", times = length(model_names)))
   names(result_models) <- model_names
 
   # Load in the priors from the prior file
-  priors <- yaml.load_file(prior_file, as.named.list = T)
+  priors <- yaml::yaml.load_file(prior_file, as.named.list = T)
   # ADD a check to make sure it is 11 long, and all the right names are there
 
   assertthat::assert_that(length(priors) == 11, msg = "Improper number of priors, there should be 11!\nDouble-check your prior file")
@@ -43,6 +42,12 @@ create_cline_models <- function(prior_file) {
   }
 
   # Turn the yaml file parameters into proper lines of stan code to be pasted in to the models
+  # A possible hack to get around the undefined global variable issue with R CMD Check:
+  p.center <- p.deltaL <- p.deltaM <-p.deltaR <- p.f <- NULL
+  p.pmax <-p.pmin <- p.tauL <- NULL
+  p.tauM <- p.tauR <-p.width <- NULL
+  # Seems to have worked.
+
   i <- 1
   for (i in 1:length(names(priors))) {
     param <- names(priors)[i]
@@ -64,6 +69,15 @@ create_cline_models <- function(prior_file) {
   result_models$bi_left_inc <- paste(bi_left_inc_before_priors,
                                      priors.all, priors.left,
                                      bi_left_inc_after_priors, sep = "")
+  result_models$bi_right_inc <- paste(bi_right_inc_before_priors,
+                                     priors.all, priors.right,
+                                     bi_right_inc_after_priors, sep = "")
+  result_models$bi_mirror_inc <- paste(bi_mirror_inc_before_priors,
+                                     priors.all, priors.mirror,
+                                     bi_mirror_inc_after_priors, sep = "")
+  result_models$bi_ind_inc <- paste(bi_ind_inc_before_priors,
+                                    priors.all, priors.left,
+                                    priors.right, bi_ind_inc_after_priors, sep = "")
 
   return(result_models)
 }

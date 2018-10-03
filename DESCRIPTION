@@ -1,7 +1,7 @@
 Package: bahz
 Type: Package
 Title: BAHZ: Bayesian Analysis of Hybrid Zones
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R:
     person(given = "Timothy",
              family = "Thurman",
@@ -15,7 +15,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
 Imports: 
     assertthat,
+    coda,
     dplyr,
     magrittr,
-    tidyr,
+    rstan,
     yaml
