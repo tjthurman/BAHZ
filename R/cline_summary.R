@@ -55,7 +55,7 @@ cline_summary <- function(stanfit, prob = .95, method = "ET", all = F) {
     keep <- names(stanfit)
   }
 
-  res <- summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)[1] %>%
+  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)[1] %>%
     as.data.frame(.) %>%
     round(., digits = 2) %>%
     dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
