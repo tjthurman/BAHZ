@@ -2,8 +2,9 @@
 
 export("%>%")
 export(cline_summary)
-export(create_cline_models)
+export(create_cline_model)
 export(general_cline_eqn)
+export(load_cline_data)
 export(make_prior_config)
 export(sim_data_from_cline)
 importClassesFrom(rstan,stanfit)
