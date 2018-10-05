@@ -1,7 +1,7 @@
 Package: bahz
 Type: Package
 Title: BAHZ: Bayesian Analysis of Hybrid Zones
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R:
     person(given = "Timothy",
              family = "Thurman",
@@ -18,5 +18,7 @@ Imports:
     coda,
     dplyr,
     magrittr,
+    rlang,
     rstan,
+    stringr,
     yaml

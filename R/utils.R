@@ -48,12 +48,12 @@ correct_fis <- function(.df) {
 }
 
 # Parse prior file --------------------------------------------------------
-#
+
 #' Parse the prior yaml file and check it
 #'
 #' DESCRIPTION TO BE ADDED
 #'
-#' Used interanlly, in LINK TO FUNCTIONS THAT USE IT. REMOVE EXPORT WHEN DONE WITH TESTING.
+#' Used interanlly, in \link{create_cline_model} and \link{make_init_list}.
 #'
 #' @export
 #'
@@ -80,3 +80,88 @@ parse_prior_file <- function(prior_file){
   }
   priors
 }
+
+
+
+# Extract values out of priors ----------------------------------------------
+
+#
+#' Extract the first value from comma-separated list/vector
+#'
+#' Uses regular expressions implmented in stringr package to extract the first
+#' value, that is, the one after an open parenthesis and before a comma.
+#' Properly handles whitespace and decimals.
+#'
+#' Used interanlly, in \link{init_single_chain}
+#'
+#'
+#' @keywords internal
+#'
+#' @param string The string to extract a value from
+#'
+#' @return A numeric value
+#'
+#'
+
+extract_first <- function(string) {
+  res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
+    stringr::str_remove_all("[(,]") %>%
+    stringr::str_squish() %>%
+    as.numeric
+  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
+  res
+}
+
+#
+#' Extract the last value from comma-separated list/vector
+#'
+#' Uses regular expressions implmented in stringr package to extract the last
+#' value, that is, the one after a comma and before a close parenthesis.
+#' Properly handles whitespace and decimals.
+#'
+#' Used interanlly, in \link{init_single_chain}
+#'
+#'
+#' @keywords internal
+#'
+#' @param string The string to extract a value from
+#'
+#' @return A numeric value
+#'
+#'
+
+extract_last <- function(string) {
+  res <- stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
+    stringr::str_remove_all("[,)]") %>%
+    stringr::str_squish() %>%
+    as.numeric
+  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
+  res
+}
+
+#
+#' Extract the value from a single-parameter distribution
+#'
+#' Uses regular expressions implmented in stringr package to extract the only
+#' value from a distribution with one parameter. That is, is extracts the
+#' numbers between two parentheses. Properly handles whitespace and decimals.
+#'
+#' Used interanlly, in \link{init_single_chain}
+#'
+#'
+#' @keywords internal
+#'
+#' @param string The string to extract a value from
+#'
+#' @return A numeric value
+#'
+#'
+extract_only <- function(string) {
+  res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
+    stringr::str_remove_all("[,)(]") %>%
+    stringr::str_squish() %>%
+    as.numeric
+  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
+  res
+}
+

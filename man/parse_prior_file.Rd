@@ -16,6 +16,6 @@ a named list containing the specifed priors
 DESCRIPTION TO BE ADDED
 }
 \details{
-Used interanlly, in LINK TO FUNCTIONS THAT USE IT. REMOVE EXPORT WHEN DONE WITH TESTING.
+Used interanlly, in \link{create_cline_model} and \link{make_init_list}.
 }
 \keyword{internal}

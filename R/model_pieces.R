@@ -2,8 +2,7 @@
 # Stan model pieces -------------------------------------------------------
 # Already written Stan model code, for each of the models decribed. For each
 # model, there's the code that comes before the priors, and the code that comes
-# after it. The priors get added in the create_cline_models function, and output
-# as model code to the global environment.
+# after it. The priors get added in the create_cline_model function.
 
 
 # Binomial, no tails, increasing ------------------------------------------
