@@ -39,7 +39,7 @@
 #' @return A data frame of simulated genetic data sampled from the cline. Columns are:
 #'     \itemize{
 #'     \item site: The site numbers, given sequentially starting at 1.
-#'     \item transect.Dist: The distance along the cline for each site.
+#'     \item transectDist: The distance along the cline for each site.
 #'     \item cline.p: The expected allele frequency for each site, given its position on the cline.
 #'     \item cline.f: The expected coefficient of inbreeding for each site.
 #'     \item AA, AA, aa: The simulated number of homozygotes and heterozygotes for each site.
@@ -89,9 +89,9 @@ sim_data_from_cline <- function(transect_distances, n_ind,
   sites <- length(transect_distances)
   # Get the vector of f values for each site
   if (length(n_ind) == 1) {
-    Ns <- rep(n_ind, times = sites)
+    Ns <- as.integer(rep(n_ind, times = sites))
   } else {
-      Ns <- n_ind
+      Ns <- as.integer(n_ind)
   }
   if (length(Fis) == 1) {
     fs <- rep(Fis, times = sites)
@@ -101,7 +101,7 @@ sim_data_from_cline <- function(transect_distances, n_ind,
 
   # Make the empty results data frame
   fk.dt <- data.frame(site = 1:sites,
-                      transect.Dist = transect_distances,
+                      transectDist = transect_distances,
                       cline.p = rep(NA, times = sites),
                       cline.f = fs,
                       AA = rep(NA, times = sites),
@@ -111,17 +111,16 @@ sim_data_from_cline <- function(transect_distances, n_ind,
 
   # Then add the simulated genotypes to each row
   for (row in 1:sites) {
-    fk.dt$cline.p[row] <- general_cline_eqn(transectDist = fk.dt$transect.Dist[row], center = center, width = width,
+    fk.dt$cline.p[row] <- general_cline_eqn(transectDist = fk.dt$transectDist[row], center = center, width = width,
                                             pmin = pmin, pmax = pmax, deltaL = deltaL, deltaR = deltaR, tauL = tauL,
                                             tauR = tauR, decrease = decrease)
     AA <- fk.dt$cline.p[row]^2 + fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
     Aa<- 2*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])*(1-fk.dt$cline.f[row])
     aa <- (1-fk.dt$cline.p[row])^2 +fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
     genotypes <- rowSums(stats::rmultinom(n = 1, size = fk.dt$N[row], prob = c(AA, Aa, aa)))
-    fk.dt$AA[row] <- genotypes[1]
-    fk.dt$Aa[row] <- genotypes[2]
-    fk.dt$aa[row] <- genotypes[3]
-    fk.dt$N[row] <- sum(genotypes)
+    fk.dt$AA[row] <- as.integer(genotypes[1])
+    fk.dt$Aa[row] <- as.integer(genotypes[2])
+    fk.dt$aa[row] <- as.integer(genotypes[3])
   }
 
   # A possible way out of the R CMD CHECK problems with no visible bindings for these variables

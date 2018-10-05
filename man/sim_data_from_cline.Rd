@@ -45,7 +45,7 @@ tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 A data frame of simulated genetic data sampled from the cline. Columns are:
 \itemize{
 \item site: The site numbers, given sequentially starting at 1.
-\item transect.Dist: The distance along the cline for each site.
+\item transectDist: The distance along the cline for each site.
 \item cline.p: The expected allele frequency for each site, given its position on the cline.
 \item cline.f: The expected coefficient of inbreeding for each site.
 \item AA, AA, aa: The simulated number of homozygotes and heterozygotes for each site.
