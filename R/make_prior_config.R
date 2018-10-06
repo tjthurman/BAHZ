@@ -20,11 +20,27 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Make config file in current working directory with default name.
+#' # Won't overwrite
+#' make_prior_config()
+#'
+#' # Make config file in a new path with a new name.
+#' # Will overwrite
+#' make_prior_config(path = "/path/to/directory", name = "my_priors.yaml", overwrite = T)
+#' }
 #' # TO ADD
+#'
 
 make_prior_config <- function(path = getwd(),
                                   name = "prior_config_template.yaml",
                                   overwrite = F) {
+  assertthat::assert_that(length(name) == 1, msg = "name must be of length 1")
+  assertthat::assert_that(is.character(name) == T, msg = "name must be a character string")
+  assertthat::assert_that(stringr::str_detect(name, pattern = "\\.yaml$") == 1, msg = "name must end in .yaml")
+
+  assertthat::assert_that(is.logical(overwrite) == T, msg = "overwrite must be either TRUE (T) or FALSE (F)")
+
 
   newfile <- file.path(normalizePath(path), name, fsep = .Platform$file.sep)
   if (overwrite == F) { # If overwriting is not allowed

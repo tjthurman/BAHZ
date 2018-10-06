@@ -1,29 +1,60 @@
-#' Create the model code for a cline analysis
+#' Create the stan model code for a cline analysis
 #'
-#' DESCRIPTION TO BE ADDED
+#' Generate Stan model code for the specified model(s). Incorporates the priors
+#' provided in \code{prior_file} into the Stan model code.
 #'
-#' DETAILS TO BE ADDED.
+#' This function is generally meant to be run internally, within the
+#' \code{\link{fit_cline}} function. In that case, it is called with only one
+#' option each for \code{type}, \code{tails}, and \code{direction} such that it
+#' will return a list with one element containing model code for one model.
+#'
+#' However, this function is written flexibly such that multiple options can be
+#' supplied to \code{type}, \code{tails}, and \code{direction}. In that case,
+#' the returned value is a named list that contains all possible models that can
+#' be made with the supplied options, see examples.
+#'
+#' Models are stitched together from the Stan model code provided in
+#' \code{model_pieces.R}.
 #'
 #' @importFrom magrittr "%>%"
 #'
 #' @param prior_file The path to the \code{.yaml} file which contains the
 #'   specifications of the priors
-#' @param type TO BE WRITTEN
-#' @param tails TO BE WRITTEN
-#' @param direction TO BE WRITTEN
+#' @param type The type of model to generate. Either "bi", for a binomial model
+#'   of allele frequencies, or "multi" for a multinomial model of genotype
+#'   frequencies.
+#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or
+#'   "ind."
+#' @param direction Should the model be for a cline which is increasing in
+#'   frequency ("inc"), or decreasing in frequency ("dec")?
 #'
-#' @return TO BE WRITTEN
+#' @return A named list containing the Stan model code for the model(s) desired.
 #'
 #' @export
 #'
 #' @examples
-#' #TO BE ADDED
+#' \dontrun{
+#' # Generate a single multinomial model for an increasing cline with mirrored tails
+#' models <- create_cline_model("prior_file.yaml", type = "multi", tails = "mirror", direction = "inc")
+#' length(models)
+#'
+#' # Generate all 5 possible tail models for a decreasing cline with binomial likelihood
+#' models <- create_cline_model("prior_file.yaml", type = "bi", direction = "dec")
+#' length(models)
+#' }
 #'
 
 create_cline_model <- function(prior_file,
                                type = c("bi", "multi"),
                                tails = c("none", "left", "right", "mirror", "ind"),
                                direction = c("inc", "dec")) {
+  assertthat::assert_that(unique((type %in% c("bi", "multi"))) == T,
+                          msg = "type must be either 'bi' or 'multi'")
+  assertthat::assert_that(unique((tails %in% c("none", "left", "right", "mirror", "ind"))) == T,
+                          msg = "tails must be 'none', 'left', 'right', 'mirror', or 'ind'")
+  assertthat::assert_that(unique((direction %in% c("inc", "dec"))) == T,
+                          msg = "direction must be either 'inc' or 'dec'")
+
   # Set up the list that will hold all the model results
   possibilites <- expand.grid(type, tails, direction)
   model_names <- paste(possibilites[,1], possibilites[,2], possibilites[,3], sep = "_")

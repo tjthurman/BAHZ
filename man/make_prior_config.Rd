@@ -31,5 +31,15 @@ set overwrite = T.
 DETAILS TO BE ADDED.
 }
 \examples{
+\dontrun{
+# Make config file in current working directory with default name.
+# Won't overwrite
+make_prior_config()
+
+# Make config file in a new path with a new name.
+# Will overwrite
+make_prior_config(path = "/path/to/directory", name = "my_priors.yaml", overwrite = T)
+}
 # TO ADD
+
 }

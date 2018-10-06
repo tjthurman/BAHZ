@@ -21,6 +21,7 @@
 
 
 load_cline_data <- function(dataframe, type) {
+  assertthat::assert_that(is.data.frame(dataframe) == T, msg = "dataframe must be a data frame or tibble")
   if (type == "bi") {
     if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {
       assertthat::assert_that(is.numeric(dataframe$transectDist) == T,

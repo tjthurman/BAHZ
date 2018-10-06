@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_cline_model.R
 \name{create_cline_model}
 \alias{create_cline_model}
-\title{Create the model code for a cline analysis}
+\title{Create the stan model code for a cline analysis}
 \usage{
 create_cline_model(prior_file, type = c("bi", "multi"),
   tails = c("none", "left", "right", "mirror", "ind"),
@@ -12,22 +12,46 @@ create_cline_model(prior_file, type = c("bi", "multi"),
 \item{prior_file}{The path to the \code{.yaml} file which contains the
 specifications of the priors}
 
-\item{type}{TO BE WRITTEN}
+\item{type}{The type of model to generate. Either "bi", for a binomial model
+of allele frequencies, or "multi" for a multinomial model of genotype
+frequencies.}
 
-\item{tails}{TO BE WRITTEN}
+\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or
+"ind."}
 
-\item{direction}{TO BE WRITTEN}
+\item{direction}{Should the model be for a cline which is increasing in
+frequency ("inc"), or decreasing in frequency ("dec")?}
 }
 \value{
-TO BE WRITTEN
+A named list containing the Stan model code for the model(s) desired.
 }
 \description{
-DESCRIPTION TO BE ADDED
+Generate Stan model code for the specified model(s). Incorporates the priors
+provided in \code{prior_file} into the Stan model code.
 }
 \details{
-DETAILS TO BE ADDED.
+This function is generally meant to be run internally, within the
+\code{\link{fit_cline}} function. In that case, it is called with only one
+option each for \code{type}, \code{tails}, and \code{direction} such that it
+will return a list with one element containing model code for one model.
+
+However, this function is written flexibly such that multiple options can be
+supplied to \code{type}, \code{tails}, and \code{direction}. In that case,
+the returned value is a named list that contains all possible models that can
+be made with the supplied options, see examples.
+
+Models are stitched together from the Stan model code provided in
+\code{model_pieces.R}.
 }
 \examples{
-#TO BE ADDED
+\dontrun{
+# Generate a single multinomial model for an increasing cline with mirrored tails
+models <- create_cline_model("prior_file.yaml", type = "multi", tails = "mirror", direction = "inc")
+length(models)
+
+# Generate all 5 possible tail models for a decreasing cline with binomial likelihood
+models <- create_cline_model("prior_file.yaml", type = "bi", direction = "dec")
+length(models)
+}
 
 }

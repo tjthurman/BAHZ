@@ -8,13 +8,11 @@
 #'
 #' Currently supported distributions are: normal, uniform, exponential.
 #'
-#' Used internally, in \link{sim_data_from_cline}.
-#'
 #' @export
 #'
 #' @param prior_file Path to the yaml file containing the prior specifications.
 #'
-#' @param tails Which type of tails for the model: none, left, right, mirror, or ind.
+#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind."
 #'
 #' @param chains The number of chains to be used in Stan.
 #'
@@ -23,7 +21,13 @@
 #'
 
 make_init_list <- function(prior_file, tails, chains) {
-  single.chain <- init_single_chain("prior_config_template.yaml", tails = tails)
+  assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")
+  assertthat::assert_that(length((tails)) == 1,
+                          msg = "You must pick a single option for tails.")
+  assertthat::assert_that(length((chains)) == 1,
+                          msg = "You must pick a single value for chains.")
+
+  single.chain <- init_single_chain(prior_file, tails = tails)
   init.list <- list()
   for(i in 1:chains) {
     init.list[[i]] <- eval(single.chain)

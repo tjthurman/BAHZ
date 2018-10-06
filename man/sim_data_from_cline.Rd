@@ -62,7 +62,26 @@ are flexible, and can model both sigmoid clines and stepped clines with
 introgresison tails.
 }
 \details{
-DETAILS TO BE ADDED. SHOULD PUT EQUATIONS IN \code{\link{general_cline_eqn}} AND LINK TO IT.
+This function calls \code{\link{general_cline_eqn}} for each sampled point along the
+cline to generate the expected allele frequency at that point. The calculated
+allele frequency and provided Fis are then used to calculate the expected
+genotype frequencies for each site, according to the equations:
+
+\deqn{AA = p^2 + p(1-p)Fis}
+\deqn{Aa = 2p(1-p)Fis}
+\deqn{aa = (1-p)^2 + p(1-p)Fis}
+
+Sampled genotypes are then drawn from a multinomial distribution, with the
+expected genotype frequencies as the probabilities. From those sampled
+genotypes, empirical allele frequencies (emp.p) and empirical Fis estimates
+(emp.f) are calculated as:
+
+\deqn{emp.p = (2*AA + Aa)/N}
+\deqn{emp.f = (Hexp - Hobs)/Hexp}
+
+where Hexp and Hobs are the expected and observed heterozygosity. Fis
+values are corrected with \link{correct_fis}, such that empirical Fis values
+which are undefined or < 0 are corrected to 0.
 }
 \examples{
 # Simulate genotype data from a cline with center at 100, width of 30.
@@ -74,5 +93,5 @@ set.seed(123)
 sim_data_from_cline(transect_distance =seq(0,200,20), n_ind = 20,
                     Fis = 0.1, decrease = TRUE,
                     center = 100, width = 30)
-# importFrom rlang ".data"
+
 }
