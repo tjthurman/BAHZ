@@ -13,9 +13,11 @@ parse_prior_file(prior_file)
 a named list containing the specifed priors
 }
 \description{
-DESCRIPTION TO BE ADDED
+Reads in the yaml file containing the prior, checking for the proper number
+and names of priors.
 }
 \details{
-Used interanlly, in \link{create_cline_model} and \link{make_init_list}.
+Used internally, in \code{\link{create_cline_model}} and
+\code{\link{make_init_list}}.
 }
 \keyword{internal}

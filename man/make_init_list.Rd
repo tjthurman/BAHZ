@@ -9,7 +9,7 @@ make_init_list(prior_file, tails, chains)
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}
 
-\item{tails}{Which type of tails for the model: none, left, right, mirror, or ind.}
+\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind."}
 
 \item{chains}{The number of chains to be used in Stan.}
 }
@@ -24,6 +24,4 @@ the model and adds it to a list.
 }
 \details{
 Currently supported distributions are: normal, uniform, exponential.
-
-Used internally, in \link{sim_data_from_cline}.
 }

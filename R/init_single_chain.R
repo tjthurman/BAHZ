@@ -10,20 +10,29 @@
 #'
 #' Currently supported distributions are: normal, uniform, exponential.
 #'
-#' Used interanlly, in \link{make_init_list}.
+#' Used internally, in \link{make_init_list}.
 #'
 #' @keywords internal
+#'
 #'
 #' @importFrom stats "rexp" "rnorm" "runif"
 #'
 #' @param prior_file Path to the yaml file containing the prior specifications.
 #'
-#' @param tails Which type of tails for the model: none, left, right, mirror, or ind.
+#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind."
 #'
 #' @return An rlang expression of the initialization values for a single chain
 #'
 #'
+#'
+
 init_single_chain <- function(prior_file, tails) {
+  assertthat::assert_that(length((tails)) == 1,
+                          msg = "You must pick a single option for tails.")
+  assertthat::assert_that(unique((tails %in% c("none", "left", "right", "mirror", "ind"))) == T,
+                          msg = "tails must be 'none', 'left', 'right', 'mirror', or 'ind'")
+
+
 
   init.center <- init.width <- init.pmin <- init.pmax <- NULL
   init.f <- init.deltaL <- init.deltaR <- init.deltaM <- NULL
@@ -40,18 +49,18 @@ init_single_chain <- function(prior_file, tails) {
   # the inits don't get assigned to the global environment.
 
   for (i in 1:length(prior_list)) {
-    if (stringr::str_count(prior_list[i], "^normal\\(") == 1) {
-      mean <- extract_first(prior_list[i])
-      sd <- extract_last(prior_list[i])
+    if (stringr::str_count(prior_list[[i]], "^normal\\(") == 1) {
+      mean <- extract_first(prior_list[[i]])
+      sd <- extract_last(prior_list[[i]])
       init.name <- paste("init", names(prior_list)[i], sep = ".")
       assign(x = init.name, value = rlang::expr(rnorm(n = 1, mean = !!mean, sd = !!sd)), inherits = T)
-    } else if (stringr::str_count(prior_list[i], "^uniform\\(") == 1) {
-      low <- extract_first(prior_list[i])
-      up <- extract_last(prior_list[i])
+    } else if (stringr::str_count(prior_list[[i]], "^uniform\\(") == 1) {
+      low <- extract_first(prior_list[[i]])
+      up <- extract_last(prior_list[[i]])
       init.name <- paste("init", names(prior_list)[i], sep = ".")
       assign(x = init.name, value = rlang::expr(runif(n = 1, min = !!low, max = !!up)), inherits = T)
-    } else if (stringr::str_count(prior_list[i], "^exponential\\(") == 1) {
-      rate <- extract_only(prior_list[i])
+    } else if (stringr::str_count(prior_list[[i]], "^exponential\\(") == 1) {
+      rate <- extract_only(prior_list[[i]])
       init.name <- paste("init", names(prior_list)[i], sep = ".")
       assign(x = init.name, value = rlang::expr(rexp(n = 1, rate = !!rate)), inherits = T)
     } else {

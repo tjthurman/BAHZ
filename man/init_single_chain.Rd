@@ -9,7 +9,7 @@ init_single_chain(prior_file, tails)
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}
 
-\item{tails}{Which type of tails for the model: none, left, right, mirror, or ind.}
+\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind."}
 }
 \value{
 An rlang expression of the initialization values for a single chain
@@ -25,6 +25,6 @@ list, only using the parameters needed for a certain model, specified by tails.
 \details{
 Currently supported distributions are: normal, uniform, exponential.
 
-Used interanlly, in \link{make_init_list}.
+Used internally, in \link{make_init_list}.
 }
 \keyword{internal}

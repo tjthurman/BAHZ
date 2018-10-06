@@ -25,17 +25,20 @@ NULL
 #' to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
 #' pipeline.
 #'
-#' Used interanlly, in \link{sim_data_from_cline}.
+#' Used internally, in \code{\link{sim_data_from_cline}}.
 #'
 #' @keywords internal
 #'
-#' @param .df A data frame, containing a column named Fis (this is not checked).
+#'
+#' @param .df A data frame, containing a column named Fis.
 #'
 #' @return The supplied data frame, with a corrected Fis column
 #'
 #'
 
 correct_fis <- function(.df) {
+  assertthat::assert_that(("Fis" %in% names(.df)) == T,
+                          msg = "Can't correct Fis, no column named Fis in dataframe")
   for (element in 1:length(.df$Fis)) {
     if (is.nan(.df$Fis[element]) == T) {
       .df$Fis[element] <- 0
@@ -51,13 +54,15 @@ correct_fis <- function(.df) {
 
 #' Parse the prior yaml file and check it
 #'
-#' DESCRIPTION TO BE ADDED
+#' Reads in the yaml file containing the prior, checking for the proper number
+#' and names of priors.
 #'
-#' Used interanlly, in \link{create_cline_model} and \link{make_init_list}.
+#' Used internally, in \code{\link{create_cline_model}} and
+#' \code{\link{make_init_list}}.
 #'
-#' @export
 #'
 #' @keywords internal
+#'
 #'
 #' @param prior_file filepath to the prior file
 #'
@@ -66,7 +71,8 @@ correct_fis <- function(.df) {
 #'
 
 parse_prior_file <- function(prior_file){
-  priors <- yaml::yaml.load_file(prior_file, as.named.list = T)
+  path_to_prior <- file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
+  priors <- yaml::yaml.load_file(path_to_prior, as.named.list = T)
   # ADD a check to make sure it is 11 long, and all the right names are there
 
   assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
@@ -86,14 +92,23 @@ parse_prior_file <- function(prior_file){
 # Extract values out of priors ----------------------------------------------
 
 #
-#' Extract the first value from comma-separated list/vector
+#' Extract values for prior distributions
 #'
-#' Uses regular expressions implmented in stringr package to extract the first
-#' value, that is, the one after an open parenthesis and before a comma.
-#' Properly handles whitespace and decimals.
+#' Internal functions used in \code{\link{init_single_chain}} to extract
+#' numerical values from priors. All use regular expressions as implemented
+#' in the \code{\link{stringr}} package, and all properly handle whitespace and
+#' decimals.
 #'
-#' Used interanlly, in \link{init_single_chain}
+#' \code{extract_first} gets the first value, that is, the one after an open
+#' parenthesis and before a comma.
 #'
+#' \code{extract_last} gets the last value, that is, the value after a comma and
+#' before a close parenthesis.
+#'
+#' \code{extract_only} gets the only value from a distribution with one
+#' parameter, that is, it gets the numbers between two parentheses.
+#'
+#' @rdname extractValue
 #'
 #' @keywords internal
 #'
@@ -104,63 +119,43 @@ parse_prior_file <- function(prior_file){
 #'
 
 extract_first <- function(string) {
+  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
   res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
     stringr::str_remove_all("[(,]") %>%
     stringr::str_squish() %>%
     as.numeric
+  assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. X Check your prior file!")
   assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
-#
-#' Extract the last value from comma-separated list/vector
 #'
-#' Uses regular expressions implmented in stringr package to extract the last
-#' value, that is, the one after a comma and before a close parenthesis.
-#' Properly handles whitespace and decimals.
-#'
-#' Used interanlly, in \link{init_single_chain}
-#'
-#'
-#' @keywords internal
-#'
-#' @param string The string to extract a value from
-#'
-#' @return A numeric value
+#' @rdname extractValue
 #'
 #'
 
 extract_last <- function(string) {
+  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
   res <- stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
     stringr::str_remove_all("[,)]") %>%
     stringr::str_squish() %>%
     as.numeric
+  assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
   assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
-#
-#' Extract the value from a single-parameter distribution
-#'
-#' Uses regular expressions implmented in stringr package to extract the only
-#' value from a distribution with one parameter. That is, is extracts the
-#' numbers between two parentheses. Properly handles whitespace and decimals.
-#'
-#' Used interanlly, in \link{init_single_chain}
-#'
-#'
-#' @keywords internal
-#'
-#' @param string The string to extract a value from
-#'
-#' @return A numeric value
+
+#' @rdname extractValue
 #'
 #'
 extract_only <- function(string) {
+  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
   res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
     stringr::str_remove_all("[,)(]") %>%
     stringr::str_squish() %>%
     as.numeric
+  assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
   assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }

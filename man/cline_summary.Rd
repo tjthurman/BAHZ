@@ -4,7 +4,7 @@
 \alias{cline_summary}
 \title{Summarize cline model results}
 \usage{
-cline_summary(stanfit, prob = 0.95, method = "ET", all = F)
+cline_summary(stanfit, prob = 0.95, method = "HPDI", show.all = F)
 }
 \arguments{
 \item{stanfit}{A stanfit object holding your model results.}
@@ -14,32 +14,42 @@ between 0 and 1.}
 
 \item{method}{The method for calculating credible intervals. Either "ET" for
 equal-tail probability intervals, or "HPDI" for highest posterior density
-intervals.}
+intervals. Default is "HPDI".}
 
-\item{all}{By default, function returns summaries only for the main cline
-parameters. Set all to T}
+\item{show.all}{By default, function returns summaries only for the main cline
+parameters. Set show.all to T to see summaries for matrix and vector parameters.}
 }
 \value{
 A summary data frame with the columns:
 \itemize{
-\item param:
-\item mean:
-\item se_mean:
-\item sd:
-\item lower:
-\item upper:
-\item n_eff:
-\item Rhat:
+\item param: The model parameter
+\item mean: The mean of the posterior distribution.
+\item se_mean: The standard error of the mean of the posterior distribution.
+\item sd: The standard deviation of the posterior distribution.
+\item lower: The lower limit of the credible interval. The column name
+will include the probability value and method used for calculating the
+CI.
+\item upper: The upper limit of the credible interval. The column name
+will include the probability value and method used for calculating the
+CI.
+\item n_eff: The effective number of samples from the posterior distribution.
+\item Rhat: The Gelman-Rubin convergence diagnostic. Should be 1, any
+other value is indicative of a problem during sampling.
 }
 }
 \description{
-DESCRIPTION TO BE ADDED
+Summarizes the results of the cline model by providing the posterior mean,
+credible intervals, and diagnostics for the model parameters.
 }
 \details{
-DETAILS TO BE ADDED. LINK TO RSTAN SUMMARY METHOD, CODA HPDI, MAYBE SOME
-PAPERS ON WHAT THE THINGS ARE.
+Uses the \code{rstan} summary method on class \linkS4class{stanfit} objects
+for calculating posterior means, SEM, standard deviations, equal tail
+probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDI}} in
+\code{coda} function to calculate HPDI intervals, the default.
 }
 \examples{
-# TO ADD
+\dontrun{
+cline_summary(stanfit)
+}
 
 }

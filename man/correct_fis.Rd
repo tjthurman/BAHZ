@@ -7,7 +7,7 @@
 correct_fis(.df)
 }
 \arguments{
-\item{.df}{A data frame, containing a column named Fis (this is not checked).}
+\item{.df}{A data frame, containing a column named Fis.}
 }
 \value{
 The supplied data frame, with a corrected Fis column
@@ -18,6 +18,6 @@ to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
 pipeline.
 }
 \details{
-Used interanlly, in \link{sim_data_from_cline}.
+Used internally, in \code{\link{sim_data_from_cline}}.
 }
 \keyword{internal}
