@@ -68,11 +68,15 @@
 #'
 #'
 
-fit_cline <- function(data, prior_file, type, tails, direction, chains = 3, ...) {
-  for (singular.args in alist(type, tails, direction, chains)) {
-    assertthat::assert_that(length(eval(singular.args)) == 1,
-                            msg = paste("You must pick a single value for", singular.args, sep = " "))
-  }
+fit_cline <- function(data, prior_file,
+                      type = c("bi", "multi"),
+                      tails = c("none", "left", "right", "mirror", "ind"),
+                      direction = c("inc", "dec"),
+                      chains = 3, ...) {
+  type <- match.arg(type, several.ok = F)
+  tails <- match.arg(tails, several.ok = F)
+  direction <- match.arg(direction, several.ok = F)
+
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
   ch <- as.integer(chains)
 

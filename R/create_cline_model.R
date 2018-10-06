@@ -48,12 +48,9 @@ create_cline_model <- function(prior_file,
                                type = c("bi", "multi"),
                                tails = c("none", "left", "right", "mirror", "ind"),
                                direction = c("inc", "dec")) {
-  assertthat::assert_that(unique((type %in% c("bi", "multi"))) == T,
-                          msg = "type must be either 'bi' or 'multi'")
-  assertthat::assert_that(unique((tails %in% c("none", "left", "right", "mirror", "ind"))) == T,
-                          msg = "tails must be 'none', 'left', 'right', 'mirror', or 'ind'")
-  assertthat::assert_that(unique((direction %in% c("inc", "dec"))) == T,
-                          msg = "direction must be either 'inc' or 'dec'")
+  type <- match.arg(type, several.ok = T)
+  tails <- match.arg(tails, several.ok = T)
+  direction <- match.arg(direction, several.ok = T)
 
   # Set up the list that will hold all the model results
   possibilites <- expand.grid(type, tails, direction)

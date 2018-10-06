@@ -4,7 +4,8 @@
 \alias{make_init_list}
 \title{Make a list of values for initializing the Stan model.}
 \usage{
-make_init_list(prior_file, tails, chains)
+make_init_list(prior_file, tails = c("none", "left", "right", "mirror",
+  "ind"), chains)
 }
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}

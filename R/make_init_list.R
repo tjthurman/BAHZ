@@ -26,10 +26,9 @@
 #' @seealso \code{\link{init_single_chain}}
 #'
 
-make_init_list <- function(prior_file, tails, chains) {
+make_init_list <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind"), chains) {
   assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")
-  assertthat::assert_that(length((tails)) == 1,
-                          msg = "You must pick a single option for tails.")
+  tails <- match.arg(tails, several.ok = F)
   assertthat::assert_that(length((chains)) == 1,
                           msg = "You must pick a single value for chains.")
 

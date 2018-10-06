@@ -4,7 +4,9 @@
 \alias{fit_cline}
 \title{Fit a cline model to your data}
 \usage{
-fit_cline(data, prior_file, type, tails, direction, chains = 3, ...)
+fit_cline(data, prior_file, type = c("bi", "multi"), tails = c("none",
+  "left", "right", "mirror", "ind"), direction = c("inc", "dec"),
+  chains = 3, ...)
 }
 \arguments{
 \item{data}{A dataframe containing your cline data. See
