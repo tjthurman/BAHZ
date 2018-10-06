@@ -91,7 +91,6 @@ parse_prior_file <- function(prior_file){
 
 # Extract values out of priors ----------------------------------------------
 
-#
 #' Extract values for prior distributions
 #'
 #' Internal functions used in \code{\link{init_single_chain}} to extract
@@ -129,7 +128,6 @@ extract_first <- function(string) {
   res
 }
 
-#'
 #' @rdname extractValue
 #'
 #'
