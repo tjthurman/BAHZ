@@ -20,13 +20,13 @@ A numeric value
 }
 \description{
 Internal functions used in \code{\link{init_single_chain}} to extract
-numerical values from the priors. All use regular expressions as implemented
-in the \code{\link{stringr}} package., and all properly handle whitespace and
+numerical values from priors. All use regular expressions as implemented
+in the \code{\link{stringr}} package, and all properly handle whitespace and
 decimals.
 }
 \details{
 \code{extract_first} gets the first value, that is, the one after an open
-parenthesis and before a comma. Properly handles whitespace and decimals.
+parenthesis and before a comma.
 
 \code{extract_last} gets the last value, that is, the value after a comma and
 before a close parenthesis.

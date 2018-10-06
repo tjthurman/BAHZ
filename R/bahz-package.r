@@ -1,12 +1,11 @@
 #' bahz: Bayesian Analysis of Hybrid Zones
 #'
-#' @name bahz-packge
-#'
 #' @description A DESCRIPTION OF THE PACKAGE
-#' @aliases bahz
-#' @useDynLib bahz, .registration = TRUE
 #'
 #' @docType package
+#' @name bahz-packge
+#' @aliases bahz
+#' @useDynLib bahz, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @import rstantools
