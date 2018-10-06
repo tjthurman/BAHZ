@@ -1,14 +1,7 @@
-#
+# 
 
 # You can check out the STAN manual for a full list of
-# possible distributions. Some common examples are given below.
-
-# Currently supported prior distributions:
-# exponential, normal, uniform.
-
-
-# Note that starting values are drawn from the prior distributions,
-# so improper priors might cause problems in model fitting.
+# possible distrubitions. Some common examples are given below.
 
 # Explanation of Parameters
 center: normal(350, 150)

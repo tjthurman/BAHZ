@@ -3,7 +3,7 @@
 #' A flexible function to evaluate hybrid zone genetic cline equations, with or
 #' without introgression tails.
 #'
-#' DETAILS TO BE ADDED. SPECIFICALLY, SOME NOTES ON EQUATIONS.
+#' ADD DETAILS, GIVE CLINE EQUATIONS AND CITATIONS.
 #'
 #' @param transectDist The position at which to evaluate the cline equation.
 #' @param decrease Is the cline decreasing in frequency? \code{TRUE} or

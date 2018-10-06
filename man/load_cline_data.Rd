@@ -18,12 +18,42 @@ Your data, in the list format appropriate for the cline model you
 chose.
 }
 \description{
-DESCRIPTION TO BE WRITTEN
+Converts a dataframe containing your data into the list format required for
+input to Stan.
 }
 \details{
-DETAILS TO BE ADDED. SPECIFICALLY, REQUIRED FILE FORMAT.
+The input dataframe can be a data frame or a tibble. For the multinomial
+model, four named columns must be present, all other columns will be
+ignored:
+\itemize{
+\item transectDist: A numeric column, giving the position along
+the cline/transect for each site.
+\item AA: The number of sampled individuals that are homozygous for the
+focal allele. Integer.
+\item Aa: The number of sampled individuals that are heterozygotes.
+Integer.
+\item aa: The number of sampled individuals that are homozygous for the
+non-focal allele. Integer.
+}
+
+For the binomial model, the user can supply either a data frame with the for
+columns above, or a dataframe with three named columns present (again, other
+columns are ignored):
+
+\itemize{
+\item transectDist: A numeric column, giving the position along
+the cline/transect for each site.
+\item nFocalAllele: The allele count for the focal allele.
+\item nTotalAlleles: The total number of alleles sampled (twice the
+number of diploid individiduals).
+}
 }
 \examples{
-# TO BE ADDED
+\dontrun{
+load_cline_data(yourdata, type = "bi")
+}
 
+}
+\seealso{
+\code{\link{fit_cline}}
 }

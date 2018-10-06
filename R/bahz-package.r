@@ -1,4 +1,4 @@
-#' BAHZ.
+#' bahz
 #'
 #' @name bahz-packge
 #' @docType package
