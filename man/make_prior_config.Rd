@@ -12,23 +12,21 @@ make_prior_config(path = getwd(), name = "prior_config_template.yaml",
 The default is the current working directory.}
 
 \item{name}{The name you want to give the prior configuration file. The
-default is \code{prior_config_template.yaml}}
+default is \code{prior_config_template.yaml}. File name must end in \code{.yaml}.}
 
 \item{overwrite}{Do you want to overwrite existing files?
-\code{TRUE} or \code{FALSE}, default is \code{FALSE}}
+\code{TRUE} or \code{FALSE}, default is \code{FALSE}.}
 }
 \value{
-The function returns a value of NULL. \code{invidible(NULL)}
+\code{invisible(NULL)}
 }
 \description{
 Makes a configuration file which you can use to specify the priors for your
 hybrid zone analysis. By default, creates the file in the working directoy
 with the name \code{prior_config_template.yaml}. You can supply a filepath
-and a different name, if you want. Will not overrite files by default, must
-set overwrite = T.
-}
-\details{
-DETAILS TO BE ADDED.
+and a different name, if you want to save the file somewhere else or with a
+different name. Will not overwrite files by default, you must set overwrite =
+T to do that.
 }
 \examples{
 \dontrun{
@@ -36,10 +34,9 @@ DETAILS TO BE ADDED.
 # Won't overwrite
 make_prior_config()
 
-# Make config file in a new path with a new name.
-# Will overwrite
+# Make config file in a different folder with a new name.
+# Will overwrite an existing file.
 make_prior_config(path = "/path/to/directory", name = "my_priors.yaml", overwrite = T)
 }
-# TO ADD
 
 }

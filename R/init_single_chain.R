@@ -14,7 +14,6 @@
 #'
 #' @keywords internal
 #'
-#'
 #' @importFrom stats "rexp" "rnorm" "runif"
 #'
 #' @param prior_file Path to the yaml file containing the prior specifications.
