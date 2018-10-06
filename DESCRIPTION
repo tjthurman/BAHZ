@@ -13,12 +13,25 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
-Imports: 
+Imports:
     assertthat,
     coda,
     dplyr,
     magrittr,
     rlang,
-    rstan,
+    rstan (>= 2.17.4),
+    rstantools (>= 1.5.1),
     stringr,
     yaml
+Depends:
+    methods,
+    R (>= 3.4.0),
+    Rcpp (>= 0.12.19)
+LinkingTo:
+    BH (>= 1.66.0-1),
+    Rcpp (>= 0.12.19),
+    RcppEigen (>= 0.3.3.4.0),
+    rstan (>= 2.17.4),
+    StanHeaders (>= 2.17.2)
+NeedsCompilation: yes
+SystemRequirements: GNU make
