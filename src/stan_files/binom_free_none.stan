@@ -1,13 +1,12 @@
+#include /pre/license.stan
+
 // Stan model to fit a sigmoid cline of allele frequencies,
-// with no introgression tails. 
+// with no introgression tails.
 // The minimum and maximum alele frequencies at the tails of the cline
 // are estimated from the data
-data{
-  int<lower=1> N; // number of sites sampled
-  int nFocalAllele[N]; // number of alleles of the focal type, in this case hydara alleles
-  int nTotalAlleles[N]; // total number of alleles sampled (2*number of diploid individuals)
-  real transectDist[N]; // distance along transect
-}
+
+#include /data_binom.stan
+
 parameters{
   real<lower=0> center; // the center of the cline, in km. Can't be negative
   real<lower=0> width; // the width of the cline. Also can't be negative
@@ -19,10 +18,10 @@ model{
   vector[N] p; // a vector of expected p values for each site
   pmax ~ uniform(0.8 , 1); // prior for pmax
   pmin ~ uniform(0 , 0.2); // prior for pmin
-  width ~ normal(50, 100); // prior for width. 
+  width ~ normal(50, 100); // prior for width.
   center ~ normal(350, 150); //prior for center
   for ( i in 1:N ) { // for each site
-    // calculate the predicted p 
+    // calculate the predicted p
     p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
   }
   // and the likelihood: observed allele counts follow a binomial liklihood,
@@ -34,7 +33,7 @@ generated quantities{
   vector[N] p; // calculate a vector of expected p values
   real dev; // calculate a deviance value for the model overall based on the draws from the posterior
   vector[N] log_lik; // calculate a vector of log-liklihoods for each observed allele count based on the draws from the posterior
-   vector[N] y_rep; // for posterior preictive checks, an allele count drawn from a binomial distribution 
+   vector[N] y_rep; // for posterior preictive checks, an allele count drawn from a binomial distribution
   for ( i in 1:N ) { // for each site
     // calculate the predicted p for each site.
     p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
