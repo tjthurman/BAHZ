@@ -71,7 +71,7 @@ cline_summary <- function(stanfit, prob = .95, method = "HPDI", show.all = F) {
     keep <- names(stanfit)
   }
 
-  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)$summary %>%
+  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep, use_cache = F)$summary %>%
      as.data.frame(.) %>%
      round(., digits = 2) %>%
      dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
