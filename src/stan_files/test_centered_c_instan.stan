@@ -28,7 +28,7 @@ parameters {
 }
 
 transformed parameters {
-  real center = c + meanDist
+  real center = c + meanDist;
 }
 model{
   // The statistical model
@@ -45,24 +45,24 @@ model{
   // based on the number of alleles sampled and the estimated allele frequency.
   nFocalAllele ~ binomial(nTotalAlleles, p);
 }
-generated quantities{
-  // these are used mostly for calculating WAIC and DIC
-  vector[N] p; // calculate a vector of expected p values
-  real center;
-  real dev; // calculate a deviance value for the model overall based on the draws from the posterior
-  vector[N] log_lik; // calculate a vector of log-liklihoods for each observed allele count based on the draws from the posterior
-   vector[N] y_rep; // for posterior preictive checks, an allele count drawn from a binomial distribution
-  for ( i in 1:N ) { // for each site
-    // calculate the predicted p for each site.
-    p[i] = pmin + (pmax - pmin) * (exp(4*(distCenter[i] - c)/width)/(1 + exp(4 * (distCenter[i] - c)/width)));
-    // and calculate the log likelihood of the observed allele counts, given the predicted p
-    log_lik[i] = binomial_lpmf(nFocalAllele[i] | nTotalAlleles[i], p[i]);
-    // and calculate an expected number of focal alleles, given the same number of samples
-    y_rep[i] = binomial_rng(nTotalAlleles[i], p[i]);
-  }
-  // calculate deviance of the model
-  dev = (-2)*binomial_lpmf(nFocalAllele | nTotalAlleles, p);
-  center = c + meanDist;
-}
-
+// generated quantities{
+//   // these are used mostly for calculating WAIC and DIC
+//   vector[N] p; // calculate a vector of expected p values
+//   real center;
+//   real dev; // calculate a deviance value for the model overall based on the draws from the posterior
+//   vector[N] log_lik; // calculate a vector of log-liklihoods for each observed allele count based on the draws from the posterior
+//    vector[N] y_rep; // for posterior preictive checks, an allele count drawn from a binomial distribution
+//   for ( i in 1:N ) { // for each site
+//     // calculate the predicted p for each site.
+//     p[i] = pmin + (pmax - pmin) * (exp(4*(distCenter[i] - c)/width)/(1 + exp(4 * (distCenter[i] - c)/width)));
+//     // and calculate the log likelihood of the observed allele counts, given the predicted p
+//     log_lik[i] = binomial_lpmf(nFocalAllele[i] | nTotalAlleles[i], p[i]);
+//     // and calculate an expected number of focal alleles, given the same number of samples
+//     y_rep[i] = binomial_rng(nTotalAlleles[i], p[i]);
+//   }
+//   // calculate deviance of the model
+//   dev = (-2)*binomial_lpmf(nFocalAllele | nTotalAlleles, p);
+//   center = c + meanDist;
+// }
+//
 
