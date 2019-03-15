@@ -4,7 +4,8 @@
 \alias{init_single_chain}
 \title{Make the expression of init values for a single chain}
 \usage{
-init_single_chain(prior_file, tails)
+init_single_chain(prior_file, tails = c("none", "left", "right",
+  "mirror", "ind"))
 }
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}

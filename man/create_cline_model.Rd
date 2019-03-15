@@ -17,7 +17,7 @@ of allele frequencies, or "multi" for a multinomial model of genotype
 frequencies.}
 
 \item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or
-"ind."}
+"ind"?}
 
 \item{direction}{Should the model be for a cline which is increasing in
 frequency ("inc"), or decreasing in frequency ("dec")?}

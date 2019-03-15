@@ -7,7 +7,7 @@
 cline_summary(stanfit, prob = 0.95, method = "HPDI", show.all = F)
 }
 \arguments{
-\item{stanfit}{A stanfit object holding your model results.}
+\item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
 
 \item{prob}{The probability interval to return. Default is .95. Numeric,
 between 0 and 1.}
@@ -42,10 +42,10 @@ Summarizes the results of the cline model by providing the posterior mean,
 credible intervals, and diagnostics for the model parameters.
 }
 \details{
-Uses the \code{rstan} summary method on class \linkS4class{stanfit} objects
+Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects
 for calculating posterior means, SEM, standard deviations, equal tail
-probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDI}} in
-\code{coda} function to calculate HPDI intervals, the default.
+probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDinterval}} function in
+\code{coda} to calculate HPDI intervals, the default.
 }
 \examples{
 \dontrun{

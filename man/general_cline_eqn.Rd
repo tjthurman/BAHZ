@@ -40,7 +40,7 @@ A flexible function to evaluate hybrid zone genetic cline equations, with or
 without introgression tails.
 }
 \details{
-DETAILS TO BE ADDED. SPECIFICALLY, SOME NOTES ON EQUATIONS.
+ADD DETAILS, GIVE CLINE EQUATIONS AND CITATIONS.
 }
 \examples{
 \dontrun{

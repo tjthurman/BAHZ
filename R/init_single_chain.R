@@ -14,7 +14,6 @@
 #'
 #' @keywords internal
 #'
-#'
 #' @importFrom stats "rexp" "rnorm" "runif"
 #'
 #' @param prior_file Path to the yaml file containing the prior specifications.
@@ -26,13 +25,8 @@
 #'
 #'
 
-init_single_chain <- function(prior_file, tails) {
-  assertthat::assert_that(length((tails)) == 1,
-                          msg = "You must pick a single option for tails.")
-  assertthat::assert_that(unique((tails %in% c("none", "left", "right", "mirror", "ind"))) == T,
-                          msg = "tails must be 'none', 'left', 'right', 'mirror', or 'ind'")
-
-
+init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind")) {
+  tails <- match.arg(tails, several.ok = F)
 
   init.center <- init.width <- init.pmin <- init.pmax <- NULL
   init.f <- init.deltaL <- init.deltaR <- init.deltaM <- NULL

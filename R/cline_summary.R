@@ -3,14 +3,14 @@
 #' Summarizes the results of the cline model by providing the posterior mean,
 #' credible intervals, and diagnostics for the model parameters.
 #'
-#' Uses the \code{rstan} summary method on class \linkS4class{stanfit} objects
+#' Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects
 #' for calculating posterior means, SEM, standard deviations, equal tail
-#' probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDI}} in
-#' \code{coda} function to calculate HPDI intervals, the default.
+#' probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDinterval}} function in
+#' \code{coda} to calculate HPDI intervals, the default.
 #'
 #' @importClassesFrom rstan stanfit
 #'
-#' @param stanfit A stanfit object holding your model results.
+#' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
 #'
 #' @param prob The probability interval to return. Default is .95. Numeric,
 #'   between 0 and 1.
@@ -71,7 +71,7 @@ cline_summary <- function(stanfit, prob = .95, method = "HPDI", show.all = F) {
     keep <- names(stanfit)
   }
 
-  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep)$summary %>%
+  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep, use_cache = F)$summary %>%
      as.data.frame(.) %>%
      round(., digits = 2) %>%
      dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%

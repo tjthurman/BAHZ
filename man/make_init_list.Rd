@@ -2,26 +2,34 @@
 % Please edit documentation in R/make_init_list.R
 \name{make_init_list}
 \alias{make_init_list}
-\title{Make a list of vlaues for initializing the stan model.}
+\title{Make a list of values for initializing the Stan model.}
 \usage{
-make_init_list(prior_file, tails, chains)
+make_init_list(prior_file, tails = c("none", "left", "right", "mirror",
+  "ind"), chains)
 }
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}
 
 \item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind."}
 
-\item{chains}{The number of chains to be used in Stan.}
+\item{chains}{The number of chains to be used in Stan. Integer.}
 }
 \value{
 A list of lists containing initialization values for the Stan model.
 }
 \description{
-This function calls \link{init_single_chain}, which does all the work of
-making the expression which will yeild the proper starting values for a chain
-of this model. It then evaluates that expression for each desired chain in
-the model and adds it to a list.
+Generates a list, of length \code{chains}, where each element of the list is
+a named list giving the initialization values for each model parameter.
+Initialization values are randomly drawn from the prior distribution, and are
+drawn independently for each chain.
 }
 \details{
 Currently supported distributions are: normal, uniform, exponential.
+
+This function calls \code{\link{init_single_chain}} for each chain.
+\code{\link{init_single_chain}} does all the work of making the expression
+which will yield the proper starting values for a chain of this model.
+}
+\seealso{
+\code{\link{init_single_chain}}
 }

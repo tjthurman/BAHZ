@@ -1,5 +1,4 @@
-
-# Utility functions for cap -----------------------------------------------
+# Utility functions for bahz -----------------------------------------------
 # Not user facing, just used internally.
 
 
@@ -28,7 +27,6 @@ NULL
 #' Used internally, in \code{\link{sim_data_from_cline}}.
 #'
 #' @keywords internal
-#'
 #'
 #' @param .df A data frame, containing a column named Fis.
 #'
@@ -91,10 +89,11 @@ parse_prior_file <- function(prior_file){
 
 # Extract values out of priors ----------------------------------------------
 
-#
 #' Extract values for prior distributions
 #'
-#' Internal functions used in \code{\link{init_single_chain}} to extract
+#' @name extractValue
+#'
+#' @description Internal functions used in \code{\link{init_single_chain}} to extract
 #' numerical values from priors. All use regular expressions as implemented
 #' in the \code{\link{stringr}} package, and all properly handle whitespace and
 #' decimals.
@@ -108,13 +107,21 @@ parse_prior_file <- function(prior_file){
 #' \code{extract_only} gets the only value from a distribution with one
 #' parameter, that is, it gets the numbers between two parentheses.
 #'
-#' @rdname extractValue
 #'
 #' @keywords internal
 #'
 #' @param string The string to extract a value from
 #'
 #' @return A numeric value
+#'
+
+NULL
+
+
+#'
+#' Extract values for prior distributions
+#'
+#' @rdname extractValue
 #'
 #'
 
@@ -129,7 +136,6 @@ extract_first <- function(string) {
   res
 }
 
-#'
 #' @rdname extractValue
 #'
 #'
@@ -146,6 +152,9 @@ extract_last <- function(string) {
 }
 
 
+#'
+#' Extract values for prior distributions
+#'
 #' @rdname extractValue
 #'
 #'

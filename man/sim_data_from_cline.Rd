@@ -48,7 +48,7 @@ A data frame of simulated genetic data sampled from the cline. Columns are:
 \item transectDist: The distance along the cline for each site.
 \item cline.p: The expected allele frequency for each site, given its position on the cline.
 \item cline.f: The expected coefficient of inbreeding for each site.
-\item AA, AA, aa: The simulated number of homozygotes and heterozygotes for each site.
+\item AA, Aa, aa: The simulated number of homozygotes and heterozygotes for each site.
 \item N: The number of individuals sampled for each site.
 \item emp.p: The observed allele frequency for each site (includes sampling error).
 \item emp.f: The observed Fis for each site (includes sampling error).
@@ -84,13 +84,14 @@ values are corrected with \link{correct_fis}, such that empirical Fis values
 which are undefined or < 0 are corrected to 0.
 }
 \examples{
-# Simulate genotype data from a cline with center at 100, width of 30.
+# Simulate genotype data from a decreasing cline
+# with center at 100, width of 30.
 # Sites are 20 units apart, from 0 to 200.
 # 20 individuals are sampled at each site.
 # Inbreeding is constant at Fis = 0.1.
 
 set.seed(123)
-sim_data_from_cline(transect_distance =seq(0,200,20), n_ind = 20,
+sim_data_from_cline(transect_distance = seq(0,200,20), n_ind = 20,
                     Fis = 0.1, decrease = TRUE,
                     center = 100, width = 30)
 
