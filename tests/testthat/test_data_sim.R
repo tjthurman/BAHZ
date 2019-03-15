@@ -1,0 +1,10 @@
+context("Data simulation")
+
+load("reference_cline.Rdata")
+
+set.seed(10)
+testval <-sim_data_from_cline(transect_distances = seq(0,600,20), n_ind = 40, Fis = 0,
+                    decrease = F, center = 300, width = 80)
+test_that("generated clines are correct", {
+  expect_equal(testval, cline)
+})
