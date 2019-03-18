@@ -1,16 +1,16 @@
 /*
-    stantoolstest is free software: you can redistribute it and/or modify
+    BAHZ is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stantoolstest is distributed in the hope that it will be useful,
+    BAHZ is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with stantoolstest.  If not, see <http://www.gnu.org/licenses/>.
+    along with BAHZ.  If not, see <http://www.gnu.org/licenses/>.
 */
 #ifndef MODELS_HPP
 #define MODELS_HPP
@@ -36,7 +36,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_data_and_priors_binom");
-    reader.add_event(16, 14, "end", "model_data_and_priors_binom");
+    reader.add_event(17, 15, "end", "model_data_and_priors_binom");
     return reader;
 }
 
@@ -51,6 +51,7 @@ private:
     double p_sd_center;
     double p_m_width;
     double p_sd_width;
+    double p_scale_width;
     double p_l_min;
     double p_u_min;
     double p_l_max;
@@ -155,24 +156,30 @@ public:
             pos__ = 0;
             p_sd_width = vals_r__[pos__++];
             current_statement_begin__ = 10;
+            context__.validate_dims("data initialization", "p_scale_width", "double", context__.to_vec());
+            p_scale_width = double(0);
+            vals_r__ = context__.vals_r("p_scale_width");
+            pos__ = 0;
+            p_scale_width = vals_r__[pos__++];
+            current_statement_begin__ = 11;
             context__.validate_dims("data initialization", "p_l_min", "double", context__.to_vec());
             p_l_min = double(0);
             vals_r__ = context__.vals_r("p_l_min");
             pos__ = 0;
             p_l_min = vals_r__[pos__++];
-            current_statement_begin__ = 11;
+            current_statement_begin__ = 12;
             context__.validate_dims("data initialization", "p_u_min", "double", context__.to_vec());
             p_u_min = double(0);
             vals_r__ = context__.vals_r("p_u_min");
             pos__ = 0;
             p_u_min = vals_r__[pos__++];
-            current_statement_begin__ = 12;
+            current_statement_begin__ = 13;
             context__.validate_dims("data initialization", "p_l_max", "double", context__.to_vec());
             p_l_max = double(0);
             vals_r__ = context__.vals_r("p_l_max");
             pos__ = 0;
             p_l_max = vals_r__[pos__++];
-            current_statement_begin__ = 13;
+            current_statement_begin__ = 14;
             context__.validate_dims("data initialization", "p_u_max", "double", context__.to_vec());
             p_u_max = double(0);
             vals_r__ = context__.vals_r("p_u_max");
@@ -193,6 +200,7 @@ public:
             current_statement_begin__ = 11;
             current_statement_begin__ = 12;
             current_statement_begin__ = 13;
+            current_statement_begin__ = 14;
             // initialize data variables
 
 

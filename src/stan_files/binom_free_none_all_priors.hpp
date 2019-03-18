@@ -1,16 +1,16 @@
 /*
-    stantoolstest is free software: you can redistribute it and/or modify
+    BAHZ is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    stantoolstest is distributed in the hope that it will be useful,
+    BAHZ is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with stantoolstest.  If not, see <http://www.gnu.org/licenses/>.
+    along with BAHZ.  If not, see <http://www.gnu.org/licenses/>.
 */
 #ifndef MODELS_HPP
 #define MODELS_HPP
@@ -42,9 +42,9 @@ stan::io::program_reader prog_reader__() {
     reader.add_event(14, 1, "restart", "model_binom_free_none_all_priors");
     reader.add_event(20, 7, "include", "/data_and_priors_binom.stan");
     reader.add_event(20, 0, "start", "/data_and_priors_binom.stan");
-    reader.add_event(34, 14, "end", "/data_and_priors_binom.stan");
-    reader.add_event(34, 8, "restart", "model_binom_free_none_all_priors");
-    reader.add_event(80, 52, "end", "model_binom_free_none_all_priors");
+    reader.add_event(35, 15, "end", "/data_and_priors_binom.stan");
+    reader.add_event(35, 8, "restart", "model_binom_free_none_all_priors");
+    reader.add_event(78, 49, "end", "model_binom_free_none_all_priors");
     return reader;
 }
 
@@ -59,6 +59,7 @@ private:
     double p_sd_center;
     double p_m_width;
     double p_sd_width;
+    double p_scale_width;
     double p_l_min;
     double p_u_min;
     double p_l_max;
@@ -163,24 +164,30 @@ public:
             pos__ = 0;
             p_sd_width = vals_r__[pos__++];
             current_statement_begin__ = 30;
+            context__.validate_dims("data initialization", "p_scale_width", "double", context__.to_vec());
+            p_scale_width = double(0);
+            vals_r__ = context__.vals_r("p_scale_width");
+            pos__ = 0;
+            p_scale_width = vals_r__[pos__++];
+            current_statement_begin__ = 31;
             context__.validate_dims("data initialization", "p_l_min", "double", context__.to_vec());
             p_l_min = double(0);
             vals_r__ = context__.vals_r("p_l_min");
             pos__ = 0;
             p_l_min = vals_r__[pos__++];
-            current_statement_begin__ = 31;
+            current_statement_begin__ = 32;
             context__.validate_dims("data initialization", "p_u_min", "double", context__.to_vec());
             p_u_min = double(0);
             vals_r__ = context__.vals_r("p_u_min");
             pos__ = 0;
             p_u_min = vals_r__[pos__++];
-            current_statement_begin__ = 32;
+            current_statement_begin__ = 33;
             context__.validate_dims("data initialization", "p_l_max", "double", context__.to_vec());
             p_l_max = double(0);
             vals_r__ = context__.vals_r("p_l_max");
             pos__ = 0;
             p_l_max = vals_r__[pos__++];
-            current_statement_begin__ = 33;
+            current_statement_begin__ = 34;
             context__.validate_dims("data initialization", "p_u_max", "double", context__.to_vec());
             p_u_max = double(0);
             vals_r__ = context__.vals_r("p_u_max");
@@ -201,6 +208,7 @@ public:
             current_statement_begin__ = 31;
             current_statement_begin__ = 32;
             current_statement_begin__ = 33;
+            current_statement_begin__ = 34;
             // initialize data variables
 
 
@@ -209,13 +217,13 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 37;
-            ++num_params_r__;
             current_statement_begin__ = 38;
             ++num_params_r__;
             current_statement_begin__ = 39;
             ++num_params_r__;
             current_statement_begin__ = 40;
+            ++num_params_r__;
+            current_statement_begin__ = 41;
             ++num_params_r__;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -352,7 +360,7 @@ public:
 
 
             // transformed parameters
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -361,10 +369,10 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 46;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 47;
+                current_statement_begin__ = 48;
                 stan::model::assign(p, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
@@ -382,19 +390,19 @@ public:
 
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
 
             // model body
 
-            current_statement_begin__ = 54;
-            lp_accum__.add(uniform_log<propto__>(pmax, p_l_max, p_u_max));
             current_statement_begin__ = 55;
-            lp_accum__.add(uniform_log<propto__>(pmin, p_l_min, p_u_min));
+            lp_accum__.add(uniform_log<propto__>(pmax, p_l_max, p_u_max));
             current_statement_begin__ = 56;
-            lp_accum__.add(normal_log<propto__>(width, p_m_width, p_sd_width));
+            lp_accum__.add(uniform_log<propto__>(pmin, p_l_min, p_u_min));
             current_statement_begin__ = 57;
+            lp_accum__.add(normal_log<propto__>(width, p_m_width, p_sd_width));
+            current_statement_begin__ = 58;
             lp_accum__.add(normal_log<propto__>(center, p_m_center, p_sd_center));
-            current_statement_begin__ = 60;
+            current_statement_begin__ = 61;
             lp_accum__.add(binomial_log<propto__>(nFocalAllele, nTotalAlleles, p));
 
         } catch (const std::exception& e) {
@@ -427,6 +435,9 @@ public:
         names__.push_back("pmin");
         names__.push_back("pmax");
         names__.push_back("p");
+        names__.push_back("dev");
+        names__.push_back("log_lik");
+        names__.push_back("y_rep");
     }
 
 
@@ -440,6 +451,14 @@ public:
         dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N);
@@ -479,7 +498,7 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
 
         try {
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -488,10 +507,10 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 46;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 47;
+                current_statement_begin__ = 48;
                 stan::model::assign(p, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
@@ -499,7 +518,7 @@ public:
             }
 
             // validate transformed parameters
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
 
             // write transformed parameters
             if (include_tparams__) {
@@ -509,12 +528,59 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
+            current_statement_begin__ = 65;
+            local_scalar_t__ dev;
+            (void) dev;  // dummy to suppress unused var warning
+
+            stan::math::initialize(dev, DUMMY_VAR__);
+            stan::math::fill(dev,DUMMY_VAR__);
+            current_statement_begin__ = 66;
+            validate_non_negative_index("log_lik", "N", N);
+            Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  log_lik(static_cast<Eigen::VectorXd::Index>(N));
+            (void) log_lik;  // dummy to suppress unused var warning
+
+            stan::math::initialize(log_lik, DUMMY_VAR__);
+            stan::math::fill(log_lik,DUMMY_VAR__);
+            current_statement_begin__ = 67;
+            validate_non_negative_index("y_rep", "N", N);
+            Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  y_rep(static_cast<Eigen::VectorXd::Index>(N));
+            (void) y_rep;  // dummy to suppress unused var warning
+
+            stan::math::initialize(y_rep, DUMMY_VAR__);
+            stan::math::fill(y_rep,DUMMY_VAR__);
 
 
+            current_statement_begin__ = 68;
+            for (int i = 1; i <= N; ++i) {
+
+                current_statement_begin__ = 70;
+                stan::model::assign(log_lik, 
+                            stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                            binomial_log(get_base1(nFocalAllele,i,"nFocalAllele",1),get_base1(nTotalAlleles,i,"nTotalAlleles",1),get_base1(p,i,"p",1)), 
+                            "assigning variable log_lik");
+                current_statement_begin__ = 72;
+                stan::model::assign(y_rep, 
+                            stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
+                            binomial_rng(get_base1(nTotalAlleles,i,"nTotalAlleles",1),get_base1(p,i,"p",1), base_rng__), 
+                            "assigning variable y_rep");
+            }
+            current_statement_begin__ = 75;
+            stan::math::assign(dev, (-(2) * binomial_log(nFocalAllele,nTotalAlleles,p)));
 
             // validate generated quantities
+            current_statement_begin__ = 65;
+            current_statement_begin__ = 66;
+            current_statement_begin__ = 67;
 
             // write generated quantities
+        vars__.push_back(dev);
+            for (int k_0__ = 0; k_0__ < N; ++k_0__) {
+            vars__.push_back(log_lik[k_0__]);
+            }
+            for (int k_0__ = 0; k_0__ < N; ++k_0__) {
+            vars__.push_back(y_rep[k_0__]);
+            }
+
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -574,6 +640,19 @@ public:
 
 
         if (!include_gqs__) return;
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "dev";
+        param_names__.push_back(param_name_stream__.str());
+        for (int k_0__ = 1; k_0__ <= N; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "log_lik" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= N; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "y_rep" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
     }
 
 
@@ -606,6 +685,19 @@ public:
 
 
         if (!include_gqs__) return;
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "dev";
+        param_names__.push_back(param_name_stream__.str());
+        for (int k_0__ = 1; k_0__ <= N; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "log_lik" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= N; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "y_rep" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
     }
 
 }; // model

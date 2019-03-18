@@ -17,40 +17,55 @@ library(dplyr)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
 data <- sim_data_from_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
-                    decrease = F, center = 0, width = 60, pmin = 0.03, pmax = .95)
+                    decrease = F, center = 0, width = 20, pmin = 0.03, pmax = .95)
 # Import to stan using function I already made:
 st_dat <- load_cline_data(data, type = "bi")
+make_prior_config()
 # Make a list of start values:
 init <- make_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(3))
 
-
+init2 <- init
+init2[[1]]$width <- 4/20
+init2[[2]]$width <- 4/20.4
+init2[[3]]$width <- 4/21
+names(init2[[1]])[2] <- "w"
+names(init2[[2]])[2] <- "w"
+names(init2[[3]])[2] <- "w"
 
 priors <- list(p_m_center = 0,
                p_sd_center = 150,
-               p_m_width = 50,
+               p_m_width = 20,
                p_sd_width = 100,
                p_l_min = 0,
                p_u_min = 0.2,
                p_l_max = 0.8,
-               p_u_max = 1)
+               p_u_max = 1,
+               p_scale_width = 10)
+priors2 <- list(p_m_center = 0,
+               p_sd_center = 150,
+               p_scale_width = 10,
+               p_l_min = 0,
+               p_u_min = 0.2,
+               p_l_max = 0.8,
+               p_u_max = 1,
+               p_m_width =0,
+               p_sd_width = 0)
 
-z <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3, model = "minimal")
-z2 <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3, model = "binom_free_none")
 z_p <- test_fit_cline(stan_data = c(st_dat, priors), init_list = init, chains = 3, model = "binom_free_none_all_priors")
+
+z_p2 <- test_fit_cline(stan_data = c(st_dat, priors2), init_list = init2, chains = 3, model = "binom_free_none_all_priors_w")
 
 
 # ?nlist to get lists of prior stuff
-cline_summary(z)
-cline_summary(z2)
 cline_summary(z_p)
+cline_summary(z_p2)
 
-# Gets the same answer, though, within simulation error.
-pairs(z_p)
+mean(4/as.data.frame(z_p2)$w)
 
-z@inits
-
-cline_summary(z)
-cline_summary(z2)
+# For diagnoses when things go wrong, but takes forever
+# pdf("pairs.pdf", width = 20, height = 20)
+# pairs.default(z_p2)
+# dev.off()
 
 
 # Testing centering of center --------------------------------------------
@@ -193,66 +208,3 @@ compare(bi_left_limit, bi_left_nolimit)
 compare(bi_left_nolimit, bi_none_limit)
 # The WAIC is better for bi_none, it takes about 64% of the weight.
 
-
-library(shinystan)
-launch_shinystan(bi_left_limit)
-
-bi_left@
-
-precis(bi_left)
-bi_right <- stan(
-  model_code = models$bi_right_inc,
-  data = data.list,
-  chains = 3,
-  iter = 10000,
-  warmup = 3000,
-  init = right.init.list
-)
-bi_mirror <- stan(
-  model_code = models$bi_mirror_inc,
-  data = data.list,
-  chains = 3,
-  iter = 10000,
-  warmup = 3000,
-  init = mirror.init.list
-)
-bi_ind <- stan(
-  model_code = models$bi_ind_inc,
-  data = data.list,
-  chains = 3,
-  iter = 10000,
-  warmup = 3000,
-  init = ind.init.list
-)
-
-
-bi_none@inits
-
-plot(as.matrix(bi_none)[1:6000,1],type='l')
-
-
-
-
-precis(bi_none)
-cline_summary(bi_none, prob = .89, method = "HPDI")
-precis(multi_none)
-precis(multi_none)
-cline_summary(multi_none, prob = .97, method = "HPDI")
-
-precis(bi_left)
-cline_summary(bi_left, prob = .89)
-compare(bi_none, bi_left)
-
-precis(bi_right)
-precis(bi_right)
-precis(bi_right)
-cline_summary(bi_right, prob = .89)
-
-precis(bi_mirror)
-cline_summary(bi_mirror, prob = .89)
-
-precis(bi_ind)
-cline_summary(bi_ind, prob = .89)
-
-
-compare(bi_none, bi_left, bi_right, bi_mirror, bi_ind)
