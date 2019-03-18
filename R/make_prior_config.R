@@ -1,7 +1,7 @@
 #' Make a prior configuration file
 #'
 #' Makes a configuration file which you can use to specify the priors for your
-#' hybrid zone analysis. By default, creates the file in the working directoy
+#' hybrid zone analysis. By default, creates the file in the working directory
 #' with the name \code{prior_config_template.yaml}. You can supply a filepath
 #' and a different name, if you want to save the file somewhere else or with a
 #' different name. Will not overwrite files by default, you must set overwrite =
@@ -44,7 +44,7 @@ make_prior_config <- function(path = getwd(),
   newfile <- file.path(normalizePath(path), name, fsep = .Platform$file.sep)
   if (overwrite == F) { # If overwriting is not allowed
     if (file.exists(newfile) == T) { # Stop if file exists
-      stop("Template file already exists, set overwrite = T is you want to overwrite it")
+      stop("Template file already exists, set overwrite = T if you want to overwrite it")
     }
     else {
       file.copy(from = system.file("extdata", "prior_config_template.yaml", package = "cap", mustWork = TRUE),
