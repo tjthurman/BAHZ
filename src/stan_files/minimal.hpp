@@ -36,7 +36,15 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_minimal");
-    reader.add_event(47, 45, "end", "model_minimal");
+    reader.add_event(0, 0, "include", "/pre/license.stan");
+    reader.add_event(0, 0, "start", "/pre/license.stan");
+    reader.add_event(14, 14, "end", "/pre/license.stan");
+    reader.add_event(14, 1, "restart", "model_minimal");
+    reader.add_event(20, 7, "include", "/data_binom.stan");
+    reader.add_event(20, 0, "start", "/data_binom.stan");
+    reader.add_event(26, 6, "end", "/data_binom.stan");
+    reader.add_event(26, 8, "restart", "model_minimal");
+    reader.add_event(72, 52, "end", "model_minimal");
     return reader;
 }
 
@@ -83,13 +91,13 @@ public:
 
         // initialize member variables
         try {
-            current_statement_begin__ = 2;
+            current_statement_begin__ = 22;
             context__.validate_dims("data initialization", "N", "int", context__.to_vec());
             N = int(0);
             vals_i__ = context__.vals_i("N");
             pos__ = 0;
             N = vals_i__[pos__++];
-            current_statement_begin__ = 3;
+            current_statement_begin__ = 23;
             validate_non_negative_index("nFocalAllele", "N", N);
             context__.validate_dims("data initialization", "nFocalAllele", "int", context__.to_vec(N));
             validate_non_negative_index("nFocalAllele", "N", N);
@@ -100,7 +108,7 @@ public:
             for (size_t i_0__ = 0; i_0__ < nFocalAllele_limit_0__; ++i_0__) {
                 nFocalAllele[i_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 4;
+            current_statement_begin__ = 24;
             validate_non_negative_index("nTotalAlleles", "N", N);
             context__.validate_dims("data initialization", "nTotalAlleles", "int", context__.to_vec(N));
             validate_non_negative_index("nTotalAlleles", "N", N);
@@ -111,7 +119,7 @@ public:
             for (size_t i_0__ = 0; i_0__ < nTotalAlleles_limit_0__; ++i_0__) {
                 nTotalAlleles[i_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 5;
+            current_statement_begin__ = 25;
             validate_non_negative_index("transectDist", "N", N);
             context__.validate_dims("data initialization", "transectDist", "double", context__.to_vec(N));
             validate_non_negative_index("transectDist", "N", N);
@@ -124,11 +132,11 @@ public:
             }
 
             // validate, data variables
-            current_statement_begin__ = 2;
+            current_statement_begin__ = 22;
             check_greater_or_equal(function__,"N",N,1);
-            current_statement_begin__ = 3;
-            current_statement_begin__ = 4;
-            current_statement_begin__ = 5;
+            current_statement_begin__ = 23;
+            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             // initialize data variables
 
 
@@ -137,9 +145,13 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 9;
+            current_statement_begin__ = 29;
             ++num_params_r__;
-            current_statement_begin__ = 10;
+            current_statement_begin__ = 30;
+            ++num_params_r__;
+            current_statement_begin__ = 31;
+            ++num_params_r__;
+            current_statement_begin__ = 32;
             ++num_params_r__;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -169,7 +181,7 @@ public:
         double center(0);
         center = vals_r__[pos__++];
         try {
-            writer__.scalar_unconstrain(center);
+            writer__.scalar_lb_unconstrain(0,center);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable center: ") + e.what());
         }
@@ -185,6 +197,32 @@ public:
             writer__.scalar_lb_unconstrain(0,width);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable width: ") + e.what());
+        }
+
+        if (!(context__.contains_r("pmin")))
+            throw std::runtime_error("variable pmin missing");
+        vals_r__ = context__.vals_r("pmin");
+        pos__ = 0U;
+        context__.validate_dims("initialization", "pmin", "double", context__.to_vec());
+        double pmin(0);
+        pmin = vals_r__[pos__++];
+        try {
+            writer__.scalar_lub_unconstrain(0,1,pmin);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable pmin: ") + e.what());
+        }
+
+        if (!(context__.contains_r("pmax")))
+            throw std::runtime_error("variable pmax missing");
+        vals_r__ = context__.vals_r("pmax");
+        pos__ = 0U;
+        context__.validate_dims("initialization", "pmax", "double", context__.to_vec());
+        double pmax(0);
+        pmax = vals_r__[pos__++];
+        try {
+            writer__.scalar_lub_unconstrain(0,1,pmax);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable pmax: ") + e.what());
         }
 
         params_r__ = writer__.data_r();
@@ -223,9 +261,9 @@ public:
             local_scalar_t__ center;
             (void) center;  // dummy to suppress unused var warning
             if (jacobian__)
-                center = in__.scalar_constrain(lp__);
+                center = in__.scalar_lb_constrain(0,lp__);
             else
-                center = in__.scalar_constrain();
+                center = in__.scalar_lb_constrain(0);
 
             local_scalar_t__ width;
             (void) width;  // dummy to suppress unused var warning
@@ -234,9 +272,23 @@ public:
             else
                 width = in__.scalar_lb_constrain(0);
 
+            local_scalar_t__ pmin;
+            (void) pmin;  // dummy to suppress unused var warning
+            if (jacobian__)
+                pmin = in__.scalar_lub_constrain(0,1,lp__);
+            else
+                pmin = in__.scalar_lub_constrain(0,1);
+
+            local_scalar_t__ pmax;
+            (void) pmax;  // dummy to suppress unused var warning
+            if (jacobian__)
+                pmax = in__.scalar_lub_constrain(0,1,lp__);
+            else
+                pmax = in__.scalar_lub_constrain(0,1);
+
 
             // transformed parameters
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 36;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -245,13 +297,13 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 37;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 17;
+                current_statement_begin__ = 39;
                 stan::model::assign(p, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (stan::math::exp((width * (get_base1(transectDist,i,"transectDist",1) - center))) / (1 + stan::math::exp((width * (get_base1(transectDist,i,"transectDist",1) - center))))), 
+                            (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
                             "assigning variable p");
             }
 
@@ -266,15 +318,19 @@ public:
 
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 36;
 
             // model body
 
-            current_statement_begin__ = 22;
-            lp_accum__.add(exponential_log<propto__>(width, 1));
-            current_statement_begin__ = 23;
-            lp_accum__.add(normal_log<propto__>(center, 0, 10));
-            current_statement_begin__ = 26;
+            current_statement_begin__ = 46;
+            lp_accum__.add(uniform_log<propto__>(pmax, 0.80000000000000004, 1));
+            current_statement_begin__ = 47;
+            lp_accum__.add(uniform_log<propto__>(pmin, 0, 0.20000000000000001));
+            current_statement_begin__ = 48;
+            lp_accum__.add(normal_log<propto__>(width, 50, 100));
+            current_statement_begin__ = 49;
+            lp_accum__.add(normal_log<propto__>(center, 350, 150));
+            current_statement_begin__ = 52;
             lp_accum__.add(binomial_log<propto__>(nFocalAllele, nTotalAlleles, p));
 
         } catch (const std::exception& e) {
@@ -304,6 +360,8 @@ public:
         names__.resize(0);
         names__.push_back("center");
         names__.push_back("width");
+        names__.push_back("pmin");
+        names__.push_back("pmax");
         names__.push_back("p");
     }
 
@@ -311,6 +369,10 @@ public:
     void get_dims(std::vector<std::vector<size_t> >& dimss__) const {
         dimss__.resize(0);
         std::vector<size_t> dims__;
+        dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dimss__.push_back(dims__);
         dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
@@ -335,10 +397,14 @@ public:
         static const char* function__ = "model_minimal_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
-        double center = in__.scalar_constrain();
+        double center = in__.scalar_lb_constrain(0);
         double width = in__.scalar_lb_constrain(0);
+        double pmin = in__.scalar_lub_constrain(0,1);
+        double pmax = in__.scalar_lub_constrain(0,1);
         vars__.push_back(center);
         vars__.push_back(width);
+        vars__.push_back(pmin);
+        vars__.push_back(pmax);
 
         // declare and define transformed parameters
         double lp__ = 0.0;
@@ -349,7 +415,7 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
 
         try {
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 36;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -358,18 +424,18 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 37;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 17;
+                current_statement_begin__ = 39;
                 stan::model::assign(p, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            (stan::math::exp((width * (get_base1(transectDist,i,"transectDist",1) - center))) / (1 + stan::math::exp((width * (get_base1(transectDist,i,"transectDist",1) - center))))), 
+                            (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
                             "assigning variable p");
             }
 
             // validate transformed parameters
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 36;
 
             // write transformed parameters
             if (include_tparams__) {
@@ -425,6 +491,12 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "width";
         param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "pmin";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "pmax";
+        param_names__.push_back(param_name_stream__.str());
 
         if (!include_gqs__ && !include_tparams__) return;
 
@@ -450,6 +522,12 @@ public:
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
         param_name_stream__ << "width";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "pmin";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "pmax";
         param_names__.push_back(param_name_stream__.str());
 
         if (!include_gqs__ && !include_tparams__) return;

@@ -9,6 +9,7 @@
 #' @export
 #'
 
-test_fit_cline <- function(data, init_list) {
-  rstan::sampling(stanmodels$minimal, data = stan_data, chains = 3, init = init_list)
+test_fit_cline <- function(stan_data, init_list, chains) {
+  rstan::sampling(object = stanmodels$binom_free_none, data = stan_data, chains = chains, init = init_list)
 }
+

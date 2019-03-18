@@ -9,24 +9,34 @@ library(bahz)
 library(rstan)
 library(rethinking)
 library(stringr)
-rstan_options(auto_write = TRUE)
+rstan::rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 source("src/functions.R")
 library(tidyverse)
-
-# Test out the pipeline ---------------------------------------------------
+library(dplyr)
+# Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_data_from_cline(transect_distances = seq(0,600,20), n_ind = 40, Fis = 0.8,
-                    decrease = F, center = 200, width = 38, pmin = 0.03, pmax = 1)
-data2 <- data %>%
-  mutate(transect_actual = transectDist) %>%
-  mutate(transectDist = transectDist-mean(transectDist))
-plot(data2$transectDist, data2$cline.p)
-plot(data$transectDist, data$cline.p)
+data <- sim_data_from_cline(transect_distances = seq(0,600,20), n_ind = 40, Fis = 0,
+                    decrease = F, center = 320, width = 60, pmin = 0, pmax = 1)
+# Import to stan using function I already made:
+st_dat <- load_cline_data(data, type = "bi")
+# Make a list of start values:
+init <- make_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(3))
 
-plot(data$transectDist, data$cline.p, type = "l", ylm = c(0,1))
-lines(data$transectDist, data$emp.p, type = "l")
 
+
+z <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3)
+
+z2 <- test_fit_cline2(stan_data = st_dat, init_list = init, chains = 3)
+
+z@inits
+
+cline_summary(z)
+cline_summary(z2)
+
+
+z2 <- stan(file = "src/stan_files/minimal.stan", data = st_dat, chains = 3, init = init)
+z2@inits
 # Make a prior config file
 make_prior_config(overwrite = F)
 
@@ -231,12 +241,15 @@ plot(as.matrix(bi_none)[1:6000,1],type='l')
 precis(bi_none)
 cline_summary(bi_none, prob = .89, method = "HPDI")
 precis(multi_none)
+precis(multi_none)
 cline_summary(multi_none, prob = .97, method = "HPDI")
 
 precis(bi_left)
 cline_summary(bi_left, prob = .89)
 compare(bi_none, bi_left)
 
+precis(bi_right)
+precis(bi_right)
 precis(bi_right)
 cline_summary(bi_right, prob = .89)
 
