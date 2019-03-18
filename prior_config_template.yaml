@@ -4,7 +4,7 @@
 # possible distrubitions. Some common examples are given below.
 
 # Explanation of Parameters
-center: normal(350, 100)
+center: normal(0, 100)
 width: normal(80, 50)
 pmin: uniform(0, 0.2)
 pmax: uniform(0.8, 1)

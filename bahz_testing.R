@@ -16,8 +16,8 @@ library(tidyverse)
 library(dplyr)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_data_from_cline(transect_distances = seq(0,600,20), n_ind = 40, Fis = 0,
-                    decrease = F, center = 320, width = 60, pmin = 0, pmax = 1)
+data <- sim_data_from_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
+                    decrease = F, center = 0, width = 60, pmin = 0.03, pmax = .95)
 # Import to stan using function I already made:
 st_dat <- load_cline_data(data, type = "bi")
 # Make a list of start values:
@@ -25,37 +25,32 @@ init <- make_init_list("prior_config_template.yaml", tails = "none", chains = as
 
 
 
-z <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3)
+priors <- list(p_m_center = 0,
+               p_sd_center = 150,
+               p_m_width = 50,
+               p_sd_width = 100,
+               p_l_min = 0,
+               p_u_min = 0.2,
+               p_l_max = 0.8,
+               p_u_max = 1)
 
-z2 <- test_fit_cline2(stan_data = st_dat, init_list = init, chains = 3)
+z <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3, model = "minimal")
+z2 <- test_fit_cline(stan_data = st_dat, init_list = init, chains = 3, model = "binom_free_none")
+z_p <- test_fit_cline(stan_data = c(st_dat, priors), init_list = init, chains = 3, model = "binom_free_none_all_priors")
+
+
+# ?nlist to get lists of prior stuff
+cline_summary(z)
+cline_summary(z2)
+cline_summary(z_p)
+
+# Gets the same answer, though, within simulation error.
+pairs(z_p)
 
 z@inits
 
 cline_summary(z)
 cline_summary(z2)
-
-
-z2 <- stan(file = "src/stan_files/minimal.stan", data = st_dat, chains = 3, init = init)
-z2@inits
-# Make a prior config file
-make_prior_config(overwrite = F)
-
-# Fit the model
-bi_none <- fit_cline(data = data,
-          prior_file = "prior_config_template.yaml",
-          type = c("bi"),
-          tails = c("none"),
-          direction = c("inc"),
-          chains = 3)
-
-multi_none <- fit_cline(data = data,
-                     prior_file = "prior_config_template.yaml",
-                     type = "multi",
-                     tails = "none",
-                     direction = "inc")
-
-precis(bi_none, prob = 0.05)
-cline_summary(bi_none, prob = 0.05, method = "HPDI", show.all = F)
 
 
 # Testing centering of center --------------------------------------------

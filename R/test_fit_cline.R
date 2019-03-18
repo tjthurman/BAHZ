@@ -9,7 +9,8 @@
 #' @export
 #'
 
-test_fit_cline <- function(stan_data, init_list, chains) {
-  rstan::sampling(object = stanmodels$binom_free_none, data = stan_data, chains = chains, init = init_list)
+test_fit_cline <- function(stan_data, init_list, chains, model) {
+  index <- which(names(stanmodels) == model)
+  rstan::sampling(object = stanmodels[[index]], data = stan_data, chains = chains, init = init_list)
 }
 

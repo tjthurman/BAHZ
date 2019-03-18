@@ -4,7 +4,7 @@
 \alias{test_fit_cline}
 \title{Fit a cline model to your data using Stan}
 \usage{
-test_fit_cline(stan_data, init_list, chains)
+test_fit_cline(stan_data, init_list, chains, model)
 }
 \description{
 DESCRIPTION TO BE ADDED
