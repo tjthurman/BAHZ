@@ -17,7 +17,7 @@ library(dplyr)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
 data <- sim_data_from_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
-                    decrease = T, center = 0, width = 50, pmin = 0.03, pmax = .95)
+                    decrease = F, center = 0, width = 50, pmin = 0.03, pmax = .95)
 
 plot(data$transectDist, data$emp.p)
 # Import to stan using function I already made:
@@ -43,7 +43,7 @@ priors <- list(p_m_center = 0,
                p_l_max = 0.8,
                p_u_max = 1,
                p_scale_width = 10,
-               desc = 1)
+               decrease = 0)
 priors2 <- list(p_m_center = 0,
                p_sd_center = 150,
                p_scale_width = 10,
@@ -52,15 +52,16 @@ priors2 <- list(p_m_center = 0,
                p_l_max = 0.8,
                p_u_max = 1,
                p_m_width =0,
-               p_sd_width = 0)
+               p_sd_width = 0,
+               decrease = 0)
 
-z_p <- test_fit_cline(stan_data = c(st_dat, priors), init_list = init, chains = 3, model = "binom_free_none_all_priors_updown")
+z_p <- test_fit_cline(stan_data = c(st_dat, priors), init_list = init, chains = 3, model = "binom_free_none_width")
 
-z_p2 <- test_fit_cline(stan_data = c(st_dat, priors2), init_list = init2, chains = 3, model = "binom_free_none_all_priors_w")
+z_p2 <- test_fit_cline(stan_data = c(st_dat, priors2), init_list = init2, chains = 3, model = "binom_free_none_w")
 
 
 # ?nlist to get lists of prior stuff
-cline_summary(z_p, show.all = T, prob = 0.89, method = "ET")
+cline_summary(z_p, show.all = T)
 cline_summary(z_p2)
 
 mean(4/as.data.frame(z_p2)$w)
