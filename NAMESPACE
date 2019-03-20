@@ -2,12 +2,12 @@
 
 export("%>%")
 export(cline_summary)
-export(create_cline_model)
 export(fit_cline)
 export(general_cline_eqn)
 export(load_cline_data)
 export(make_init_list)
 export(make_prior_config)
+export(make_prior_list)
 export(sim_data_from_cline)
 export(test_fit_cline)
 import(Rcpp)
