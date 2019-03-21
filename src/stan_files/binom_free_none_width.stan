@@ -37,7 +37,13 @@ model{
   pmax ~ uniform(p_l_max , p_u_max); // prior for pmax
   pmin ~ uniform(p_l_min, p_u_min); // prior for pmin
   width ~ normal(p_m_width, p_sd_width); // prior for width.
-  center ~ normal(p_m_center, p_sd_center); //prior for center
+  if (p_dist_center == 0) { # normal
+    center ~ normal(p_center_1, p_center_2); //prior for center
+  }
+  if (p_dist_center == 1) { # uniform
+    center ~ normal(p_center_1, p_center_2); //prior for center
+  }
+
   // and the likelihood: observed allele counts follow a binomial liklihood,
   // based on the number of alleles sampled and the estimated allele frequency.
   nFocalAllele ~ binomial(nTotalAlleles, p);

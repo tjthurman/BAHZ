@@ -20,5 +20,4 @@ DETAILS TO BE ADDED.
 }
 \examples{
 #TO BE ADDED
-
 }
