@@ -238,3 +238,30 @@ check_prior_specification <- function(distribution, string) {
 }
 
 
+# Assign Stan distribution integer ----------------------------------------
+#' Return the integer value for STAN that corresponds to each supported distribution
+#'
+#' Currently supported distributions: normal (0), uniform (1), exponential (2).
+#'
+#' Used internally, in \code{\link{make_prior_list}}.
+#'
+#' @keywords internal
+#'
+#' @param distribution distribution
+#'
+#' @return Integer value corresponding to chosen distribution
+#'
+assign_stan_dist_int <- function(distribution) {
+  if (distribution == "normal") {
+    result <- as.integer(0)
+  }
+  if (distribution == "uniform") {
+    result <- as.integer(1)
+  }
+  if (distribution == "exponential") {
+    result <- as.integer(2)
+  }
+  result
+}
+
+

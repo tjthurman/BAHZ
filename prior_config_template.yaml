@@ -4,8 +4,8 @@
 # possible distrubitions. Some common examples are given below.
 
 # Explanation of Parameters
-center: normal(0, 100)
-width: normal(200, 100)
+center: normal(0, 50)
+width: normal(90, 100)
 pmin: uniform(0, 0.2)
 pmax: uniform(0.8, 1)
 deltaL: exponential(0.05)
