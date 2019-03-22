@@ -5,7 +5,7 @@
 #' DETAILS TO BE ADDED.
 #'
 #'
-#' @param prior_file TO BE WRITTEN
+#' @param prior_file Path to the yaml file containing the prior specifications.
 #'
 #' @return A list containing the values for the priors to be passed to Stan
 #'

@@ -273,7 +273,7 @@ check_prior_specification <- function(distribution, string) {
 #'
 #' @keywords internal
 #'
-#' @param distribution distribution
+#' @param distribution specified distribution
 #'
 #' @return Integer value corresponding to chosen distribution
 #'

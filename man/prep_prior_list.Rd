@@ -7,7 +7,7 @@
 prep_prior_list(prior_file)
 }
 \arguments{
-\item{prior_file}{TO BE WRITTEN}
+\item{prior_file}{Path to the yaml file containing the prior specifications.}
 }
 \value{
 A list containing the values for the priors to be passed to Stan

@@ -12,7 +12,7 @@ fit_geno_cline(data, prior_file, type = c("bi", "multi"),
 \code{\link{prep_geno_data}} for possible formats.}
 
 \item{prior_file}{The path to the \code{.yaml} file which contains the
-specifications of the priors}
+specifications of the priors.}
 
 \item{type}{The type of model to generate. Either "bi", for a binomial model
 of allele frequencies, or "multi" for a multinomial model of genotype
@@ -25,13 +25,13 @@ frequencies.}
 integer. Default is 3.}
 
 \item{...}{Arguments to be passed to stan, e.g., number of iterations, warmup
-period. See \code{\link[rstan]{stan}} for more information.}
+period, etc. See \code{\link[rstan]{sampling}} for more information.}
 }
 \value{
 A \code{\linkS4class{stanfit}} object containing your model results.
 }
 \description{
-DESCRIPTION TO BE ADDED
+Use Rstan to fit Bayesian hybrid zone cline models to genetic data.
 }
 \details{
 This is a wrapper function, which calls various data- and model-preparation

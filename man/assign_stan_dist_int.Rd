@@ -7,7 +7,7 @@
 assign_stan_dist_int(distribution)
 }
 \arguments{
-\item{distribution}{distribution}
+\item{distribution}{specified distribution}
 }
 \value{
 Integer value corresponding to chosen distribution

@@ -68,7 +68,7 @@ allele frequency and provided Fis are then used to calculate the expected
 genotype frequencies for each site, according to the equations:
 
 \deqn{AA = p^2 + p(1-p)Fis}
-\deqn{Aa = 2p(1-p)Fis}
+\deqn{Aa = 2p(1-p)(1-Fis)}
 \deqn{aa = (1-p)^2 + p(1-p)Fis}
 
 Sampled genotypes are then drawn from a multinomial distribution, with the

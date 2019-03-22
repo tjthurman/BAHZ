@@ -12,7 +12,7 @@
 #' genotype frequencies for each site, according to the equations:
 #'
 #' \deqn{AA = p^2 + p(1-p)Fis}
-#' \deqn{Aa = 2p(1-p)Fis}
+#' \deqn{Aa = 2p(1-p)(1-Fis)}
 #' \deqn{aa = (1-p)^2 + p(1-p)Fis}
 #'
 #' Sampled genotypes are then drawn from a multinomial distribution, with the
@@ -143,20 +143,7 @@ sim_geno_cline <- function(transect_distances, n_ind,
     fk.dt$aa[row] <- as.integer(genotypes[3])
   }
 
-  # A possible way out of the R CMD CHECK problems with no visible bindings for these variables
-  # Could I also just use quotes somehow?
-  # mean_nm <- "mean"
-  # count_nm <- "count"
-  #
-  # mtcars %>%
-  #   group_by(am) %>%
-  #   summarise(
-  #     !! mean_nm := mean(cyl),
-  #     !! count_nm := n()
-  #   )
 
-  # Other possible ways to fix: adding .data$ in front of all the column names
-  # but then .data is an undefined global variable... At least it is reduced down.
 # Calculate empirical p and Fis value from the simulated data
 fk.dt <- fk.dt %>%
   dplyr::mutate(emp.p = (2*.data$AA + .data$Aa)/(2*.data$N)) %>%

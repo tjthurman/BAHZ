@@ -1,6 +1,6 @@
 #' Fit a genetic cline model to your data
 #'
-#' DESCRIPTION TO BE ADDED
+#' Use Rstan to fit Bayesian hybrid zone cline models to genetic data.
 #'
 #' This is a wrapper function, which calls various data- and model-preparation
 #' functions from \code{bahz} before passing the results to the
@@ -24,7 +24,7 @@
 #' @param data A dataframe containing your cline data. See
 #'   \code{\link{prep_geno_data}} for possible formats.
 #' @param prior_file The path to the \code{.yaml} file which contains the
-#'   specifications of the priors
+#'   specifications of the priors.
 #' @param type The type of model to generate. Either "bi", for a binomial model
 #'   of allele frequencies, or "multi" for a multinomial model of genotype
 #'   frequencies.
@@ -33,7 +33,7 @@
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
 #'   integer. Default is 3.
 #' @param ... Arguments to be passed to stan, e.g., number of iterations, warmup
-#'   period. See \code{\link[rstan]{stan}} for more information.
+#'   period, etc. See \code{\link[rstan]{sampling}} for more information.
 #'
 #' @return A \code{\linkS4class{stanfit}} object containing your model results.
 #'
