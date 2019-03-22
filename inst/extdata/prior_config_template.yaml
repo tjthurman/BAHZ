@@ -12,7 +12,7 @@
 
 # Explanation of Parameters
 center: normal(350, 150)
-width: normal(50, 100)
+width: normal(20, 100)
 pmin: uniform(0, 0.2)
 pmax: uniform(0.8, 1)
 deltaL: exponential(0.05)
