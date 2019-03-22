@@ -45,7 +45,7 @@ correct_fis <- function(.df) {
       .df$Fis[element] <- 0
     }
   }
- .df
+  .df
 }
 
 # Parse prior file --------------------------------------------------------
@@ -68,19 +68,31 @@ correct_fis <- function(.df) {
 #'
 #'
 
-parse_prior_file <- function(prior_file){
-  path_to_prior <- file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
+parse_prior_file <- function(prior_file) {
+  path_to_prior <-
+    file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
   priors <- yaml::yaml.load_file(path_to_prior, as.named.list = T)
   # ADD a check to make sure it is 11 long, and all the right names are there
 
   assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
-  name.check <- names(priors) == c("center", "width", "pmin", "pmax",
-                                     "deltaL", "deltaR", "deltaM",
-                                     "tauL", "tauR", "tauM", "f")
+  name.check <-
+    names(priors) == c("center", "width",
+                       "pmin",  "pmax",
+                       "deltaL", "deltaR",
+                       "deltaM", "tauL",
+                       "tauR",  "tauM",
+                       "f")
 
   if (sum(name.check) != 11) {
     offenders <- as.vector(names(priors)[which(name.check == F)])
-    stop(paste("\n", toString(offenders), "\nis/are either invalid parameter names or out of order.\nDouble-check your prior file against the provided template", sep = ""))
+    stop(
+      paste(
+        "\n",
+        toString(offenders),
+        "\nis/are either invalid parameter names or out of order.\nDouble-check your prior file against the provided template",
+        sep = ""
+      )
+    )
   }
   priors
 }
@@ -128,7 +140,8 @@ NULL
 
 extract_first <- function(string) {
   assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
+  res <-
+    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
     stringr::str_remove_all("[(,]") %>%
     stringr::str_squish() %>%
     as.numeric
@@ -144,7 +157,8 @@ extract_first <- function(string) {
 
 extract_last <- function(string) {
   assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <- stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
+  res <-
+    stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
     stringr::str_remove_all("[,)]") %>%
     stringr::str_squish() %>%
     as.numeric
@@ -162,7 +176,8 @@ extract_last <- function(string) {
 #'
 extract_only <- function(string) {
   assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <- stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
+  res <-
+    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
     stringr::str_remove_all("[,)(]") %>%
     stringr::str_squish() %>%
     as.numeric
@@ -274,5 +289,4 @@ assign_stan_dist_int <- function(distribution) {
   }
   result
 }
-
 

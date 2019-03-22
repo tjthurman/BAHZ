@@ -77,12 +77,12 @@
 #' # Inbreeding is constant at Fis = 0.1.
 #'
 #' set.seed(123)
-#' sim_data_from_cline(transect_distance = seq(0,200,20), n_ind = 20,
+#' sim_geno_cline(transect_distance = seq(0,200,20), n_ind = 20,
 #'                     Fis = 0.1, decrease = TRUE,
 #'                     center = 100, width = 30)
 #'
 
-sim_data_from_cline <- function(transect_distances, n_ind,
+sim_geno_cline <- function(transect_distances, n_ind,
                                 Fis, decrease,
                                 center, width,
                                 pmin = 0, pmax = 1,
