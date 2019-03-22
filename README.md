@@ -1,9 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
-[![Lfecycle experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-
-\[![CRAN status](http://www.r-pkg.org/badges/version/bahz) <!-- badges: end -->
+[![Lfecycle experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) ![CRAN status](http://www.r-pkg.org/badges/version/bahz) <!-- badges: end -->
 
 BAHZ
 ====
