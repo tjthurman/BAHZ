@@ -1,43 +1,37 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
-write.
 ```
 
-# cap
 
-The goal of cap is to ...
+<!-- badges: start -->
+[![Lfecycle experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
 
-## Example
+# BAHZ
 
-for stan models, can print them in readable form with
+__BAHZ__ (**B**ayesian **A**nalysis of **H**ybrid **Z**ones) is an R package for fitting and analyzing one-dimensional, geographic cline models in hybrd zones. 
 
-cat(model$model)
+__BAHZ__ is currently under active development. 
 
-Can write them to a file to be edited yourslef with:
-# definitely write.file from reader, maybe write from base?
-write
+## Installation
 
-Note:
-Current dependencies:
-yaml
-rstan (ONLY IF I WRITE A WRAPPER FUNCTION)
-assert_that
-dplyr (currently in sim_data_from_cline, could possibly re-write to avoid depencency)
-magrittr (currently in sim_data_from_cline, could possibly re-write to avoid depencency), or could:
-@importFrom magrittr %>%. 
+__BAHZ__ is not currently available for download or installation. 
 
+## Citation
 
+No citation yet. 
 
+## License
 
+**BAHZ** is distributed for free under the [GNU Public License v3](https://www.gnu.org/licenses/gpl-3.0.en.html). 

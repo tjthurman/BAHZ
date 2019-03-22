@@ -49,8 +49,6 @@
 #' }
 #'
 
-
-
 load_cline_data <- function(dataframe, type) {
   assertthat::assert_that(is.data.frame(dataframe) == T, msg = "dataframe must be a data frame or tibble")
   if (type == "bi") {
@@ -62,10 +60,26 @@ load_cline_data <- function(dataframe, type) {
       assertthat::assert_that(is.integer(dataframe$nTotalAlleles) == T,
                               msg = "nFocalAllele column must be integer")
 
+      # Guess whether cline is decreasing:
+      # Find row contain the first and last site on the transect
+      f <- which(dataframe$transectDist == min(dataframe$transectDist))
+      l <- which(dataframe$transectDist == max(dataframe$transectDist))
+      # estimate allele freqs and determine if decreasing
+      freq.f <- dataframe$nFocalAllele[f]/dataframe$nTotalAlleles[f]
+      freq.l <- dataframe$nFocalAllele[l]/dataframe$nTotalAlleles[l]
+
+      if (freq.f == freq.l) {
+        stop("Allele frequencies equal at start and end of transect\nThey must be different for BAHZ to determine if cline is increasing or decreasing")
+      }
+      decrease <- as.integer(freq.f > freq.l)
+
+      # Convert to list for Stan
       data.list <- with(dataframe, list(N = length(transectDist),
                                         nFocalAllele = nFocalAllele,
                                         nTotalAlleles = nTotalAlleles,
-                                        transectDist = transectDist))
+                                        transectDist = transectDist,
+                                        decrease = decrease))
+
     } else if (sum(c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == 4) {
       assertthat::assert_that(is.numeric(dataframe$transectDist) == T,
                               msg = "transectDist column must be numeric")
@@ -75,10 +89,27 @@ load_cline_data <- function(dataframe, type) {
                               msg = "Aa column must be integer")
       assertthat::assert_that(is.integer(dataframe$aa) == T,
                               msg = "aa column must be integer")
-      data.list <- with(dataframe, list(N = length(transectDist),
-                                        nFocalAllele = 2*AA + Aa,
-                                        nTotalAlleles = 2*N,
-                                        transectDist = transectDist))
+
+      # Guess whether cline is decreasing:
+      # Find row contain the first and last site on the transect
+      f <- which(dataframe$transectDist == min(dataframe$transectDist))
+      l <- which(dataframe$transectDist == max(dataframe$transectDist))
+      # estimate allele freqs
+      conv.dataframe <- dataframe %>%
+        dplyr::mutate(nFocalAllele = 2*AA + Aa,
+                      nTotalAlleles = (AA+Aa+aa)*2) %>%
+        dplyr::mutate(est.p.internal = nFocalAllele/nTotalAlleles)
+      # If equal, throw a warning:
+      if (conv.dataframe$est.p.internal[f] == conv.dataframe$est.p.internal[l]) {
+        stop("Allele frequencies equal at start and end of transect\nThey must be different for BAHZ to determine if cline is increasing or decreasing")
+      }
+      decrease <- as.integer(conv.dataframe$est.p.internal[f] > conv.dataframe$est.p.internal[l])
+
+      data.list <- with(conv.dataframe, list(N = length(transectDist),
+                                        nFocalAllele = nFocalAllele,
+                                        nTotalAlleles = nTotalAlleles,
+                                        transectDist = transectDist,
+                                        decrease = decrease))
     } else {
       stop("Necessary data columns for binomial model not found")
     }
@@ -92,9 +123,29 @@ load_cline_data <- function(dataframe, type) {
                               msg = "Aa column must be integer")
       assertthat::assert_that(is.integer(dataframe$aa) == T,
                               msg = "aa column must be integer")
+
+      # Guess whether cline is decreasing:
+      # Find row contain the first and last site on the transect
+      f <- which(dataframe$transectDist == min(dataframe$transectDist))
+      l <- which(dataframe$transectDist == max(dataframe$transectDist))
+      # estimate allele freqs and determine if decreasing
+      conv.dataframe <- dataframe %>%
+        dplyr::mutate(nFocalAllele = 2*AA + Aa,
+                      nTotalAlleles = (AA+Aa+aa)*2) %>%
+        dplyr::mutate(est.p.internal = nFocalAllele/nTotalAlleles)
+
+      # If equal, throw a warning:
+      if (conv.dataframe$est.p.internal[f] == conv.dataframe$est.p.internal[l]) {
+        stop("Allele frequencies equal at start and end of transect\n  They must be different for BAHZ to determine if cline is increasing or decreasing")
+      }
+
+      decrease <- as.integer(conv.dataframe$est.p.internal[f] > conv.dataframe$est.p.internal[l])
+
+
       data.list <- with(dataframe, list(N = length(transectDist),
                                         genos = as.matrix(cbind(AA, Aa, aa)),
-                                        transectDist = transectDist))
+                                        transectDist = transectDist,
+                                        decrease = decrease))
     } else {
       stop("Necessary data columns for multinomial model not found")
     }

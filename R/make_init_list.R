@@ -37,6 +37,9 @@ make_init_list <- function(prior_file, tails = c("none", "left", "right", "mirro
   for(i in 1:chains) {
     init.list[[i]] <- eval(single.chain)
   }
+  # INSERT SOME CHECKs HERE OF THE VALUES.
+  # Specifically, make sure width is >0.
+  # Or maybe just add abs() for width in the init_single_chain fxn?
   init.list
 }
 
