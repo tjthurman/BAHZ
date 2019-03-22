@@ -15,6 +15,6 @@ check_prior_supported(parameter, distribution)
 TRUE/FALSE: is the prior supported for that parameter?
 }
 \description{
-Used internally, in \code{\link{make_prior_list}}.
+Used internally, in \code{\link{prep_prior_list}}.
 }
 \keyword{internal}

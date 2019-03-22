@@ -10,7 +10,7 @@
 #'
 #' Currently supported distributions are: normal, uniform, exponential.
 #'
-#' Used internally, in \link{make_init_list}.
+#' Used internally, in \link{prep_init_list}.
 #'
 #' @keywords internal
 #'

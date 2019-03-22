@@ -16,13 +16,13 @@ library(tidyverse)
 library(dplyr)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_data_from_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
+data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
                     decrease = F, center = 10, width = 50, pmin = 0.03, pmax = .95)
 
 data2 <- rbind(data[1,])
 
 # Fit the model
-z_p <- fit_cline(data = data2, prior_file = "prior_config_template.yaml",
+z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                  type = "bi", tails = "none", chains = 3)
 
 # ?nlist to get lists of prior stuff

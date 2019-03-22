@@ -16,6 +16,6 @@ Integer value corresponding to chosen distribution
 Currently supported distributions: normal (0), uniform (1), exponential (2).
 }
 \details{
-Used internally, in \code{\link{make_prior_list}}.
+Used internally, in \code{\link{prep_init_list}}.
 }
 \keyword{internal}

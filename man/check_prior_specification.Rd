@@ -15,6 +15,6 @@ check_prior_specification(distribution, string)
 TRUE/FALSE: is the prior specified correctly?
 }
 \description{
-Used internally, in \code{\link{make_prior_list}}.
+Used internally, in \code{\link{prep_prior_list}}.
 }
 \keyword{internal}

@@ -39,6 +39,7 @@
 #'
 #' @export
 #'
+#'
 #' @seealso \code{\link{prep_geno_data}}, \code{\link{prep_prior_list}},
 #'   \code{\link{prep_init_list}}, \code{\link[rstan]{sampling}}
 #'

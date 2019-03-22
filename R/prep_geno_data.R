@@ -43,6 +43,8 @@
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' prep_geno_data(yourdata, type = "bi")
@@ -96,9 +98,9 @@ prep_geno_data <- function(dataframe, type) {
       l <- which(dataframe$transectDist == max(dataframe$transectDist))
       # estimate allele freqs
       conv.dataframe <- dataframe %>%
-        dplyr::mutate(nFocalAllele = 2*AA + Aa,
-                      nTotalAlleles = (AA+Aa+aa)*2) %>%
-        dplyr::mutate(est.p.internal = nFocalAllele/nTotalAlleles)
+        dplyr::mutate(nFocalAllele = 2*.data$AA + .data$Aa,
+                      nTotalAlleles = (.data$AA+.data$Aa+.data$aa)*2) %>%
+        dplyr::mutate(est.p.internal = .data$nFocalAllele/.data$nTotalAlleles)
       # If equal, throw a warning:
       if (conv.dataframe$est.p.internal[f] == conv.dataframe$est.p.internal[l]) {
         stop("Allele frequencies equal at start and end of transect\nThey must be different for BAHZ to determine if cline is increasing or decreasing")
@@ -130,9 +132,9 @@ prep_geno_data <- function(dataframe, type) {
       l <- which(dataframe$transectDist == max(dataframe$transectDist))
       # estimate allele freqs and determine if decreasing
       conv.dataframe <- dataframe %>%
-        dplyr::mutate(nFocalAllele = 2*AA + Aa,
-                      nTotalAlleles = (AA+Aa+aa)*2) %>%
-        dplyr::mutate(est.p.internal = nFocalAllele/nTotalAlleles)
+        dplyr::mutate(nFocalAllele = 2*.data$AA + .data$Aa,
+                      nTotalAlleles = (.data$AA+.data$Aa+.data$aa)*2) %>%
+        dplyr::mutate(est.p.internal = .data$nFocalAllele/.data$nTotalAlleles)
 
       # If equal, throw a warning:
       if (conv.dataframe$est.p.internal[f] == conv.dataframe$est.p.internal[l]) {

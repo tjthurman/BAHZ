@@ -24,7 +24,7 @@ NULL
 #' to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
 #' pipeline.
 #'
-#' Used internally, in \code{\link{sim_data_from_cline}}.
+#' Used internally, in \code{\link{sim_geno_cline}}.
 #'
 #' @keywords internal
 #'
@@ -55,8 +55,8 @@ correct_fis <- function(.df) {
 #' Reads in the yaml file containing the prior, checking for the proper number
 #' and names of priors.
 #'
-#' Used internally, in \code{\link{create_cline_model}} and
-#' \code{\link{make_init_list}}.
+#' Used internally, in \code{\link{prep_prior_list}} and
+#' \code{\link{prep_init_list}}.
 #'
 #'
 #' @keywords internal
@@ -192,7 +192,7 @@ extract_only <- function(string) {
 #' Check that the distribution specified for a given parameter is supported
 #'
 #'
-#' Used internally, in \code{\link{make_prior_list}}.
+#' Used internally, in \code{\link{prep_prior_list}}.
 #'
 #' @keywords internal
 #'
@@ -241,7 +241,7 @@ check_prior_supported <- function(parameter, distribution) {
 #' Check that the distribution specified has the right number of parameters
 #'
 #'
-#' Used internally, in \code{\link{make_prior_list}}.
+#' Used internally, in \code{\link{prep_prior_list}}.
 #'
 #' @keywords internal
 #'
@@ -269,7 +269,7 @@ check_prior_specification <- function(distribution, string) {
 #'
 #' Currently supported distributions: normal (0), uniform (1), exponential (2).
 #'
-#' Used internally, in \code{\link{make_prior_list}}.
+#' Used internally, in \code{\link{prep_init_list}}.
 #'
 #' @keywords internal
 #'
