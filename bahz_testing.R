@@ -3,7 +3,7 @@
 rm(list = ls())
 library(devtools)
 detach("package:bahz", unload=TRUE)
-install_github("tjthurman/BAHZ", ref = "feature/rstantools_attempt", auth_token = "c037ee28d7031c8d2cfb91dbefc686409bf05e68")
+install_github("tjthurman/BAHZ", ref = "master", auth_token = "c037ee28d7031c8d2cfb91dbefc686409bf05e68")
 install.packages("~/Documents/Work/PhD:McGill/Projects/BAHZ/", repos = NULL, type = "source")
 library(bahz)
 library(rstan)

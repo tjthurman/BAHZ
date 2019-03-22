@@ -59,8 +59,8 @@ make_prior_list <- function(prior_file) {
                            "p_dist_tauM",
                            "p_dist_f")
   prior.type <- df %>%
-    select(stan_prior_names, dist_stan_integers) %>%
-    spread(stan_prior_names, dist_stan_integers) %>%
+    dplyr::select(stan_prior_names, dist_stan_integers) %>%
+    tidyr::spread(stan_prior_names, dist_stan_integers) %>%
     as.list(.)
 
   # Now, need to extract the values.
@@ -79,8 +79,8 @@ make_prior_list <- function(prior_file) {
              distribution = specified.dist,
              val1 = val1,
              val2 = val2) %>%
-    gather(val1, val2, key = "which", value = "value") %>%
-    arrange(match(param, names(prior_config)))
+    tidyr::gather(val1, val2, key = "which", value = "value") %>%
+    dplyr::arrange(match(param, names(prior_config)))
   df2$stan_variable_names <- c("p_center_1", "p_center_2",
                            "p_width_1", "p_width_2",
                            "p_min_1", "p_min_2",
@@ -94,8 +94,8 @@ make_prior_list <- function(prior_file) {
                            "p_f_1", "p_f_2")
 
   prior.value <- df2 %>%
-    select(stan_variable_names, value) %>%
-    spread(stan_variable_names, value) %>%
+    dplyr::select(stan_variable_names, value) %>%
+    tidyr::spread(stan_variable_names, value) %>%
     as.list(.)
 
   c(prior.type, prior.value)
