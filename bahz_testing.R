@@ -9,39 +9,36 @@ library(bahz)
 library(rstan)
 library(rethinking)
 library(stringr)
-rstan::rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 source("src/functions.R")
 library(tidyverse)
 library(dplyr)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_data_from_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
+data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
                     decrease = F, center = 10, width = 50, pmin = 0.03, pmax = .95)
 
 data2 <- rbind(data[1,])
 
-plot(data$transectDist, data$emp.p)
-# Import to stan using function I already made:
-st_dat <- load_cline_data(data, type = "bi")
-st_dat <- load_cline_data(data2, type = "multi")
+make_prior_config(path = "~/Desktop/", name = "test.yaml")
 
-# Make a list of start values:
-init <- make_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(3))
-prior_list <- make_prior_list("prior_config_template.yaml")
 
-z_p <- test_fit_cline(stan_data = c(load_cline_data(data, type = "bi"), make_prior_list("prior_config_template.yaml")),
-                                    init_list =  make_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(3)),
-                                    chains = 3, model = "binom_free_none")
-
-z_p2 <- test_fit_cline(stan_data = c(st_dat, priors2), init_list = init2, chains = 3, model = "binom_free_none_w")
-
+# Fit the model
+z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                 type = "bi", tails = "none", chains = 3)
 
 # ?nlist to get lists of prior stuff
 cline_summary(z_p)
-cline_summary(z_p2)
 
-mean(4/as.data.frame(z_p2)$w)
+
+# testing the new width check in prep_init_list
+i <- 1000
+z <- prep_init_list("prior_config_template.yaml", tails = "right", chains = as.integer(i))
+widths <- rep(as.numeric(NA), times = i)
+for (width in 1:i) {
+  widths[width] <- z[[width]][2]
+}
+unique(widths < 0) # Never makes a value below 0.
 
 
 # Will stan run with no priors? -------------------------------------------

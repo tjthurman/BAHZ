@@ -4,3 +4,5 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$
+^bahz_testing.R$
+^prior_config_template.yaml$

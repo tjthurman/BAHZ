@@ -24,8 +24,8 @@ default is \code{prior_config_template.yaml}. File name must end in \code{.yaml}
 Makes a configuration file which you can use to specify the priors for your
 hybrid zone analysis. By default, creates the file in the working directory
 with the name \code{prior_config_template.yaml}. You can supply a filepath
-and a different name, if you want to save the file somewhere else or with a
-different name. Will not overwrite files by default, you must set overwrite =
+and a different name if you want to save the file somewhere else or with a
+different name. It will not overwrite files by default, you must set overwrite =
 T to do that.
 }
 \examples{

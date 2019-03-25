@@ -7,17 +7,23 @@
 parse_prior_file(prior_file)
 }
 \arguments{
-\item{prior_file}{filepath to the prior file}
+\item{prior_file}{Filepath to the prior file.}
 }
 \value{
-a named list containing the specifed priors
+A named list containing the specifed priors.
 }
 \description{
 Reads in the yaml file containing the prior, checking for the proper number
 and names of priors.
 }
 \details{
-Used internally, in \code{\link{create_cline_model}} and
-\code{\link{make_init_list}}.
+Used internally, in \code{\link{prep_prior_list}} and
+\code{\link{prep_init_list}}.
+}
+\examples{
+\dontrun{
+parse_prior_file(path/to/priors.yaml)
+}
+
 }
 \keyword{internal}

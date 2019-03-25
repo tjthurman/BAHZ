@@ -3,8 +3,8 @@
 #' Makes a configuration file which you can use to specify the priors for your
 #' hybrid zone analysis. By default, creates the file in the working directory
 #' with the name \code{prior_config_template.yaml}. You can supply a filepath
-#' and a different name, if you want to save the file somewhere else or with a
-#' different name. Will not overwrite files by default, you must set overwrite =
+#' and a different name if you want to save the file somewhere else or with a
+#' different name. It will not overwrite files by default, you must set overwrite =
 #' T to do that.
 #'
 #'
@@ -34,10 +34,10 @@
 make_prior_config <- function(path = getwd(),
                                   name = "prior_config_template.yaml",
                                   overwrite = F) {
+  # Argument checking
   assertthat::assert_that(length(name) == 1, msg = "name must be of length 1")
   assertthat::assert_that(is.character(name) == T, msg = "name must be a character string")
   assertthat::assert_that(stringr::str_detect(name, pattern = "\\.yaml$") == 1, msg = "name must end in .yaml")
-
   assertthat::assert_that(is.logical(overwrite) == T, msg = "overwrite must be either TRUE (T) or FALSE (F)")
 
 
