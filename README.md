@@ -21,7 +21,7 @@ Once Rstan is installed, you can install **bahz** from Github. If you don't alre
 install.packages("devtools")
 ```
 
-Then, you can intall **bahz**:
+Then, you can install **bahz**:
 
 ``` r
 library(devtools)
