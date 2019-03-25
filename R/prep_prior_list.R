@@ -1,18 +1,22 @@
 #' Prepare the list of prior values to be fed into Stan
 #'
-#' DESCRIPTION TO BE ADDED
+#' Parses the prior specifications provided in the \code{.yaml}
+#' file, including checks that they are properly specified and
+#' currently supported. Then, converts the prior specifications into
+#' a named list to be passed to Stan.
 #'
-#' DETAILS TO BE ADDED.
+#' @param prior_file Path to the \code{.yaml} file containing the prior specifications.
 #'
-#'
-#' @param prior_file TO BE WRITTEN
-#'
-#' @return A list containing the values for the priors to be passed to Stan
+#' @return A list containing the values for the priors to be passed to Stan.
 #'
 #' @export
 #'
+#' @seealso \code{\link{fit_geno_cline}}
+#'
 #' @examples
-#' #TO BE ADDED
+#' \dontrun{
+#' prep_prior_list("path/to/priors.yaml")
+#' }
 
 
 prep_prior_list <- function(prior_file) {

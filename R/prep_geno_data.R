@@ -1,7 +1,7 @@
 #' Prepare your genetic cline data for loading into Stan
 #'
 #' Converts a dataframe containing your genetic data into the list format required for
-#' input to Stan.
+#' input to Stan. See details below for a description of the possible input formats.
 #'
 #'
 #' The input dataframe can be a data frame or a tibble. For the multinomial
@@ -36,8 +36,7 @@
 #' @param type Model type. Either "bi", for the binomial model, or "multi", for
 #'   the multinomial model.
 #'
-#' @return Your data, in the list format appropriate for the cline model you
-#'   chose.
+#' @return Your data in Stan-ready list format.
 #'
 #' @seealso \code{\link{fit_geno_cline}}
 #'
@@ -51,7 +50,7 @@
 #' }
 #'
 
-prep_geno_data <- function(dataframe, type) {
+prep_geno_data <- function(dataframe, type = c("bi", "multi")) {
   assertthat::assert_that(is.data.frame(dataframe) == T, msg = "dataframe must be a data frame or tibble")
   if (type == "bi") {
     if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {

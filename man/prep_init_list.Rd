@@ -2,15 +2,15 @@
 % Please edit documentation in R/prep_init_list.R
 \name{prep_init_list}
 \alias{prep_init_list}
-\title{Prepare the list of values for initializing the Stan model.}
+\title{Prepare the list of values for initializing the Stan model}
 \usage{
 prep_init_list(prior_file, tails = c("none", "left", "right", "mirror",
   "ind"), chains)
 }
 \arguments{
-\item{prior_file}{Path to the yaml file containing the prior specifications.}
+\item{prior_file}{Path to the \code{.yaml} file containing the prior specifications.}
 
-\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind."}
+\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?}
 
 \item{chains}{The number of chains to be used in Stan. Integer.}
 }
@@ -30,6 +30,11 @@ This function calls \code{\link{init_single_chain}} for each chain.
 \code{\link{init_single_chain}} does all the work of making the expression
 which will yield the proper starting values for a chain of this model.
 }
+\examples{
+\dontrun{
+prep_init_list("path/to/priors.yaml", tails = "none", chains = as.integer(3))
+}
+}
 \seealso{
-\code{\link{init_single_chain}}
+\code{\link{init_single_chain}}, \code{\link{fit_geno_cline}}
 }

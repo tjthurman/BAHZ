@@ -14,13 +14,14 @@ extract_last(string)
 extract_only(string)
 }
 \arguments{
-\item{string}{The string to extract a value from}
+\item{string}{The string to extract a value from.}
 }
 \value{
-A numeric value
+A numeric value.
 }
 \description{
-Internal functions used in \code{\link{init_single_chain}} to extract
+Internal functions used in \code{\link{prep_init_list}}
+and \code{\link{prep_prior_list}} to extract
 numerical values from priors. All use regular expressions as implemented
 in the \code{\link{stringr}} package, and all properly handle whitespace and
 decimals.
@@ -33,5 +34,12 @@ before a close parenthesis.
 
 \code{extract_only} gets the only value from a distribution with one
 parameter, that is, it gets the numbers between two parentheses.
+}
+\examples{
+\dontrun{
+extract_first("uniform(32,45)") # returns 32
+extract_last("uniform(32,45)") # returns 45
+extract_only("exponential(32)") # returns 32
+}
 }
 \keyword{internal}

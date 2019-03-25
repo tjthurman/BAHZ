@@ -68,7 +68,7 @@ allele frequency and provided Fis are then used to calculate the expected
 genotype frequencies for each site, according to the equations:
 
 \deqn{AA = p^2 + p(1-p)Fis}
-\deqn{Aa = 2p(1-p)Fis}
+\deqn{Aa = 2p(1-p)(1-Fis)}
 \deqn{aa = (1-p)^2 + p(1-p)Fis}
 
 Sampled genotypes are then drawn from a multinomial distribution, with the
@@ -79,9 +79,11 @@ genotypes, empirical allele frequencies (emp.p) and empirical Fis estimates
 \deqn{emp.p = (2*AA + Aa)/N}
 \deqn{emp.f = (Hexp - Hobs)/Hexp}
 
-where Hexp and Hobs are the expected and observed heterozygosity. Fis
-values are corrected with \link{correct_fis}, such that empirical Fis values
-which are undefined or < 0 are corrected to 0.
+where AA is the number of honozygotes of the focal allele, Aa is the number
+of heterozygotes, N is the number of sampled individuals, and  Hexp and Hobs
+are the expected and observed heterozygosity. Fis values are corrected with
+\link{correct_fis}, such that empirical Fis values which are undefined or < 0
+are corrected to 0.
 }
 \examples{
 # Simulate genotype data from a decreasing cline
@@ -91,8 +93,31 @@ which are undefined or < 0 are corrected to 0.
 # Inbreeding is constant at Fis = 0.1.
 
 set.seed(123)
-sim_geno_cline(transect_distance = seq(0,200,20), n_ind = 20,
-                    Fis = 0.1, decrease = TRUE,
-                    center = 100, width = 30)
+sim_geno_cline(transect_distance = seq(0,200,20),
+               n_ind = 20, Fis = 0.1,
+               decrease = TRUE,
+               center = 100, width = 30)
+
+# Simulate genotype data from an increasing cline
+# with center at 272, width of 91.
+# The minimum and maximum allele frequencies
+# are 0.07 and 0.98, respectively, and
+# there is an introgression tail on the
+# left side with deltaL = 29 and tauL = 0.8.
+
+# Sites are 13 units apart, from 162 to 312.
+# At each site, the number of individuals sampled
+# is drawn from a random normal distribution with
+# mean = 25 and sd = 5
+# Inbreeding is constant at Fis = 0.
+
+set.seed(123)
+ind_sampling <- as.integer(rnorm(length(seq(162,312,12)), 25, 5))
+sim_geno_cline(transect_distance = seq(162,312,12),
+               n_ind = ind_sampling,
+               Fis = 0, decrease = FALSE,
+               center = 272, width = 91,
+               pmin = 0.07, pmax = 0.98,
+               deltaL = 29, tauL = 0.8)
 
 }

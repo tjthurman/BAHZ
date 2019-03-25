@@ -4,7 +4,7 @@
 \alias{prep_geno_data}
 \title{Prepare your genetic cline data for loading into Stan}
 \usage{
-prep_geno_data(dataframe, type)
+prep_geno_data(dataframe, type = c("bi", "multi"))
 }
 \arguments{
 \item{dataframe}{A dataframe containing your cline data. See details for
@@ -14,12 +14,11 @@ possible formats.}
 the multinomial model.}
 }
 \value{
-Your data, in the list format appropriate for the cline model you
-chose.
+Your data in Stan-ready list format.
 }
 \description{
 Converts a dataframe containing your genetic data into the list format required for
-input to Stan.
+input to Stan. See details below for a description of the possible input formats.
 }
 \details{
 The input dataframe can be a data frame or a tibble. For the multinomial

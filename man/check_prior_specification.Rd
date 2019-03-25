@@ -7,14 +7,22 @@
 check_prior_specification(distribution, string)
 }
 \arguments{
-\item{distribution}{the prior distribution}
+\item{distribution}{the prior distribution, as a character string.}
 
-\item{string}{the string specifiying the parameter values, parsed from the prior_config file}
+\item{string}{the string specifiying the parameter values, parsed from the prior_config file.}
 }
 \value{
 TRUE/FALSE: is the prior specified correctly?
 }
 \description{
 Used internally, in \code{\link{prep_prior_list}}.
+}
+\examples{
+\dontrun{
+check_prior_specification("normal", "normal(32,45)") # returns T
+check_prior_specification("uniform", "uniform(32)") # returns F
+check_prior_specification("exponential", "exponential(0.5)") # returns T
+}
+
 }
 \keyword{internal}

@@ -15,32 +15,63 @@ general_cline_eqn(transectDist, decrease, center, width, pmin = 0,
 \code{FALSE}.}
 
 \item{center}{The location of the cline center, in the same distance units as
-\code{transectDist}. Numeric, must be greater than 0.}
+\code{transectDist}. Numeric.}
 
 \item{width}{The width of the cline, in the same distance units as
 \code{transectDist}. Numeric, must be greater than 0.}
 
-\item{pmin, pmax}{Optional. The minimum and maximum allele frequency values
-in the tails of the cline. Default values are \code{0} and \code{1}, respectively.
-Must be between 0 and 1 (inclusive). Numeric.}
+\item{pmin, pmax}{Optional. The minimum and maximum allele frequency values in
+the tails of the cline. Default values are \code{0} and \code{1},
+respectively. Must be between 0 and 1 (inclusive). Numeric.}
 
 \item{deltaL, tauL}{Optional delta and tau parameters which describe the left
-exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
-tails). Numeric. tauL must be between 0 and 1 (inclusive).}
+exponential introgression tail. Must supply both to generate a tail. Default is
+\code{NULL} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).}
 
 \item{deltaR, tauR}{Optional delta and tau parameters which describe the right
-exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
-tails). Numeric. tauR must be between 0 and 1 (inclusive).}
+exponential introgression tail. Must supply both to generate a tail. Default is
+\code{NULL} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 }
 \value{
-The allele frequency at that point of the cline.
+The result of evaluating a cline equation with the specified
+parameters at the specified distance (that is, \eqn{p'} in the notation of the
+equations above). A numeric vector of length 1.
 }
 \description{
 A flexible function to evaluate hybrid zone genetic cline equations, with or
 without introgression tails.
 }
 \details{
-ADD DETAILS, GIVE CLINE EQUATIONS AND CITATIONS.
+This function evaluates hybrid zone cline equations of the general form:
+
+\deqn{p = (e^(4*((x-center))/(width))/((1+ e^(4*((x-center))/(wwidth)))}
+
+Where \eqn{center} is the center of the cline, \eqn{width} is the width of
+the cline, \eqn{x} is the distance along the transect, and \eqn{p} is the
+expected frequency of the allele.
+
+This function can also include introgression tails by specifying delta and
+tau paramters. For the left introgression tail, when \eqn{x \le (center -
+ \delta)}:
+
+\deqn{p = 1/(1 + e^(4(\delta)/(w)))*\exp((4\tau(x-c+\delta)/width)/(1+e^(-4(\delta)/(w))))}
+
+For the right introgression tail, when \eqn{x \ge (center + \delta)}:
+
+\deqn{p = 1- 1/(1 + e^(4(\delta)/(w)))*\exp((-4\tau(x-c-\delta)/width)/(1+e^(-4(\delta)/(w))))}
+
+The above equations all describe an increasing cline with minimum and
+maximum values of 0 and 1. This equation can be rescaled for other
+minima and maxima:
+
+\deqn{p' = p_{min} + (p_{max} - p_{min})*p}
+
+And for clines which decrease in frequency:
+
+\deqn{p' = p_{min} + (p_{max} - p_{min})*(1-p)}
+
+The function will automatically use the appropriate equation based on
+arguments supplied by the user.
 }
 \examples{
 \dontrun{
