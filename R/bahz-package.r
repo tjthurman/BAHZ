@@ -1,6 +1,6 @@
 #' bahz: Bayesian Analysis of Hybrid Zones
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description A package for fitting one-dimensional cline models on data from hybrid zones.
 #'
 #' @docType package
 #' @name bahz-packge

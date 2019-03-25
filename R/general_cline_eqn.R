@@ -3,26 +3,58 @@
 #' A flexible function to evaluate hybrid zone genetic cline equations, with or
 #' without introgression tails.
 #'
-#' ADD DETAILS, GIVE CLINE EQUATIONS AND CITATIONS.
+#' This function evaluates hybrid zone cline equations of the general form:
+#'
+#'  \deqn{p = (e^(4*((x-center))/(width))/((1+ e^(4*((x-center))/(wwidth)))}
+#'
+#'  Where \eqn{center} is the center of the cline, \eqn{width} is the width of
+#'  the cline, \eqn{x} is the distance along the transect, and \eqn{p} is the
+#'  expected frequency of the allele.
+#'
+#'  This function can also include introgression tails by specifying delta and
+#'  tau paramters. For the left introgression tail, when \eqn{x \le (center -
+#'  \delta)}:
+#'
+#'  \deqn{p = 1/(1 + e^(4(\delta)/(w)))*\exp((4\tau(x-c+\delta)/width)/(1+e^(-4(\delta)/(w))))}
+#'
+#'  For the right introgression tail, when \eqn{x \ge (center + \delta)}:
+#'
+#'  \deqn{p = 1- 1/(1 + e^(4(\delta)/(w)))*\exp((-4\tau(x-c-\delta)/width)/(1+e^(-4(\delta)/(w))))}
+#'
+#'  The above equations all describe an increasing cline with minimum and
+#'  maximum values of 0 and 1. This equation can be rescaled for other
+#'  minima and maxima:
+#'
+#'  \deqn{p' = p_{min} + (p_{max} - p_{min})*p}
+#'
+#'  And for clines which decrease in frequency:
+#'
+#'  \deqn{p' = p_{min} + (p_{max} - p_{min})*(1-p)}
+#'
+#'  The function will automatically use the appropriate equation based on
+#'  arguments supplied by the user.
+#'
 #'
 #' @param transectDist The position at which to evaluate the cline equation.
 #' @param decrease Is the cline decreasing in frequency? \code{TRUE} or
 #'   \code{FALSE}.
 #' @param center The location of the cline center, in the same distance units as
-#'   \code{transectDist}. Numeric, must be greater than 0.
+#'   \code{transectDist}. Numeric.
 #' @param width The width of the cline, in the same distance units as
 #'   \code{transectDist}. Numeric, must be greater than 0.
-#' @param pmin,pmax Optional. The minimum and maximum allele frequency values
-#'   in the tails of the cline. Default values are \code{0} and \code{1}, respectively.
-#'   Must be between 0 and 1 (inclusive). Numeric.
+#' @param pmin,pmax Optional. The minimum and maximum allele frequency values in
+#'   the tails of the cline. Default values are \code{0} and \code{1},
+#'   respectively. Must be between 0 and 1 (inclusive). Numeric.
 #' @param deltaL,tauL Optional delta and tau parameters which describe the left
-#'   exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
-#'   tails). Numeric. tauL must be between 0 and 1 (inclusive).
+#'   exponential introgression tail. Must supply both to generate a tail. Default is
+#'   \code{NULL} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).
 #' @param deltaR,tauR Optional delta and tau parameters which describe the right
-#'   exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
-#'   tails). Numeric. tauR must be between 0 and 1 (inclusive).
+#'   exponential introgression tail. Must supply both to generate a tail. Default is
+#'   \code{NULL} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).
 #'
-#' @return The allele frequency at that point of the cline.
+#' @return The result of evaluating a cline equation with the specified
+#'   parameters at the specified distance (that is, \eqn{p'} in the notation of the
+#'   equations above). A numeric vector of length 1.
 #'
 #' @export
 #'
@@ -66,8 +98,7 @@ general_cline_eqn <- function(transectDist, decrease,
       assertthat::assert_that(length(eval(num.arg)) == 1, msg = paste(num.arg, "must be of length 1", sep = " "))
     }
   }
-  # Center and width must be greater than 0
-  assertthat::assert_that(center >= 0, msg = "center must be greater than 0")
+  # Width must be greater than 0
   assertthat::assert_that(width >= 0, msg = "width must be greater than 0")
 
   # Pmin, pmax, tauL, and tauR must be between 0 and 1

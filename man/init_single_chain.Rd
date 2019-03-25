@@ -2,7 +2,7 @@
 % Please edit documentation in R/init_single_chain.R
 \name{init_single_chain}
 \alias{init_single_chain}
-\title{Make the expression of init values for a single chain}
+\title{Make the expression of init values for a single chain in Stan}
 \usage{
 init_single_chain(prior_file, tails = c("none", "left", "right",
   "mirror", "ind"))
@@ -10,18 +10,22 @@ init_single_chain(prior_file, tails = c("none", "left", "right",
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}
 
-\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind."}
+\item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?}
 }
 \value{
-An rlang expression of the initialization values for a single chain
+An \code{rlang} expression of the initialization values for a single chain
 }
 \description{
-This function it a bit complicated. It reads in the prior_file, and parses
-both (1) the prior distribution for a parameter, and (2) the value(s) which
-describe that distribution. It saves that info as an expression of the
-appropriate R function to generate a single random value from that
-distribution, for each parameter. Then, it assembles those parameters into a
-list, only using the parameters needed for a certain model, specified by tails.
+This function it a bit complicated. It reads in the \code{prior_file}, and
+parses both (1) the prior distribution for a parameter, and (2) the value(s)
+which describe that distribution. From that information, it creates for each
+parameter an \code{rlang} expression of the appropriate R distribution
+function (\code{rnorm}, \code{runif}, etc.) that will generate a single random
+starting value from the prior. Finally, it assembles the expressions for each
+parameter into a a single list using only the parameters needed for the
+chosen model as specified by the \code{tails} argument. That single list will
+eventually be evaluated by the \link{prep_init_list} function to create the
+list of initial values for Stan.
 }
 \details{
 Currently supported distributions are: normal, uniform, exponential.

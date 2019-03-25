@@ -9,7 +9,6 @@ library(bahz)
 library(rstan)
 library(rethinking)
 library(stringr)
-rstan::rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 source("src/functions.R")
 library(tidyverse)
@@ -20,6 +19,9 @@ data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 
                     decrease = F, center = 10, width = 50, pmin = 0.03, pmax = .95)
 
 data2 <- rbind(data[1,])
+
+make_prior_config()
+
 
 # Fit the model
 z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",

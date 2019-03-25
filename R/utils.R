@@ -20,7 +20,7 @@ NULL
 #
 #' Correct Fis estimates
 #'
-#' A function that corrects Fis estimates which are negative or NaN, turns them
+#' A function that corrects Fis estimates which are negative or NaN, turning them
 #' to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
 #' pipeline.
 #'
@@ -30,7 +30,7 @@ NULL
 #'
 #' @param .df A data frame, containing a column named Fis.
 #'
-#' @return The supplied data frame, with a corrected Fis column
+#' @return The supplied data frame, with a corrected Fis column.
 #'
 #'
 
@@ -62,18 +62,22 @@ correct_fis <- function(.df) {
 #' @keywords internal
 #'
 #'
-#' @param prior_file filepath to the prior file
+#' @param prior_file Filepath to the prior file.
 #'
-#' @return a named list containing the specifed priors
+#' @return A named list containing the specifed priors.
 #'
+#' @examples
+#' \dontrun{
+#' parse_prior_file(path/to/priors.yaml)
+#' }
 #'
 
 parse_prior_file <- function(prior_file) {
   path_to_prior <-
     file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
   priors <- yaml::yaml.load_file(path_to_prior, as.named.list = T)
-  # ADD a check to make sure it is 11 long, and all the right names are there
 
+  # Check for proper length and that order is correct
   assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
   name.check <-
     names(priors) == c("center", "width",
@@ -106,7 +110,8 @@ parse_prior_file <- function(prior_file) {
 #'
 #' @name extractValue
 #'
-#' @description Internal functions used in \code{\link{init_single_chain}} to extract
+#' @description Internal functions used in \code{\link{prep_init_list}}
+#' and \code{\link{prep_prior_list}} to extract
 #' numerical values from priors. All use regular expressions as implemented
 #' in the \code{\link{stringr}} package, and all properly handle whitespace and
 #' decimals.
@@ -123,10 +128,16 @@ parse_prior_file <- function(prior_file) {
 #'
 #' @keywords internal
 #'
-#' @param string The string to extract a value from
+#' @param string The string to extract a value from.
 #'
-#' @return A numeric value
+#' @return A numeric value.
 #'
+#' @examples
+#' \dontrun{
+#' extract_first("uniform(32,45)") # returns 32
+#' extract_last("uniform(32,45)") # returns 45
+#' extract_only("exponential(32)") # returns 32
+#' }
 
 NULL
 
@@ -191,18 +202,26 @@ extract_only <- function(string) {
 
 #' Check that the distribution specified for a given parameter is supported
 #'
-#'
-#' Used internally, in \code{\link{prep_prior_list}}.
+#' Used internally, in \code{\link{prep_prior_list}}. Checks that the prior
+#' distribution specified for a particular cline parameter is currently
+#' supported.
 #'
 #' @keywords internal
 #'
+#' @param parameter The parameter for which a prior distribution is specified,
+#'   as a character string.
 #'
-#' @param parameter the parameter for which a prior distribution is specified
+#' @param distribution The prior distribution for that parameter, as a character
+#'   string.
 #'
-#' @param distribution the prior distribution for that parameter
+#' @return TRUE/FALSE: is the distribution supported for that parameter?
 #'
-#' @return TRUE/FALSE: is the prior supported for that parameter?
-#'
+#' @examples
+#' \dontrun{
+#' check_prior_supported("center", "normal") # returns T
+#' check_prior_supported("center", "beta") # returns F
+#' check_prior_supported("deltaL", "normal") # returns F
+#' }
 
 
 check_prior_supported <- function(parameter, distribution) {
@@ -245,12 +264,20 @@ check_prior_supported <- function(parameter, distribution) {
 #'
 #' @keywords internal
 #'
-#' @param distribution the prior distribution
+#' @param distribution the prior distribution, as a character string.
 #'
-#' @param string the string specifiying the parameter values, parsed from the prior_config file
+#' @param string the string specifiying the parameter values, parsed from the prior_config file.
 #'
 #' @return TRUE/FALSE: is the prior specified correctly?
 #'
+#' @examples
+#' \dontrun{
+#' check_prior_specification("normal", "normal(32,45)") # returns T
+#' check_prior_specification("uniform", "uniform(32)") # returns F
+#' check_prior_specification("exponential", "exponential(0.5)") # returns T
+#' }
+#'
+
 check_prior_specification <- function(distribution, string) {
   result <- F
   num.commas <- stringr::str_count(string, "\\,")
@@ -273,10 +300,18 @@ check_prior_specification <- function(distribution, string) {
 #'
 #' @keywords internal
 #'
-#' @param distribution specified distribution
+#' @param distribution The specified distribution, as a character string.
 #'
-#' @return Integer value corresponding to chosen distribution
+#' @return Integer value corresponding to chosen distribution.
 #'
+#' @examples
+#' \dontrun{
+#' assign_stan_dist_int("normal") # returns 0
+#' assign_stan_dist_int("uniform") # returns 1
+#' assign_stan_dist_int("exponential") # returns 2
+#' }
+#'
+
 assign_stan_dist_int <- function(distribution) {
   if (distribution == "normal") {
     result <- as.integer(0)

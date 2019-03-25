@@ -7,17 +7,22 @@
 prep_prior_list(prior_file)
 }
 \arguments{
-\item{prior_file}{Path to the yaml file containing the prior specifications.}
+\item{prior_file}{Path to the \code{.yaml} file containing the prior specifications.}
 }
 \value{
-A list containing the values for the priors to be passed to Stan
+A list containing the values for the priors to be passed to Stan.
 }
 \description{
-DESCRIPTION TO BE ADDED
-}
-\details{
-DETAILS TO BE ADDED.
+Parses the prior specifications provided in the \code{.yaml}
+file, including checks that they are properly specified and
+currently supported. Then, converts the prior specifications into
+a named list to be passed to Stan.
 }
 \examples{
-#TO BE ADDED
+\dontrun{
+prep_prior_list("path/to/priors.yaml")
+}
+}
+\seealso{
+\code{\link{fit_geno_cline}}
 }

@@ -1,5 +1,4 @@
-#
-#' Prepare the list of values for initializing the Stan model.
+#' Prepare the list of values for initializing the Stan model
 #'
 #' Generates a list, of length \code{chains}, where each element of the list is
 #' a named list giving the initialization values for each model parameter.
@@ -15,16 +14,22 @@
 #'
 #' @export
 #'
-#' @param prior_file Path to the yaml file containing the prior specifications.
+#' @param prior_file Path to the \code{.yaml} file containing the prior specifications.
 #'
-#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind."
+#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?
 #'
 #' @param chains The number of chains to be used in Stan. Integer.
 #'
 #' @return A list of lists containing initialization values for the Stan model.
 #'
-#' @seealso \code{\link{init_single_chain}}
+#' @seealso \code{\link{init_single_chain}}, \code{\link{fit_geno_cline}}
 #'
+#'
+#' @examples
+#' \dontrun{
+#' prep_init_list("path/to/priors.yaml", tails = "none", chains = as.integer(3))
+#' }
+
 
 prep_init_list <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind"), chains) {
   assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")

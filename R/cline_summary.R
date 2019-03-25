@@ -24,7 +24,7 @@
 #'
 #' @return A summary data frame with the columns:
 #'     \itemize{
-#'     \item param: The model parameter
+#'     \item param: The model parameter.
 #'     \item mean: The mean of the posterior distribution.
 #'     \item se_mean: The standard error of the mean of the posterior distribution.
 #'     \item sd: The standard deviation of the posterior distribution.
