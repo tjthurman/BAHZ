@@ -1,4 +1,7 @@
 # Part of the bahz package for estimating model parameters
+# This file is from the rstantools skeleton. All cody and copyright into
+# is from that package.
+
 # Copyright (C) 2015, 2016, 2017 Trustees of Columbia University
 #
 # This program is free software; you can redistribute it and/or

@@ -7,15 +7,23 @@
 assign_stan_dist_int(distribution)
 }
 \arguments{
-\item{distribution}{distribution}
+\item{distribution}{The specified distribution, as a character string.}
 }
 \value{
-Integer value corresponding to chosen distribution
+Integer value corresponding to chosen distribution.
 }
 \description{
 Currently supported distributions: normal (0), uniform (1), exponential (2).
 }
 \details{
-Used internally, in \code{\link{make_prior_list}}.
+Used internally, in \code{\link{prep_init_list}}.
+}
+\examples{
+\dontrun{
+assign_stan_dist_int("normal") # returns 0
+assign_stan_dist_int("uniform") # returns 1
+assign_stan_dist_int("exponential") # returns 2
+}
+
 }
 \keyword{internal}

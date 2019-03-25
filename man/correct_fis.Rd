@@ -10,14 +10,14 @@ correct_fis(.df)
 \item{.df}{A data frame, containing a column named Fis.}
 }
 \value{
-The supplied data frame, with a corrected Fis column
+The supplied data frame, with a corrected Fis column.
 }
 \description{
-A function that corrects Fis estimates which are negative or NaN, turns them
+A function that corrects Fis estimates which are negative or NaN, turning them
 to 0. Reads in a data frame with an Fis column. Meant to be part of a dplyr
 pipeline.
 }
 \details{
-Used internally, in \code{\link{sim_data_from_cline}}.
+Used internally, in \code{\link{sim_geno_cline}}.
 }
 \keyword{internal}

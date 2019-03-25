@@ -24,7 +24,7 @@
 #'
 #' @return A summary data frame with the columns:
 #'     \itemize{
-#'     \item param: The model parameter
+#'     \item param: The model parameter.
 #'     \item mean: The mean of the posterior distribution.
 #'     \item se_mean: The standard error of the mean of the posterior distribution.
 #'     \item sd: The standard deviation of the posterior distribution.
@@ -48,6 +48,7 @@
 #'
 
 cline_summary <- function(stanfit, prob = .95, method = "HPDI", show.all = F) {
+  # A bunch of argument checking
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
                           msg = "Object to be summarized must be of class stanfit")
   assertthat::assert_that(is.numeric(prob) == T, msg = "prob must be numeric")
@@ -58,35 +59,47 @@ cline_summary <- function(stanfit, prob = .95, method = "HPDI", show.all = F) {
                           msg = "method must be either 'HPDI' or 'ET")
   assertthat::assert_that(is.logical(show.all) == T, msg = "show.all must be either TRUE or FALSE")
 
-  # Give a method to do HPDI vs. eqaul-tail interval
-  tail <- (1-prob)/2
+  # make col names for CI columns
+  tail <- (1 - prob) / 2
   low.name <- paste("low", prob, method, sep = "_")
   up.name <- paste("up", prob, method, sep = "_")
 
   # could add [abcdeghijklmnopqrstuvwxyz] in the reg expression below to
   # also keep the column with inbreeding values
   if (show.all == F) {
-    keep <- grep("\\[|_", names(stanfit), invert = T, value = T)
+    keep <- grep("\\[|_",
+                 names(stanfit),
+                 invert = T,
+                 value = T)
   } else {
     keep <- names(stanfit)
   }
 
-  res <- rstan::summary(stanfit, probs = c(0 + tail, 1 - tail), pars = keep, use_cache = F)$summary %>%
-     as.data.frame(.) %>%
-     round(., digits = 2) %>%
-     dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
-     cbind(keep, .)
+  # Initial summary, with ET probability intervals in pos
+  res <-
+    rstan::summary(
+      stanfit,
+      probs = c(0 + tail, 1 - tail),
+      pars = keep,
+      use_cache = F)$summary %>%
+    as.data.frame(.) %>%
+    round(., digits = 2) %>%
+    dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
+    cbind(keep, .)
 
-   if (method == "HPDI") {
-     hpd_cols <- as.matrix(stanfit, pars = keep) %>%
-       coda::as.mcmc(.) %>%
-       coda::HPDinterval(obj = ., prob = prob) %>%
-       round(., digits = 2) %>%
-       as.matrix(.)
-     res[,5:6] <- hpd_cols
-   }
+  # If doing HPDI, make a matrix of those columns and replace the ET
+  # columns from the current results
+  if (method == "HPDI") {
+    hpd_cols <- as.matrix(stanfit, pars = keep) %>%
+      coda::as.mcmc(.) %>%
+      coda::HPDinterval(obj = ., prob = prob) %>%
+      round(., digits = 2) %>%
+      as.matrix(.)
+    res[, 5:6] <- hpd_cols
+  }
 
-   names(res)[c(1,5,6)] <- c("param", low.name, up.name)
+  # rename columns
+  names(res)[c(1, 5, 6)] <- c("param", low.name, up.name)
 
   res
 }

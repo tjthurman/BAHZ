@@ -7,14 +7,25 @@
 check_prior_supported(parameter, distribution)
 }
 \arguments{
-\item{parameter}{the parameter for which a prior distribution is specified}
+\item{parameter}{The parameter for which a prior distribution is specified,
+as a character string.}
 
-\item{distribution}{the prior distribution for that parameter}
+\item{distribution}{The prior distribution for that parameter, as a character
+string.}
 }
 \value{
-TRUE/FALSE: is the prior supported for that parameter?
+TRUE/FALSE: is the distribution supported for that parameter?
 }
 \description{
-Used internally, in \code{\link{make_prior_list}}.
+Used internally, in \code{\link{prep_prior_list}}. Checks that the prior
+distribution specified for a particular cline parameter is currently
+supported.
+}
+\examples{
+\dontrun{
+check_prior_supported("center", "normal") # returns T
+check_prior_supported("center", "beta") # returns F
+check_prior_supported("deltaL", "normal") # returns F
+}
 }
 \keyword{internal}
