@@ -4,9 +4,9 @@
 #' input to Stan. See details below for a description of the possible input formats.
 #'
 #'
-#' The input dataframe can be a data frame or a tibble. For the multinomial
-#' model, four named columns must be present, all other columns will be
-#' ignored:
+#' The input dataframe can be a data frame or a tibble. Each row should contain
+#' the information for one sampling site. For the multinomial model, four named
+#' columns must be present, all other columns will be ignored:
 #' \itemize{
 #'     \item transectDist: A numeric column, giving the position along
 #'     the cline/transect for each site.
@@ -51,6 +51,7 @@
 #'
 
 prep_geno_data <- function(dataframe, type = c("bi", "multi")) {
+  # Type checking
   assertthat::assert_that(is.data.frame(dataframe) == T, msg = "dataframe must be a data frame or tibble")
   if (type == "bi") {
     if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {
@@ -62,7 +63,7 @@ prep_geno_data <- function(dataframe, type = c("bi", "multi")) {
                               msg = "nFocalAllele column must be integer")
 
       # Guess whether cline is decreasing:
-      # Find row contain the first and last site on the transect
+      # Find row containing the first and last site on the transect
       f <- which(dataframe$transectDist == min(dataframe$transectDist))
       l <- which(dataframe$transectDist == max(dataframe$transectDist))
       # estimate allele freqs and determine if decreasing

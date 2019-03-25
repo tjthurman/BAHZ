@@ -34,10 +34,10 @@
 make_prior_config <- function(path = getwd(),
                                   name = "prior_config_template.yaml",
                                   overwrite = F) {
+  # Argument checking
   assertthat::assert_that(length(name) == 1, msg = "name must be of length 1")
   assertthat::assert_that(is.character(name) == T, msg = "name must be a character string")
   assertthat::assert_that(stringr::str_detect(name, pattern = "\\.yaml$") == 1, msg = "name must end in .yaml")
-
   assertthat::assert_that(is.logical(overwrite) == T, msg = "overwrite must be either TRUE (T) or FALSE (F)")
 
 

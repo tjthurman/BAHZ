@@ -32,6 +32,7 @@
 
 
 prep_init_list <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind"), chains) {
+  #argument checking
   assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")
   tails <- match.arg(tails, several.ok = F)
   assertthat::assert_that(length((chains)) == 1,

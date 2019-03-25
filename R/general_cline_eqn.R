@@ -76,7 +76,7 @@
 #' }
 #'
 
-general_cline_eqn <- function(transectDist, decrease,
+general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
                               center, width,
                               pmin = 0, pmax = 1,
                               deltaL = NULL, tauL = NULL,
@@ -164,7 +164,7 @@ general_cline_eqn <- function(transectDist, decrease,
     prop <- 1
   }
 
-
+  # Rescale tp pmin/pmax and do increase/decrease
   if (decrease == T) {
     p <- pmin + (pmax - pmin)*(1 - prop)
   }

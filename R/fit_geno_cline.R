@@ -70,20 +70,26 @@ fit_geno_cline <- function(data, prior_file,
                       type = c("bi", "multi"),
                       tails = c("none", "left", "right", "mirror", "ind"),
                       chains = 3, ...) {
+  # Argument checking
   type <- match.arg(type, several.ok = F)
   tails <- match.arg(tails, several.ok = F)
-
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
   ch <- as.integer(chains)
 
-
+  # Calling internal functions
+  # Prep data
   stan_data <- prep_geno_data(data, type = type)
-  prior_list <- prep_prior_list(prior_file) # run this first, lots of checks of prior compatibility here.
+  # Make list of prior values
+  # this also runs a bunch of prior compatibility checks
+  prior_list <- prep_prior_list(prior_file)
+  # Make list of initial values
   init_list <- prep_init_list(prior_file, tails = tails, chains = ch)
 
-
+  # Find location of the model in the stanmodels object that matches
+  # the desired model provide by the user
   model.index <- which(names(stanmodels) == paste(type, "free", tails, sep = "_"))
 
+  # Pass everything to stan
   clinefit <- rstan::sampling(object = stanmodels[[model.index]], data = c(stan_data, prior_list),
                               chains = ch, init = init_list, ...)
 

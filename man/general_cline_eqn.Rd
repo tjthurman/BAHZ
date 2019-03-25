@@ -4,8 +4,8 @@
 \alias{general_cline_eqn}
 \title{Calculate allele frequency at a position on a cline}
 \usage{
-general_cline_eqn(transectDist, decrease, center, width, pmin = 0,
-  pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
+general_cline_eqn(transectDist, decrease = c(TRUE, FALSE), center, width,
+  pmin = 0, pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
   tauR = NULL)
 }
 \arguments{

@@ -20,12 +20,12 @@ data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 
 
 data2 <- rbind(data[1,])
 
-make_prior_config()
+make_prior_config(path = "~/Desktop/", name = "test.yaml")
 
 
 # Fit the model
 z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                 type = "bi", tails = "none", chains = 30)
+                 type = "bi", tails = "none", chains = 3)
 
 # ?nlist to get lists of prior stuff
 cline_summary(z_p)

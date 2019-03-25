@@ -28,8 +28,9 @@
 #'
 
 init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind")) {
+  # Argument check
   tails <- match.arg(tails, several.ok = F)
-
+  # Initialize all the objects I'll be making later to avoid R CMD CHECK warnings.
   init.center <- init.width <- init.pmin <- init.pmax <- NULL
   init.f <- init.deltaL <- init.deltaR <- init.deltaM <- NULL
   init.tauL <- init.tauR <- init.tauM <- NULL
@@ -41,10 +42,14 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
   # But, the assign commands put everything into the global environment,
   # and didn't keep them here within the init.chain function.
   # Not sure why that was yet, something with the environments that I don't yet understand.
-  # But I keeping it here fixed the problem,
+  # But keeping it here fixed the problem,
   # the inits don't get assigned to the global environment.
+  # So a little ugly, but let's just leave it as is.
 
-  for (i in 1:length(prior_list)) {
+  for (i in 1:length(prior_list)) { # for each parameter
+    # find which distribution it is
+    # Based on the distribution, extract the proper values
+    # then assemble that into an expression for the parameter
     if (stringr::str_count(prior_list[[i]], "^normal\\(") == 1) {
       mean <- extract_first(prior_list[[i]])
       sd <- extract_last(prior_list[[i]])
@@ -67,6 +72,7 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
     }
   }
 
+  # Assemble all the per-parameter expressions into one list for a single chain
   if (tails == "none") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
@@ -103,6 +109,7 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
                                    deltaR = !!init.deltaR,
                                    tauR = !!init.tauR))
   } else {
+    # Shouldn't really get here, with the argument checking.
     stop("Tails argument not properly specified.\nMust be either:\n`none`, `left`, `right`, `mirror`, `ind`")
   }
   init.chain

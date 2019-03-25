@@ -21,9 +21,9 @@ Converts a dataframe containing your genetic data into the list format required 
 input to Stan. See details below for a description of the possible input formats.
 }
 \details{
-The input dataframe can be a data frame or a tibble. For the multinomial
-model, four named columns must be present, all other columns will be
-ignored:
+The input dataframe can be a data frame or a tibble. Each row should contain
+the information for one sampling site. For the multinomial model, four named
+columns must be present, all other columns will be ignored:
 \itemize{
 \item transectDist: A numeric column, giving the position along
 the cline/transect for each site.

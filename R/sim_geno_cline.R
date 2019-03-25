@@ -136,7 +136,7 @@ sim_geno_cline <- function(transect_distances, n_ind,
   if (length(n_ind) == 1) {
     Ns <- as.integer(rep(n_ind, times = sites))
   } else {
-      Ns <- as.integer(n_ind)
+    Ns <- as.integer(n_ind)
   }
   if (length(Fis) == 1) {
     fs <- rep(Fis, times = sites)
@@ -156,9 +156,16 @@ sim_geno_cline <- function(transect_distances, n_ind,
 
   # Then add the simulated genotypes to each row
   for (row in 1:sites) {
-    fk.dt$cline.p[row] <- general_cline_eqn(transectDist = fk.dt$transectDist[row], center = center, width = width,
-                                            pmin = pmin, pmax = pmax, deltaL = deltaL, deltaR = deltaR, tauL = tauL,
-                                            tauR = tauR, decrease = decrease)
+    fk.dt$cline.p[row] <- general_cline_eqn(transectDist = fk.dt$transectDist[row],
+                                            center = center,
+                                            width = width,
+                                            pmin = pmin,
+                                            pmax = pmax,
+                                            deltaL = deltaL,
+                                            deltaR = deltaR,
+                                            tauL = tauL,
+                                            tauR = tauR,
+                                            decrease = decrease)
     AA <- fk.dt$cline.p[row]^2 + fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
     Aa<- 2*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])*(1-fk.dt$cline.f[row])
     aa <- (1-fk.dt$cline.p[row])^2 +fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
@@ -179,7 +186,7 @@ fk.dt <- fk.dt %>%
   dplyr::rename(emp.f = .data$Fis) %>%
   dplyr::select(-.data$Hexp, -.data$Hobs)
 
-  # Do some rounding
+  # Do some rounding to 3 decimal places
   fk.dt$cline.p <- round(fk.dt$cline.p, digits = 3)
   fk.dt$emp.p <- round(fk.dt$emp.p, digits = 3)
   fk.dt$emp.f <- round(fk.dt$emp.f, digits = 3)

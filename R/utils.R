@@ -156,7 +156,7 @@ extract_first <- function(string) {
     stringr::str_remove_all("[(,]") %>%
     stringr::str_squish() %>%
     as.numeric
-  assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. X Check your prior file!")
+  assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
   assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
@@ -225,7 +225,7 @@ extract_only <- function(string) {
 
 
 check_prior_supported <- function(parameter, distribution) {
-  result <- FALSE
+  result <- FALSE # "Failsafe" to false
   if (parameter %in% c("center", "width")) {
     if (distribution %in% c("normal", "uniform")) {
       result <- T
@@ -279,7 +279,7 @@ check_prior_supported <- function(parameter, distribution) {
 #'
 
 check_prior_specification <- function(distribution, string) {
-  result <- F
+  result <- F # "Failsafe" to false
   num.commas <- stringr::str_count(string, "\\,")
   if (distribution %in% c("normal", "uniform", "beta")) {
     result <- num.commas == 1
