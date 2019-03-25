@@ -77,6 +77,11 @@ parse_prior_file <- function(prior_file) {
     file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
   priors <- yaml::yaml.load_file(path_to_prior, as.named.list = T)
 
+  # Move this check up to the prior parsing? Will be more useful there, can say which
+  # one is causing the issue
+  assertthat::assert_that(is.character(unlist(priors)),
+                          msg = "Problem parsing priors. Check your prior file!")
+
   # Check for proper length and that order is correct
   assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
   name.check <-
@@ -150,14 +155,18 @@ NULL
 #'
 
 extract_first <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
-    stringr::str_remove_all("[(,]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+
+  chr.res <- stringr::str_extract(string, "\\(.*,") %>%
+    stringr::str_remove_all("[(,)]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
@@ -167,14 +176,16 @@ extract_first <- function(string) {
 #'
 
 extract_last <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
-    stringr::str_remove_all("[,)]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+  chr.res <- stringr::str_extract(string, ",.*\\)") %>%
+    stringr::str_remove_all("[(,)]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
@@ -186,14 +197,18 @@ extract_last <- function(string) {
 #'
 #'
 extract_only <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
-    stringr::str_remove_all("[,)(]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+  chr.res <- stringr::str_extract(string, "\\(.*\\)") %>%
+    stringr::str_remove_all("[()]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+  assertthat::assert_that(stringr::str_count(chr.res, ",") == 0,
+                          msg = "Could not parse prior, comma present in a distribution that requires a single value. Check your prior file!")
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
