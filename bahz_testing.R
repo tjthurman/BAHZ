@@ -22,6 +22,7 @@ data2 <- rbind(data[1,])
 
 make_prior_config(path = "~/Desktop/", name = "test.yaml")
 
+prep_init_list("prior_config_template.yaml", tails = "left", chains = as.integer(3))
 
 # Fit the model
 z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
@@ -32,13 +33,13 @@ cline_summary(z_p)
 
 
 # testing the new width check in prep_init_list
-i <- 1000
+i <- 8000
 z <- prep_init_list("prior_config_template.yaml", tails = "right", chains = as.integer(i))
 widths <- rep(as.numeric(NA), times = i)
 for (width in 1:i) {
-  widths[width] <- z[[width]][2]
+  widths[width] <- z[[width]]$width
 }
-unique(widths < 0) # Never makes a value below 0.
+unique(unlist(widths) < 0) # Never makes a value below 0.
 
 
 # Will stan run with no priors? -------------------------------------------
