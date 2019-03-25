@@ -38,13 +38,21 @@ prep_init_list <- function(prior_file, tails = c("none", "left", "right", "mirro
                           msg = "You must pick a single value for chains.")
 
   single.chain <- init_single_chain(prior_file, tails = tails)
+
   init.list <- list()
   for(i in 1:chains) {
+    # make one chain
     init.list[[i]] <- eval(single.chain)
+    n <- 0
+    while (init.list[[i]]$width < 0) { # check it to see if width is positive
+      # if not, try again, but only try up to 10 times
+      n <- n + 1
+      if (n > 10) {
+        stop("Could not generate a positive init value for width in 10 random draws from the prior.\nCheck your prior distribution to ensure it generates positive values.")
+      }
+      init.list[[i]] <- eval(single.chain)
+    }
   }
-  # INSERT SOME CHECKs HERE OF THE VALUES.
-  # Specifically, make sure width is >0.
-  # Or maybe just add abs() for width in the init_single_chain fxn?
   init.list
 }
 
