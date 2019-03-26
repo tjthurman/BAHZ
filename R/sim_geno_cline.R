@@ -128,6 +128,7 @@ sim_geno_cline <- function(transect_distances, n_ind,
   }
   assertthat::assert_that(min(Fis) >=0, msg = "Fis values cannot be less than 0")
   assertthat::assert_that(min(Fis) <=1, msg = "Fis values cannot be greater than 1")
+  assertthat::assert_that(min(n_ind) >=1, msg = "n_ind values cannot be less than 1")
   # All other args will get checked in the cline equation.
 
   # Get number of sites from the vector of transect data.
