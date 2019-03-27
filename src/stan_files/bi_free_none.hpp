@@ -48,19 +48,27 @@ stan::io::program_reader prog_reader__() {
     reader.add_event(23, 0, "start", "/priors/priors_all.stan");
     reader.add_event(33, 10, "end", "/priors/priors_all.stan");
     reader.add_event(33, 6, "restart", "model_bi_free_none");
-    reader.add_event(59, 32, "include", "/model/model_ps.stan");
-    reader.add_event(59, 0, "start", "/model/model_ps.stan");
-    reader.add_event(61, 2, "end", "/model/model_ps.stan");
-    reader.add_event(61, 33, "restart", "model_bi_free_none");
-    reader.add_event(61, 33, "include", "/model/model_width.stan");
-    reader.add_event(61, 0, "start", "/model/model_width.stan");
-    reader.add_event(67, 6, "end", "/model/model_width.stan");
-    reader.add_event(67, 34, "restart", "model_bi_free_none");
-    reader.add_event(67, 34, "include", "/model/model_center.stan");
-    reader.add_event(67, 0, "start", "/model/model_center.stan");
-    reader.add_event(73, 6, "end", "/model/model_center.stan");
-    reader.add_event(73, 35, "restart", "model_bi_free_none");
-    reader.add_event(94, 54, "end", "model_bi_free_none");
+    reader.add_event(38, 11, "include", "/parameters/param_all.stan");
+    reader.add_event(38, 0, "start", "/parameters/param_all.stan");
+    reader.add_event(42, 4, "end", "/parameters/param_all.stan");
+    reader.add_event(42, 12, "restart", "model_bi_free_none");
+    reader.add_event(61, 31, "include", "/model/model_ps.stan");
+    reader.add_event(61, 0, "start", "/model/model_ps.stan");
+    reader.add_event(63, 2, "end", "/model/model_ps.stan");
+    reader.add_event(63, 32, "restart", "model_bi_free_none");
+    reader.add_event(63, 32, "include", "/model/model_width.stan");
+    reader.add_event(63, 0, "start", "/model/model_width.stan");
+    reader.add_event(69, 6, "end", "/model/model_width.stan");
+    reader.add_event(69, 33, "restart", "model_bi_free_none");
+    reader.add_event(69, 33, "include", "/model/model_center.stan");
+    reader.add_event(69, 0, "start", "/model/model_center.stan");
+    reader.add_event(75, 6, "end", "/model/model_center.stan");
+    reader.add_event(75, 34, "restart", "model_bi_free_none");
+    reader.add_event(82, 41, "include", "/generated_quantities/gen_quant_binomial.stan");
+    reader.add_event(82, 0, "start", "/generated_quantities/gen_quant_binomial.stan");
+    reader.add_event(94, 12, "end", "/generated_quantities/gen_quant_binomial.stan");
+    reader.add_event(94, 42, "restart", "model_bi_free_none");
+    reader.add_event(98, 44, "end", "model_bi_free_none");
     return reader;
 }
 
@@ -253,13 +261,13 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 38;
-            ++num_params_r__;
             current_statement_begin__ = 39;
             ++num_params_r__;
             current_statement_begin__ = 40;
             ++num_params_r__;
             current_statement_begin__ = 41;
+            ++num_params_r__;
+            current_statement_begin__ = 42;
             ++num_params_r__;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -396,7 +404,7 @@ public:
 
 
             // transformed parameters
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 47;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -405,22 +413,22 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 48;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 48;
+                current_statement_begin__ = 50;
                 if (as_bool(logical_eq(decrease,0))) {
 
-                    current_statement_begin__ = 49;
+                    current_statement_begin__ = 51;
                     stan::model::assign(p, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
                                 "assigning variable p");
                 }
-                current_statement_begin__ = 51;
+                current_statement_begin__ = 53;
                 if (as_bool(logical_eq(decrease,1))) {
 
-                    current_statement_begin__ = 52;
+                    current_statement_begin__ = 54;
                     stan::model::assign(p, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (pmin + ((pmax - pmin) * (1 - (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width))))))), 
@@ -439,39 +447,39 @@ public:
 
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 47;
 
             // model body
 
-            current_statement_begin__ = 60;
-            lp_accum__.add(uniform_log<propto__>(pmax, p_max_1, p_max_2));
-            current_statement_begin__ = 61;
-            lp_accum__.add(uniform_log<propto__>(pmin, p_min_1, p_min_2));
             current_statement_begin__ = 62;
+            lp_accum__.add(uniform_log<propto__>(pmax, p_max_1, p_max_2));
+            current_statement_begin__ = 63;
+            lp_accum__.add(uniform_log<propto__>(pmin, p_min_1, p_min_2));
+            current_statement_begin__ = 64;
             if (as_bool(logical_eq(p_dist_width,0))) {
 
-                current_statement_begin__ = 63;
+                current_statement_begin__ = 65;
                 lp_accum__.add(normal_log<propto__>(width, p_width_1, p_width_2));
             }
-            current_statement_begin__ = 65;
+            current_statement_begin__ = 67;
             if (as_bool(logical_eq(p_dist_width,1))) {
 
-                current_statement_begin__ = 66;
+                current_statement_begin__ = 68;
                 lp_accum__.add(uniform_log<propto__>(width, p_width_1, p_width_2));
             }
-            current_statement_begin__ = 68;
+            current_statement_begin__ = 70;
             if (as_bool(logical_eq(p_dist_center,0))) {
 
-                current_statement_begin__ = 69;
+                current_statement_begin__ = 71;
                 lp_accum__.add(normal_log<propto__>(center, p_center_1, p_center_2));
             }
-            current_statement_begin__ = 71;
+            current_statement_begin__ = 73;
             if (as_bool(logical_eq(p_dist_center,1))) {
 
-                current_statement_begin__ = 72;
+                current_statement_begin__ = 74;
                 lp_accum__.add(uniform_log<propto__>(center, p_center_1, p_center_2));
             }
-            current_statement_begin__ = 77;
+            current_statement_begin__ = 79;
             lp_accum__.add(binomial_log<propto__>(nFocalAllele, nTotalAlleles, p));
 
         } catch (const std::exception& e) {
@@ -567,7 +575,7 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
 
         try {
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 47;
             validate_non_negative_index("p", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  p(static_cast<Eigen::VectorXd::Index>(N));
             (void) p;  // dummy to suppress unused var warning
@@ -576,22 +584,22 @@ public:
             stan::math::fill(p,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 48;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 48;
+                current_statement_begin__ = 50;
                 if (as_bool(logical_eq(decrease,0))) {
 
-                    current_statement_begin__ = 49;
+                    current_statement_begin__ = 51;
                     stan::model::assign(p, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (pmin + ((pmax - pmin) * (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)))))), 
                                 "assigning variable p");
                 }
-                current_statement_begin__ = 51;
+                current_statement_begin__ = 53;
                 if (as_bool(logical_eq(decrease,1))) {
 
-                    current_statement_begin__ = 52;
+                    current_statement_begin__ = 54;
                     stan::model::assign(p, 
                                 stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                 (pmin + ((pmax - pmin) * (1 - (stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width)) / (1 + stan::math::exp(((4 * (get_base1(transectDist,i,"transectDist",1) - center)) / width))))))), 
@@ -600,7 +608,7 @@ public:
             }
 
             // validate transformed parameters
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 47;
 
             // write transformed parameters
             if (include_tparams__) {
@@ -610,20 +618,20 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 84;
             local_scalar_t__ dev;
             (void) dev;  // dummy to suppress unused var warning
 
             stan::math::initialize(dev, DUMMY_VAR__);
             stan::math::fill(dev,DUMMY_VAR__);
-            current_statement_begin__ = 82;
+            current_statement_begin__ = 85;
             validate_non_negative_index("log_lik", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  log_lik(static_cast<Eigen::VectorXd::Index>(N));
             (void) log_lik;  // dummy to suppress unused var warning
 
             stan::math::initialize(log_lik, DUMMY_VAR__);
             stan::math::fill(log_lik,DUMMY_VAR__);
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 86;
             validate_non_negative_index("y_rep", "N", N);
             Eigen::Matrix<local_scalar_t__,Eigen::Dynamic,1>  y_rep(static_cast<Eigen::VectorXd::Index>(N));
             (void) y_rep;  // dummy to suppress unused var warning
@@ -632,27 +640,27 @@ public:
             stan::math::fill(y_rep,DUMMY_VAR__);
 
 
-            current_statement_begin__ = 84;
+            current_statement_begin__ = 87;
             for (int i = 1; i <= N; ++i) {
 
-                current_statement_begin__ = 86;
+                current_statement_begin__ = 89;
                 stan::model::assign(log_lik, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             binomial_log(get_base1(nFocalAllele,i,"nFocalAllele",1),get_base1(nTotalAlleles,i,"nTotalAlleles",1),get_base1(p,i,"p",1)), 
                             "assigning variable log_lik");
-                current_statement_begin__ = 88;
+                current_statement_begin__ = 91;
                 stan::model::assign(y_rep, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             binomial_rng(get_base1(nTotalAlleles,i,"nTotalAlleles",1),get_base1(p,i,"p",1), base_rng__), 
                             "assigning variable y_rep");
             }
-            current_statement_begin__ = 91;
+            current_statement_begin__ = 94;
             stan::math::assign(dev, (-(2) * binomial_log(nFocalAllele,nTotalAlleles,p)));
 
             // validate generated quantities
-            current_statement_begin__ = 81;
-            current_statement_begin__ = 82;
-            current_statement_begin__ = 83;
+            current_statement_begin__ = 84;
+            current_statement_begin__ = 85;
+            current_statement_begin__ = 86;
 
             // write generated quantities
         vars__.push_back(dev);

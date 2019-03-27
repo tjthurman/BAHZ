@@ -39,11 +39,11 @@ fit_ind <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml"
                             type = "bi", tails = "ind", chains = 3)
 
 # ?nlist to get lists of prior stuff
-cline_summary(fit_none)
-cline_summary(fit_left)
-cline_summary(fit_right)
-cline_summary(fit_mirror)
-cline_summary(fit_ind)
+cline_summary(fit_none, show.all = T)
+cline_summary(fit_left, show.all = T)
+cline_summary(fit_right, show.all = T)
+cline_summary(fit_mirror, show.all = T)
+cline_summary(fit_ind, show.all = T)
 
 
 z1 <- loo::loo(fit_none, r_eff = relative_eff(fit_none))
