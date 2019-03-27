@@ -1,15 +1,10 @@
 #include /pre/license.stan
 
-// Stan model to fit a sigmoid cline of allele frequencies,
-// with no introgression tails.
-// The minimum and maximum alele frequencies at the tails of the cline
-// are estimated from the data
-
 data {
 
 #include /data/data_binom.stan
+#include /priors/priors_all.stan
 
-#include /priors/priors_binom.stan
 }
 
 parameters{
@@ -34,15 +29,10 @@ transformed parameters {
 
 model{
   // The statistical model
-  pmax ~ uniform(p_max_1 , p_max_2); // prior for pmax
-  pmin ~ uniform(p_min_1, p_min_2); // prior for pmin
-  width ~ normal(p_width_1, p_width_2); // prior for width.
-  if (p_dist_center == 0) { // normal
-    center ~ normal(p_center_1, p_center_2); //prior for center
-  }
-  if (p_dist_center == 1) { // uniform
-    center ~ uniform(p_center_1, p_center_2); //prior for center
-  }
+
+#include /model/model_ps.stan
+#include /model/model_width.stan
+#include /model/model_center.stan
 
   // and the likelihood: observed allele counts follow a binomial liklihood,
   // based on the number of alleles sampled and the estimated allele frequency.
