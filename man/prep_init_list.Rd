@@ -29,6 +29,13 @@ Currently supported distributions are: normal, uniform, exponential.
 This function calls \code{\link{init_single_chain}} for each chain.
 \code{\link{init_single_chain}} does all the work of making the expression
 which will yield the proper starting values for a chain of this model.
+
+This function also provides checks that the specified starting values will
+work with Stan. If the priors are poorly specified such that some initial
+values are inappropriate (e.g., width initial values are negative), it will
+re-do the initialization, up to 100 times per chain. If, after 100 tries, it fails to
+generate an appropriate starting chain, it will generate a warning and
+provide some guidance on which parameters are causing the problem.
 }
 \examples{
 \dontrun{

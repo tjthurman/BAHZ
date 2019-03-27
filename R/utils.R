@@ -77,8 +77,15 @@ parse_prior_file <- function(prior_file) {
     file.path(normalizePath(prior_file), fsep = .Platform$file.sep)
   priors <- yaml::yaml.load_file(path_to_prior, as.named.list = T)
 
+  # Move this check up to the prior parsing? Will be more useful there, can say which
+  # one is causing the issue
+  assertthat::assert_that(is.character(unlist(priors)),
+                          msg = "Problem parsing priors. Check your prior file!")
+
   # Check for proper length and that order is correct
-  assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
+  if (length(names(priors)) != 11) {
+    stop("Incorrect number of priors config file! Double check your file against the template!")
+  }
   name.check <-
     names(priors) == c("center", "width",
                        "pmin",  "pmax",
@@ -150,14 +157,18 @@ NULL
 #'
 
 extract_first <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*,") %>%
-    stringr::str_remove_all("[(,]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+
+  chr.res <- stringr::str_extract(string, "\\(.*,") %>%
+    stringr::str_remove_all("[(,)]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
@@ -167,14 +178,16 @@ extract_first <- function(string) {
 #'
 
 extract_last <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, ",[:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
-    stringr::str_remove_all("[,)]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+  chr.res <- stringr::str_extract(string, ",.*\\)") %>%
+    stringr::str_remove_all("[(,)]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
@@ -186,14 +199,18 @@ extract_last <- function(string) {
 #'
 #'
 extract_only <- function(string) {
-  assertthat::assert_that(is.character(string) == T, msg = "Could not parse prior. Check your prior file!")
-  res <-
-    stringr::str_extract(string, "\\([:blank:]*[0-9]*\\.*[0-9]*[:blank:]*\\)") %>%
-    stringr::str_remove_all("[,)(]") %>%
-    stringr::str_squish() %>%
-    as.numeric
+  chr.res <- stringr::str_extract(string, "\\(.*\\)") %>%
+    stringr::str_remove_all("[()]") %>%
+    stringr::str_replace_all(pattern = " ", "")
+  assertthat::assert_that(stringr::str_count(chr.res, ",") == 0,
+                          msg = "Could not parse prior, comma present in a distribution that requires a single value. Check your prior file!")
+  assertthat::assert_that(stringr::str_count(chr.res, "\\.") <= 1,
+                          msg = "Could not parse prior, too many decimal places. Check your prior file!")
+  if (suppressWarnings(is.na(as.numeric(chr.res)))) {
+    stop("Could not coerce prior to a numeric value. Check your prior file!")
+  }
+  res <- as.numeric(chr.res)
   assertthat::assert_that(length(res) == 1, msg = "Could not parse prior. Check your prior file!")
-  assertthat::assert_that(is.na(res) == F, msg = "Could not parse prior. Check your prior file!")
   res
 }
 
@@ -324,4 +341,96 @@ assign_stan_dist_int <- function(distribution) {
   }
   result
 }
+
+
+# Check init chain --------------------------------------------------------
+#' Check whether the random initial values for a chain are appropriate.
+#'
+#' Checks the initial values before they are passed to Stan to make sure they are appropriate.
+#'
+#' Used internally, in \code{\link{prep_init_list}}.
+#'
+#' Checks that: width is positive, delta parameters are positive, tau
+#' parameters, pmin/pmax, and f are between 0 and 1, and that pmin is less than
+#' pmax.
+#'
+#' @keywords internal
+#'
+#' @param single.init.list The list of initial values to be checked.
+#'
+#' @return NULL, if no problems, otherwise a vector of parameters which have
+#'   inappropriate initial values.
+#'
+#' @examples
+#' \dontrun{
+#' assign_stan_dist_int("normal") # returns 0
+#' assign_stan_dist_int("uniform") # returns 1
+#' assign_stan_dist_int("exponential") # returns 2
+#' }
+#'
+check_init_chain <- function(single.init.list) {
+  problems <- NULL
+  for (j in 1:length(single.init.list)) {
+    if (names(single.init.list)[j] == "width") {
+      if (single.init.list[[j]] < 0) {
+        problems <- c(problems, "width")
+      }
+    }
+    if (names(single.init.list)[j] == "deltaL") {
+      if (single.init.list[[j]] < 0) {
+        problems <- c(problems, "deltaL")
+      }
+    }
+    if (names(single.init.list)[j] == "deltaR") {
+      if (single.init.list[[j]] < 0) {
+        problems <- c(problems, "deltaR")
+      }
+    }
+    if (names(single.init.list)[j] == "deltaM") {
+      if (single.init.list[[j]] < 0) {
+        problems <- c(problems, "deltaM")
+      }
+    }
+    if (names(single.init.list)[j] == "tauL") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "tauL")
+      }
+    }
+    if (names(single.init.list)[j] == "tauR") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "tauR")
+      }
+    }
+    if (names(single.init.list)[j] == "tauM") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "tauM")
+      }
+    }
+    if (names(single.init.list)[j] == "pmin") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "pmin")
+      }
+    }
+    if (names(single.init.list)[j] == "pmax") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "pmax")
+      }
+    }
+    if (names(single.init.list)[j] == "f") {
+      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+        problems <- c(problems, "f")
+      }
+    }
+    if (names(single.init.list)[j] == "pmax") {
+      if (single.init.list$pmin > single.init.list[[j]]) {
+        problems <- c(problems, "pmin", "pmax")
+      }
+    }
+  }
+  problems
+}
+
+
+
+
 

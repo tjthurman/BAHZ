@@ -5,7 +5,7 @@
 
 # Explanation of Parameters
 center: normal(0, 50)
-width: uniform(0, 10)
+width: normal(25, 50)
 pmin: uniform(0, 0.2)
 pmax: uniform(0.8, 1)
 deltaL: exponential(0.05)
