@@ -13,11 +13,13 @@ options(mc.cores = parallel::detectCores())
 source("src/functions.R")
 library(tidyverse)
 library(dplyr)
+library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
-                    decrease = F, center = 10, width = 50, pmin = 0.03, pmax = .95)
-
+data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 30, Fis = 0,
+                    decrease = T, center = 10, width = 80, pmin = 0.03, pmax = .95)
+plot(x = data$transectDist, y = data$emp.p)
+lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
 
 make_prior_config(path = "~/Desktop/", name = "test.yaml")
@@ -25,12 +27,32 @@ make_prior_config(path = "~/Desktop/", name = "test.yaml")
 prep_init_list("prior_config_template.yaml", tails = "left", chains = as.integer(3))
 
 # Fit the model
-z_p <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_none <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                  type = "bi", tails = "none", chains = 3)
+fit_left <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                      type = "bi", tails = "left", chains = 3)
+fit_right <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                           type = "bi", tails = "right", chains = 3)
+fit_mirror <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                           type = "bi", tails = "mirror", chains = 3)
+fit_ind <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                            type = "bi", tails = "ind", chains = 3)
 
 # ?nlist to get lists of prior stuff
-cline_summary(z_p)
+cline_summary(fit_none, show.all = T)
+cline_summary(fit_left, show.all = T)
+cline_summary(fit_right, show.all = T)
+cline_summary(fit_mirror, show.all = T)
+cline_summary(fit_ind, show.all = T)
 
+
+z1 <- loo::loo(fit_none, r_eff = relative_eff(fit_none))
+z2 <- loo::loo(fit_left, r_eff = relative_eff(fit_left))
+z3 <- loo::loo(fit_right, r_eff = relative_eff(fit_right))
+z4 <- loo::loo(fit_mirror, r_eff = relative_eff(fit_mirror))
+z5 <- loo::loo(fit_ind, r_eff = relative_eff(fit_ind))
+
+loo::compare(z1, z2, z3, z4, z5)
 
 # testing the new width check in prep_init_list
 i <- 8000
