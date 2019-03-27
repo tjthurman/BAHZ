@@ -1,4 +1,4 @@
-context("prep data for Stan")
+context("prep genetic data for Stan")
 
 # output is correct for binomial 3 column version
 
