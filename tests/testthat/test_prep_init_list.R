@@ -9,7 +9,7 @@ test_that("prep_init_list checks arguments", {
 
 # Test functionality
 test_that("prep_init_list fails when it can't initialize due to bad values", {
-  expect_error(prep_init_list("prior_config_test_no_initial.yaml", tails = "none", chains = as.integer(1)), "positive")
+  expect_error(prep_init_list("prior_config_test_no_initial.yaml", tails = "none", chains = as.integer(1)), "Could not generate")
 })
 test_that("prep_init_list returns the proper values", {
   set.seed(763)
