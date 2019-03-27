@@ -1,0 +1,12 @@
+center: normal(0, 50)
+tauL: uniform(0, 1)
+width: normal(30, 10)
+pmin: uniform(0, 0.2)
+pmax: uniform(0.8, 1)
+f: uniform(0,1)
+deltaL: exponential(0.05)
+deltaR: exponential(0.05)
+deltaM: exponential(0.05)
+tauR: uniform(0, 1)
+tauM: uniform(0, 1)
+

@@ -7,10 +7,7 @@ install_github("tjthurman/BAHZ", ref = "master", auth_token = "c037ee28d7031c8d2
 install.packages("~/Documents/Work/PhD:McGill/Projects/BAHZ/", repos = NULL, type = "source")
 library(bahz)
 library(rstan)
-library(rethinking)
-library(stringr)
 options(mc.cores = parallel::detectCores())
-source("src/functions.R")
 library(tidyverse)
 library(dplyr)
 library(loo)
@@ -37,6 +34,8 @@ fit_mirror <- fit_geno_cline(data = data, prior_file = "prior_config_template.ya
                            type = "bi", tails = "mirror", chains = 3)
 fit_ind <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "ind", chains = 3)
+
+ref_stanfit <- z_p
 
 # ?nlist to get lists of prior stuff
 cline_summary(fit_none, show.all = T)

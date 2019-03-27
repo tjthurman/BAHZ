@@ -83,7 +83,9 @@ parse_prior_file <- function(prior_file) {
                           msg = "Problem parsing priors. Check your prior file!")
 
   # Check for proper length and that order is correct
-  assertthat::assert_that(length(priors) == 11, msg = "Incorrect number of priors, there should be 11!\nDouble-check your prior file")
+  if (length(names(priors)) != 11) {
+    stop("Incorrect number of priors config file! Double check your file against the template!")
+  }
   name.check <-
     names(priors) == c("center", "width",
                        "pmin",  "pmax",
