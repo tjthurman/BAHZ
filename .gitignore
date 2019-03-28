@@ -2,11 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
-
-R/testing\.R
+src/stan_files/.*\.o$
+src/stan_files/.*\.hpp$
 
 inst/extdata/multinomial/binom_free_none_DEC\.rds
 
 inst/extdata/multinomial/binom_free_none_nolim\.rds
 
 inst/extdata/multinomial/binom_free_none_nolim_nopriors\.rds
+
