@@ -93,7 +93,7 @@ fit_geno_cline <- function(data, prior_file,
   # this also runs a bunch of prior compatibility checks
   prior_list <- prep_prior_list(prior_file)
   # Make list of initial values
-  init_list <- prep_init_list(prior_file, tails = "ind", chains = ch)
+  init_list <- prep_init_list(prior_file, tails = tails, chains = ch)
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user

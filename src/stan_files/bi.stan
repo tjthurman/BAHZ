@@ -7,6 +7,7 @@ data {
 #include /priors/priors_left_tail.stan
 #include /priors/priors_right_tail.stan
 #include /priors/priors_mirror_tail.stan
+
 }
 
 parameters{
@@ -107,18 +108,9 @@ transformed parameters {
 model{
   // The statistical model
 
-if (tails == 1) { //left
-#include /model/model_left_tail.stan
-} else if (tails == 2) { // right
-#include /model/model_right_tail.stan
-} else if (tails == 3) { //mirror
 #include /model/model_mirror_tail.stan
-}  else if (tails == 4) { //ind
 #include /model/model_left_tail.stan
 #include /model/model_right_tail.stan
-} else { // no tails, do nothing.
-
-}
 #include /model/model_ps.stan
 #include /model/model_width.stan
 #include /model/model_center.stan

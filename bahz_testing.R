@@ -38,8 +38,10 @@ attr(fit_none@sim$samples[[1]], "args")$control$adapt_delta
 
 attr(fit_left@sim$samples[[1]], "args")$control$adapt_delta
 
+fit_ind@inits
+fit_none@inits
 # ?nlist to get lists of prior stuff
-cline_summary(fit_none)
+cline_summary(fit_none, show.all = T)
 cline_summary(fit_left)
 cline_summary(fit_right)
 cline_summary(fit_mirror)
