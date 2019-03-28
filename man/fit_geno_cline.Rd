@@ -5,7 +5,7 @@
 \title{Fit a genetic cline model to your data}
 \usage{
 fit_geno_cline(data, prior_file, type = c("bi", "multi"),
-  tails = c("none", "left", "right", "mirror", "ind"), chains = 3, ...)
+  tails = c("none", "left", "right", "mirror", "ind"), chains = 4, ...)
 }
 \arguments{
 \item{data}{A dataframe containing your cline data. See
@@ -22,10 +22,13 @@ frequencies.}
 "ind"?}
 
 \item{chains}{The number of MCMC chains to create. Numeric, coerced to
-integer. Default is 3.}
+integer. Default is 4.}
 
-\item{...}{Arguments to be passed to \code{stan}, e.g., number of iterations, warmup
-period, etc. See \code{\link[rstan]{sampling}} for more information.}
+\item{...}{Arguments to be passed to \code{stan}, e.g., number of iterations,
+warmup period, etc. See \code{\link[rstan]{sampling}} and the
+\code{control} argument in \code{\link[rstan]{stan}} for information on
+these arguments, and the details below for information on how bahz defaults
+interact with stan defaults.}
 }
 \value{
 A \code{\linkS4class{stanfit}} object containing your model results.
@@ -50,8 +53,15 @@ initialiing the MCMC chains in \code{stan}. Initial values are randomly
 drawn from the priors specified in \code{prior_file}.
 }
 
-The results of these functions are then passed to \code{\link[rstan]{sampling}}, along with
-any of the additional \code{stan} arguments supplied by the user.
+The results of these functions are then passed to
+\code{\link[rstan]{sampling}}, along with any additional \code{stan}
+arguments supplied by the user. In most cases, these additional \code{stan}
+arguments should be unnecessary.  \code{bahz} uses the default \code{stan}
+arguments for all sampler parameters expect for one: the default adapt_delta
+for \code{bahz} is 0.95, to better avoid divergent transitions. Note that
+supplying ANY \code{stan} arguments will override ALL \code{bahz} defaults.
+E.g., specifying a different number of total iterations will reset the
+adapt_delta to the \code{stan} default of 0.8.
 }
 \examples{
 \dontrun{
@@ -63,12 +73,12 @@ results <- fit_geno_cline(clinedata, "prior_file.yaml",
 
 # Fit a binomial cline
 # with no introgression tails.
-# Use 4 chains with 4000 warmup iterations
+# Use 5 chains with 4000 warmup iterations
 # and 8000 total iterations per chain.
 
 results2 <- fit_geno_cline(clinedata, "prior_file.yaml",
                      type = "bi", tails = "none",
-                     chains = 4,
+                     chains = 5,
                      iter = 8000, warmup = 4000)
 }
 

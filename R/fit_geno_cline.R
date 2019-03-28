@@ -18,8 +18,15 @@
 #'  drawn from the priors specified in \code{prior_file}.
 #' }
 #'
-#' The results of these functions are then passed to \code{\link[rstan]{sampling}}, along with
-#' any of the additional \code{stan} arguments supplied by the user.
+#' The results of these functions are then passed to
+#' \code{\link[rstan]{sampling}}, along with any additional \code{stan}
+#' arguments supplied by the user. In most cases, these additional \code{stan}
+#' arguments should be unnecessary.  \code{bahz} uses the default \code{stan}
+#' arguments for all sampler parameters expect for one: the default adapt_delta
+#' for \code{bahz} is 0.95, to better avoid divergent transitions. Note that
+#' supplying ANY \code{stan} arguments will override ALL \code{bahz} defaults.
+#' E.g., specifying a different number of total iterations will reset the
+#' adapt_delta to the \code{stan} default of 0.8.
 #'
 #' @param data A dataframe containing your cline data. See
 #'   \code{\link{prep_geno_data}} for possible formats.
@@ -31,9 +38,12 @@
 #' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or
 #'   "ind"?
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
-#'   integer. Default is 3.
-#' @param ... Arguments to be passed to \code{stan}, e.g., number of iterations, warmup
-#'   period, etc. See \code{\link[rstan]{sampling}} for more information.
+#'   integer. Default is 4.
+#' @param ... Arguments to be passed to \code{stan}, e.g., number of iterations,
+#'   warmup period, etc. See \code{\link[rstan]{sampling}} and the
+#'   \code{control} argument in \code{\link[rstan]{stan}} for information on
+#'   these arguments, and the details below for information on how bahz defaults
+#'   interact with stan defaults.
 #'
 #' @return A \code{\linkS4class{stanfit}} object containing your model results.
 #'
@@ -53,12 +63,12 @@
 #'
 #' # Fit a binomial cline
 #' # with no introgression tails.
-#' # Use 4 chains with 4000 warmup iterations
+#' # Use 5 chains with 4000 warmup iterations
 #' # and 8000 total iterations per chain.
 #'
 #' results2 <- fit_geno_cline(clinedata, "prior_file.yaml",
 #'                      type = "bi", tails = "none",
-#'                      chains = 4,
+#'                      chains = 5,
 #'                      iter = 8000, warmup = 4000)
 #' }
 #'
@@ -69,7 +79,7 @@
 fit_geno_cline <- function(data, prior_file,
                       type = c("bi", "multi"),
                       tails = c("none", "left", "right", "mirror", "ind"),
-                      chains = 3, ...) {
+                      chains = 4, ...) {
   # Argument checking
   type <- match.arg(type, several.ok = F)
   tails <- match.arg(tails, several.ok = F)
@@ -87,11 +97,17 @@ fit_geno_cline <- function(data, prior_file,
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user
-  model.index <- which(names(stanmodels) == paste(type, "free", tails, sep = "_"))
+  model.index <- which(names(stanmodels) == paste(type, tails, sep = "_"))
+
+
+  if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
+    clinefit <- rstan::sampling(object = stanmodels[[model.index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, ...)
+  } else {# otherwise, use the bahz defaults
+    clinefit <- rstan::sampling(object = stanmodels[[model.index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, control = list(adapt_delta = 0.95))
+    }
 
   # Pass everything to stan
-  clinefit <- rstan::sampling(object = stanmodels[[model.index]], data = c(stan_data, prior_list),
-                              chains = ch, init = init_list, ...)
-
   clinefit
 }

@@ -19,30 +19,43 @@ plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
 
-make_prior_config(path = "~/Desktop/", name = "test.yaml")
-
-prep_init_list("prior_config_template.yaml", tails = "left", chains = as.integer(3))
 
 # Fit the model
 fit_none <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                 type = "bi", tails = "none", chains = 3)
+                           type = "bi", tails = "none")
 fit_left <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                      type = "bi", tails = "left", chains = 3)
+                      type = "bi", tails = "left")
 fit_right <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                           type = "bi", tails = "right", chains = 3)
+                           type = "bi", tails = "right")
 fit_mirror <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                           type = "bi", tails = "mirror", chains = 3)
+                           type = "bi", tails = "mirror")
 fit_ind <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                            type = "bi", tails = "ind", chains = 3)
+                            type = "bi", tails = "ind")
 
-ref_stanfit <- z_p
+
+# A way to get the adapt delta out of a stanfit.
+attr(fit_none@sim$samples[[1]], "args")$control$adapt_delta
+
+attr(fit_left@sim$samples[[1]], "args")$control$adapt_delta
 
 # ?nlist to get lists of prior stuff
-cline_summary(fit_none, show.all = T)
-cline_summary(fit_left, show.all = T)
-cline_summary(fit_right, show.all = T)
-cline_summary(fit_mirror, show.all = T)
-cline_summary(fit_ind, show.all = T)
+cline_summary(fit_none)
+cline_summary(fit_left)
+cline_summary(fit_right)
+cline_summary(fit_mirror)
+cline_summary(fit_ind)
+
+xs <- seq(-300,300,20)
+ys <- rep(NA, length(xs))
+for (i in 1:length(xs)) {
+  ys[i] <- general_cline_eqn(transectDist = xs[i], decrease = T,
+                         center = 7.49, width = 40.20, pmin = 0.03, pmax = 0.96,
+                        deltaL = 0.2, tauL = 0.65, deltaR = 0.2, tauR = 0.65)
+}
+plot(x = data$transectDist, y = data$emp.p)
+lines(x = data$transectDist, y = data$cline.p)
+lines(x = xs, y = ys, col = "red")
+
 
 
 z1 <- loo::loo(fit_none, r_eff = relative_eff(fit_none))
@@ -51,6 +64,7 @@ z3 <- loo::loo(fit_right, r_eff = relative_eff(fit_right))
 z4 <- loo::loo(fit_mirror, r_eff = relative_eff(fit_mirror))
 z5 <- loo::loo(fit_ind, r_eff = relative_eff(fit_ind))
 
+rethinking::compare(fit_none, fit_left, fit_right, fit_mirror, fit_ind)
 loo::compare(z1, z2, z3, z4, z5)
 
 # testing the new width check in prep_init_list
@@ -61,6 +75,15 @@ for (width in 1:i) {
   widths[width] <- z[[width]]$width
 }
 unique(unlist(widths) < 0) # Never makes a value below 0.
+
+test <- function(...) {
+  stan.args <- names(sapply(match.call(), deparse))[-1]
+  if (c("control") %in% stan.args == F) {
+    result <- list(adapt_delta = 0.95)
+  } else{
+    result <- which(stan.args == "control")
+  }
+}
 
 
 # Will stan run with no priors? -------------------------------------------
