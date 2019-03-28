@@ -14,7 +14,7 @@ library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
 data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 30, Fis = 0,
-                    decrease = T, center = 10, width = 80, pmin = 0.03, pmax = .95)
+                    decrease = F, center = 10, width = 80, pmin = 0.03, pmax = .95)
 plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
