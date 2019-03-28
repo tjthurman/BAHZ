@@ -75,15 +75,14 @@ results <- fit_geno_cline(clinedata, "prior_file.yaml",
 # with no introgression tails.
 # Use 5 chains with 4000 warmup iterations
 # and 8000 total iterations per chain.
+# Note that this changes the adapt_delta to
+# the stan default of 0.8
 
 results2 <- fit_geno_cline(clinedata, "prior_file.yaml",
                      type = "bi", tails = "none",
                      chains = 5,
                      iter = 8000, warmup = 4000)
 }
-
-
-
 
 }
 \seealso{

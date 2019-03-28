@@ -65,6 +65,8 @@
 #' # with no introgression tails.
 #' # Use 5 chains with 4000 warmup iterations
 #' # and 8000 total iterations per chain.
+#' # Note that this changes the adapt_delta to
+#' # the stan default of 0.8
 #'
 #' results2 <- fit_geno_cline(clinedata, "prior_file.yaml",
 #'                      type = "bi", tails = "none",
@@ -72,9 +74,7 @@
 #'                      iter = 8000, warmup = 4000)
 #' }
 #'
-#'
-#'
-#'
+
 
 fit_geno_cline <- function(data, prior_file,
                       type = c("bi", "multi"),
@@ -126,10 +126,6 @@ fit_geno_cline <- function(data, prior_file,
     clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, tail_type),
                                 chains = ch, init = init_list, pars = pars, include = F, control = list(adapt_delta = 0.95))
     }
-
-
-  print(tail_type)
-  print(pars)
 
   clinefit
 }
