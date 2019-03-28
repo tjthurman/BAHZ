@@ -15,7 +15,8 @@
 #'  It creates the priors according to the configuration file \code{prior_file}.
 #'  \item \code{\link{prep_init_list}}, which creates a list of values for
 #'  initialiing the MCMC chains in \code{stan}. Initial values are randomly
-#'  drawn from the priors specified in \code{prior_file}.
+#'  drawn from the priors specified in \code{prior_file}. This step is ignored
+#'  if the user supplies an initialization list with the \code{init} argument.
 #' }
 #'
 #' The results of these functions are then passed to
@@ -32,13 +33,17 @@
 #'   \code{\link{prep_geno_data}} for possible formats.
 #' @param prior_file The path to the \code{.yaml} file which contains the
 #'   specifications of the priors.
-#' @param type The type of model to fit Either "bi", for a binomial model
+#' @param type The type of model to fit. Either "bi", for a binomial model
 #'   of allele frequencies, or "multi" for a multinomial model of genotype
 #'   frequencies.
 #' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or
 #'   "ind"?
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
 #'   integer. Default is 4.
+#' @param init Optional, default is \code{NULL}. A user-provided list of
+#'   initialization values for \code{stan}, to be used instead of the
+#'   \code{bahz} default of random initialization values from the prior. See
+#'   \code{\link[rstan]{stan}} for details on how to specify the init list.
 #' @param ... Arguments to be passed to \code{stan}, e.g., number of iterations,
 #'   warmup period, etc. See \code{\link[rstan]{sampling}} and the
 #'   \code{control} argument in \code{\link[rstan]{stan}} for information on
@@ -79,7 +84,7 @@
 fit_geno_cline <- function(data, prior_file,
                       type = c("bi", "multi"),
                       tails = c("none", "left", "right", "mirror", "ind"),
-                      chains = 4, ...) {
+                      chains = 4, init = NULL, ...) {
   # Argument checking
   type <- match.arg(type, several.ok = F)
   tails <- match.arg(tails, several.ok = F)
@@ -93,7 +98,12 @@ fit_geno_cline <- function(data, prior_file,
   # this also runs a bunch of prior compatibility checks
   prior_list <- prep_prior_list(prior_file)
   # Make list of initial values
-  init_list <- prep_init_list(prior_file, tails = tails, chains = ch)
+  if (is.null(init)) {
+    init_list <- prep_init_list(prior_file, tails = tails, chains = ch)
+  } else {
+    init_list <- init
+  }
+
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user

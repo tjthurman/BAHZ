@@ -5,7 +5,8 @@
 \title{Fit a genetic cline model to your data}
 \usage{
 fit_geno_cline(data, prior_file, type = c("bi", "multi"),
-  tails = c("none", "left", "right", "mirror", "ind"), chains = 4, ...)
+  tails = c("none", "left", "right", "mirror", "ind"), chains = 4,
+  init = NULL, ...)
 }
 \arguments{
 \item{data}{A dataframe containing your cline data. See
@@ -14,7 +15,7 @@ fit_geno_cline(data, prior_file, type = c("bi", "multi"),
 \item{prior_file}{The path to the \code{.yaml} file which contains the
 specifications of the priors.}
 
-\item{type}{The type of model to fit Either "bi", for a binomial model
+\item{type}{The type of model to fit. Either "bi", for a binomial model
 of allele frequencies, or "multi" for a multinomial model of genotype
 frequencies.}
 
@@ -23,6 +24,11 @@ frequencies.}
 
 \item{chains}{The number of MCMC chains to create. Numeric, coerced to
 integer. Default is 4.}
+
+\item{init}{Optional, default is \code{NULL}. A user-provided list of
+initialization values for \code{stan}, to be used instead of the
+\code{bahz} default of random initialization values from the prior. See
+\code{\link[rstan]{stan}} for details on how to specify the init list.}
 
 \item{...}{Arguments to be passed to \code{stan}, e.g., number of iterations,
 warmup period, etc. See \code{\link[rstan]{sampling}} and the
@@ -50,7 +56,8 @@ the specifications of the prior distributions, to be passed to Stan.
 It creates the priors according to the configuration file \code{prior_file}.
 \item \code{\link{prep_init_list}}, which creates a list of values for
 initialiing the MCMC chains in \code{stan}. Initial values are randomly
-drawn from the priors specified in \code{prior_file}.
+drawn from the priors specified in \code{prior_file}. This step is ignored
+if the user supplies an initialization list with the \code{init} argument.
 }
 
 The results of these functions are then passed to
