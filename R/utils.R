@@ -432,5 +432,3 @@ check_init_chain <- function(single.init.list) {
 
 
 
-
-

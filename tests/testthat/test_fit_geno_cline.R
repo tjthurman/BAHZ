@@ -23,3 +23,20 @@ test_that("fit geno cline runs the model and makes a stanfit object", {
   expect_equal(class(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
                                     type = "bi", tails = "none", chains = 1))[1], "stanfit")
 })
+
+test_that("fit_geno_cline works with user-defined init list", {
+  expect_equal(class(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
+                                    type = "bi", tails = "none",
+                                    chains = 1,
+                                    init = list(center = 9,
+                                                width =  49,
+                                                pmin = 0.031,
+                                                pmax = .94)))[1], "stanfit")
+})
+
+z_p2 <- suppressWarnings(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
+                                        type = "bi", tails = "none", chains = 1, control = list(adapt_delta = 0.85)))
+test_that("fit geno cline allows stan control parameters to be changed", {
+  expect_equal(attr(z_p2@sim$samples[[1]], "args")$control$adapt_delta, 0.85)
+})
+
