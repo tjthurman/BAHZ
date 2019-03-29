@@ -23,10 +23,6 @@
 #'
 #' @param prior_file Path to the \code{.yaml} file containing the prior specifications.
 #'
-#' @param type The type of model to fit. Either "bi", for a binomial model
-#'   of allele frequencies, or "multi" for a multinomial model of genotype
-#'   frequencies.
-#'
 #' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?
 #'
 #' @param chains The number of chains to be used in Stan. Integer.
@@ -43,16 +39,14 @@
 
 
 prep_init_list <- function(prior_file,
-                           tails = c("none", "left", "right", "mirror", "ind"),
-                           type = c("bi", "multi"), chains) {
+                           tails = c("none", "left", "right", "mirror", "ind"), chains) {
   #argument checking
   assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")
   tails <- match.arg(tails, several.ok = F)
-  type <- match.arg(type, several.ok = F)
   assertthat::assert_that(length((chains)) == 1,
                           msg = "You must pick a single value for chains.")
 
-  single.chain <- init_single_chain(prior_file, tails = tails, type = type)
+  single.chain <- init_single_chain(prior_file, tails = tails)
 
   init.list <- list()
   for(i in 1:chains) {
