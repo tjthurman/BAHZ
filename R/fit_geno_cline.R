@@ -99,7 +99,7 @@ fit_geno_cline <- function(data, prior_file,
   prior_list <- prep_prior_list(prior_file)
   # Make list of initial values
   if (is.null(init)) {
-    init_list <- prep_init_list(prior_file, tails = tails, chains = ch)
+    init_list <- prep_init_list(prior_file, tails = tails, type = type, chains = ch)
   } else {
     init_list <- init
   }

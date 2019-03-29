@@ -21,15 +21,22 @@
 #'
 #' @param prior_file Path to the yaml file containing the prior specifications.
 #'
+#' @param type The type of model to fit. Either "bi", for a binomial model
+#'   of allele frequencies, or "multi" for a multinomial model of genotype
+#'   frequencies.
+#'
 #' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?
 #'
 #' @return An \code{rlang} expression of the initialization values for a single chain
 #'
 #'
 
-init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind")) {
+init_single_chain <- function(prior_file,
+                              tails = c("none", "left", "right", "mirror", "ind"),
+                              type = c("bi", "multi")) {
   # Argument check
   tails <- match.arg(tails, several.ok = F)
+  type <- match.arg(type, several.ok = F)
   # Initialize all the objects I'll be making later to avoid R CMD CHECK warnings.
   init.center <- init.width <- init.pmin <- init.pmax <- NULL
   init.f <- init.deltaL <- init.deltaR <- init.deltaM <- NULL
@@ -74,32 +81,80 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
 
   # Assemble all the per-parameter expressions into one list for a single chain
   if (tails == "none") {
-    init.chain <- rlang::expr(list(center = !!init.center,
-                                   width = !!init.width,
-                                   pmin = !!init.pmin,
-                                   pmax = !!init.pmax))
-  } else if (tails == "left") {
+    if (type == "bi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax))
+    }
+    if (type == "multi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax,
+                                     f = !!init.f))
+    }
+
+  }
+  else if (tails == "left") {
+    if (type == "bi") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaL = !!init.deltaL,
                                    tauL = !!init.tauL))
-  } else if (tails == "right") {
+    }
+    if (type == "multi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax,
+                                     deltaL = !!init.deltaL,
+                                     tauL = !!init.tauL,
+                                     f = !!init.f))
+    }
+  }
+  else if (tails == "right") {
+    if (type == "bi") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaR = !!init.deltaR,
                                    tauR = !!init.tauR))
-  } else if (tails == "mirror") {
+    }
+    if (type == "multi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax,
+                                     deltaR = !!init.deltaR,
+                                     tauR = !!init.tauR,
+                                     f = !!init.f))
+    }
+  }
+  else if (tails == "mirror") {
+    if (type == "bi") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaM = !!init.deltaM,
                                    tauM = !!init.tauM))
-  } else if (tails == "ind") {
+    }
+    if (type == "multi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax,
+                                     deltaM = !!init.deltaM,
+                                     tauM = !!init.tauM,
+                                     f = !!init.f))
+    }
+  }
+  else if (tails == "ind") {
+    if (type == "bi") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
@@ -108,7 +163,20 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
                                    tauL = !!init.tauL,
                                    deltaR = !!init.deltaR,
                                    tauR = !!init.tauR))
-  } else {
+    }
+    if (type == "multi") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax,
+                                     deltaL = !!init.deltaL,
+                                     tauL = !!init.tauL,
+                                     deltaR = !!init.deltaR,
+                                     tauR = !!init.tauR,
+                                     f = !!init.f))
+    }
+  }
+  else {
     # Shouldn't really get here, with the argument checking.
     stop("Tails argument not properly specified.\nMust be either:\n`none`, `left`, `right`, `mirror`, `ind`")
   }
