@@ -5,16 +5,12 @@
 \title{Prepare the list of values for initializing the Stan model}
 \usage{
 prep_init_list(prior_file, tails = c("none", "left", "right", "mirror",
-  "ind"), type = c("bi", "multi"), chains)
+  "ind"), chains)
 }
 \arguments{
 \item{prior_file}{Path to the \code{.yaml} file containing the prior specifications.}
 
 \item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?}
-
-\item{type}{The type of model to fit. Either "bi", for a binomial model
-of allele frequencies, or "multi" for a multinomial model of genotype
-frequencies.}
 
 \item{chains}{The number of chains to be used in Stan. Integer.}
 }

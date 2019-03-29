@@ -11,4 +11,4 @@ for ( i in 1:N ) { // for each site
  // calculate deviance of the model
  // isn't working like this, stan doesn't like the specifications for geno and probs
  // need to figure out, or see if I can just do it post-hoc from the log likelihood
-// dev = (-2)*multinomial_lpmf(genos | probs);
+ //dev = (-2)*multinomial_lpmf(genos | probs);

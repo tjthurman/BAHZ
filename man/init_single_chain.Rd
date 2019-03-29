@@ -5,16 +5,12 @@
 \title{Make the expression of init values for a single chain in Stan}
 \usage{
 init_single_chain(prior_file, tails = c("none", "left", "right",
-  "mirror", "ind"), type = c("bi", "multi"))
+  "mirror", "ind"))
 }
 \arguments{
 \item{prior_file}{Path to the yaml file containing the prior specifications.}
 
 \item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?}
-
-\item{type}{The type of model to fit. Either "bi", for a binomial model
-of allele frequencies, or "multi" for a multinomial model of genotype
-frequencies.}
 }
 \value{
 An \code{rlang} expression of the initialization values for a single chain
