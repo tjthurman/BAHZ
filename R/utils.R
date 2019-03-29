@@ -416,11 +416,11 @@ check_init_chain <- function(single.init.list) {
         problems <- c(problems, "pmax")
       }
     }
-    if (names(single.init.list)[j] == "f") {
-      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
-        problems <- c(problems, "f")
-      }
-    }
+    # if (names(single.init.list)[j] == "f") {
+    #   if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+    #     problems <- c(problems, "f")
+    #   }
+    # }
     if (names(single.init.list)[j] == "pmax") {
       if (single.init.list$pmin > single.init.list[[j]]) {
         problems <- c(problems, "pmin", "pmax")

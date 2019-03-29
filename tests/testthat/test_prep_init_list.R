@@ -15,5 +15,5 @@ test_that("prep_init_list returns the proper values", {
   set.seed(763)
   expect_equal_to_reference(prep_init_list("prior_config_test1.yaml",
                                            tails = "ind",
-                                           chains = as.integer(5)), file = "ref_prep_init_list.Rda")
+                                           chains = as.integer(5)), file = "ref_prep_init_list_bi.Rda")
 })

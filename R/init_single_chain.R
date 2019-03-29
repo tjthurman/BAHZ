@@ -27,7 +27,8 @@
 #'
 #'
 
-init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mirror", "ind")) {
+init_single_chain <- function(prior_file,
+                              tails = c("none", "left", "right", "mirror", "ind")) {
   # Argument check
   tails <- match.arg(tails, several.ok = F)
   # Initialize all the objects I'll be making later to avoid R CMD CHECK warnings.
@@ -74,32 +75,39 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
 
   # Assemble all the per-parameter expressions into one list for a single chain
   if (tails == "none") {
-    init.chain <- rlang::expr(list(center = !!init.center,
-                                   width = !!init.width,
-                                   pmin = !!init.pmin,
-                                   pmax = !!init.pmax))
-  } else if (tails == "left") {
+      init.chain <- rlang::expr(list(center = !!init.center,
+                                     width = !!init.width,
+                                     pmin = !!init.pmin,
+                                     pmax = !!init.pmax))
+  }
+  else if (tails == "left") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaL = !!init.deltaL,
                                    tauL = !!init.tauL))
-  } else if (tails == "right") {
+
+  }
+  else if (tails == "right") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaR = !!init.deltaR,
                                    tauR = !!init.tauR))
-  } else if (tails == "mirror") {
+
+  }
+  else if (tails == "mirror") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
                                    pmax = !!init.pmax,
                                    deltaM = !!init.deltaM,
                                    tauM = !!init.tauM))
-  } else if (tails == "ind") {
+
+  }
+  else if (tails == "ind") {
     init.chain <- rlang::expr(list(center = !!init.center,
                                    width = !!init.width,
                                    pmin = !!init.pmin,
@@ -108,7 +116,9 @@ init_single_chain <- function(prior_file, tails = c("none", "left", "right", "mi
                                    tauL = !!init.tauL,
                                    deltaR = !!init.deltaR,
                                    tauR = !!init.tauR))
-  } else {
+
+  }
+  else {
     # Shouldn't really get here, with the argument checking.
     stop("Tails argument not properly specified.\nMust be either:\n`none`, `left`, `right`, `mirror`, `ind`")
   }
