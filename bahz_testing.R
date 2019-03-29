@@ -20,32 +20,51 @@ lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
 
 
-# Fit the model
-fit_none <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+# Fit the model, binomial
+fit_none_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "bi", tails = "none")
-fit_left <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_left_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                       type = "bi", tails = "left")
-fit_right <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_right_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "bi", tails = "right")
-fit_mirror <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_mirror_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "bi", tails = "mirror")
-fit_ind <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_ind_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "ind")
 
 
-# A way to get the adapt delta out of a stanfit.
-attr(fit_none@sim$samples[[1]], "args")$control$adapt_delta
 
-attr(fit_left@sim$samples[[1]], "args")$control$adapt_delta
+cline_summary(fit_none_b)
+cline_summary(fit_left_b)
+cline_summary(fit_right_b)
+cline_summary(fit_mirror_b)
+cline_summary(fit_ind_b)
 
-fit_ind@inits
-fit_none@inits
-# ?nlist to get lists of prior stuff
-cline_summary(fit_none, show.all = T)
-cline_summary(fit_left)
-cline_summary(fit_right)
-cline_summary(fit_mirror)
-cline_summary(fit_ind)
+
+
+# Fit the model, binomial
+fit_none_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                           type = "multi", tails = "none")
+fit_left_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                           type = "multi", tails = "left")
+fit_right_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                            type = "multi", tails = "right")
+fit_mirror_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                             type = "multi", tails = "mirror")
+fit_ind_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+                          type = "multi", tails = "ind")
+
+prep_init_list("prior_config_template.yaml", tails = "ind", chains = as.integer(1))
+
+fit_none_m@inits
+fit_left_m@inits
+
+cline_summary(fit_none_m)
+cline_summary(fit_left_m)
+cline_summary(fit_right_m)
+cline_summary(fit_mirror_m)
+cline_summary(fit_ind_m)
+
 
 xs <- seq(-300,300,20)
 ys <- rep(NA, length(xs))
@@ -58,13 +77,13 @@ plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
 lines(x = xs, y = ys, col = "red")
 
+plot(z1)
 
-
-z1 <- loo::loo(fit_none, r_eff = relative_eff(fit_none))
-z2 <- loo::loo(fit_left, r_eff = relative_eff(fit_left))
-z3 <- loo::loo(fit_right, r_eff = relative_eff(fit_right))
-z4 <- loo::loo(fit_mirror, r_eff = relative_eff(fit_mirror))
-z5 <- loo::loo(fit_ind, r_eff = relative_eff(fit_ind))
+z1 <- loo::loo(fit_none_m, r_eff = relative_eff(fit_none_m))
+z2 <- loo::loo(fit_left_m, r_eff = relative_eff(fit_left_m))
+z3 <- loo::loo(fit_right_m, r_eff = relative_eff(fit_right_m))
+z4 <- loo::loo(fit_mirror_m, r_eff = relative_eff(fit_mirror_m))
+z5 <- loo::loo(fit_ind_m, r_eff = relative_eff(fit_ind_m))
 
 rethinking::compare(fit_none, fit_left, fit_right, fit_mirror, fit_ind)
 loo::compare(z1, z2, z3, z4, z5)

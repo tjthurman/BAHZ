@@ -22,6 +22,8 @@ z_p <- suppressWarnings(fit_geno_cline(data = data, prior_file = "prior_config_t
 test_that("fit geno cline runs the model and makes a stanfit object", {
   expect_equal(class(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
                                     type = "bi", tails = "none", chains = 1))[1], "stanfit")
+  expect_equal(class(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
+                                    type = "multi", tails = "none", chains = 1))[1], "stanfit")
 })
 
 test_that("fit_geno_cline works with user-defined init list", {

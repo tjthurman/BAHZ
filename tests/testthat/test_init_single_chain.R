@@ -14,5 +14,6 @@ test_that("init_single_chain outputes are of appropriate length for the differen
   expect_equal(length(init_single_chain("prior_config_test1.yaml", tails = "ind")), 9)
 })
 test_that("init_single_chain output is correct", {
-  expect_equal_to_reference(init_single_chain("prior_config_test1.yaml", tails = "ind"), file = "ref_init_single_chain.Rda")
+  expect_equal_to_reference(init_single_chain("prior_config_test1.yaml", tails = "ind"),
+                            file = "ref_init_single_chain_bi.Rda")
 })

@@ -78,15 +78,6 @@ tauM.bad <- list(center = 10,
                  tauM = -0.5,
                  deltaR = 3,
                  tauR = 0.5)
-f.bad <- list(center = 10,
-              width = 10,
-              pmin = 0.2,
-              pmax = 0.3,
-              deltaL = 2,
-              tauL = 0.5,
-              deltaR = 3,
-              tauR = 0.5,
-              f = -1)
 good <- list(center = 10,
               width = 10,
               pmin = 0.2,
@@ -108,6 +99,5 @@ test_that("check_init_chain output is correct", {
   expect_equal(check_init_chain(tauL.bad), "tauL")
   expect_equal(check_init_chain(tauR.bad), "tauR")
   expect_equal(check_init_chain(tauM.bad), "tauM")
-  expect_equal(check_init_chain(f.bad), "f")
   expect_null(check_init_chain(good))
 })
