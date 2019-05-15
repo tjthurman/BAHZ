@@ -10,67 +10,71 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' plot_cline(yourStanfit)
+#' }
 
 
 plot_cline <- function(stanfit) {
 
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
-                          msg = "Model fit to plot from must be of class stanfit")
+                          msg = "Model object from which to plot must be of class stanfit")
 
   # Get summary of the model
-  summary <- bahz::cline_summary(stanfit, show.all = T)
+  summ <- bahz::cline_summary(stanfit, show.all = T)
 
   # Figure out if increasing or decreasing
-  ps <- summary %>%
-    filter(str_detect(param, "^p\\["))
+  ps <- summ %>%
+    dplyr::filter(stringr::str_detect(.$param, "^p\\["))
   if (ps$mean[1] < ps$mean[dim(ps)[1]]) {
     decreasing <- F
   } else {
     decreasing = T
   }
 
-  # Extract the cline parameters used
-  cline_params <- summary %>%
-    filter(param %in% c("center", "width",
-                        "pmin", "pmax",
-                        "deltaL", "deltaR", "deltaM",
-                        "tauL", "tauR", "tauM")) %>%
-    select(param, mean)
-
   # Get params to pass to general_cline_equation
-  center <- ifelse("center" %in% cline_params$param,
-                   cline_params$mean[which(cline_params$param == "center")],
+  # First 4 are always there
+  center <- ifelse("center" %in% summ$param,
+                   summ$mean[which(summ$param == "center")],
                    NULL)
-  width <- ifelse("width" %in% cline_params$param,
-                   cline_params$mean[which(cline_params$param == "width")],
+  width <- ifelse("width" %in% summ$param,
+                   summ$mean[which(summ$param == "width")],
                    NULL)
-  pmin <- ifelse("pmin" %in% cline_params$param,
-                  cline_params$mean[which(cline_params$param == "pmin")],
+  pmin <- ifelse("pmin" %in% summ$param,
+                  summ$mean[which(summ$param == "pmin")],
                   NULL)
-  pmax <- ifelse("pmax" %in% cline_params$param,
-                  cline_params$mean[which(cline_params$param == "pmax")],
+  pmax <- ifelse("pmax" %in% summ$param,
+                  summ$mean[which(summ$param == "pmax")],
                   NULL)
-  if ("deltaM" %in% cline_params$param) {
-    deltaL <- cline_params$mean[which(cline_params$param == "deltaM")]
-    deltaR <- cline_params$mean[which(cline_params$param == "deltaM")]
-  } else if ("deltaL" %in% cline_params$param) {
-    deltaL <- cline_params$mean[which(cline_params$param == "deltaL")]
-    deltaR <- cline_params$mean[which(cline_params$param == "deltaR")]
-  } else {
+  # Next few are optional based on tails
+  if ("deltaM" %in% summ$param) { # If mirror
+    deltaL <- summ$mean[which(summ$param == "deltaM")]
+    deltaR <- summ$mean[which(summ$param == "deltaM")]
+    tauL <- summ$mean[which(summ$param == "tauM")]
+    tauR <- summ$mean[which(summ$param == "tauM")]
+  } else if ("deltaL" %in% summ$param) { # if there's a left
+    deltaL <- summ$mean[which(summ$param == "deltaL")]
+    tauL <- summ$mean[which(summ$param == "tauL")]
+    if ("deltaR" %in% summ$param) { # if there's also a right, independent
+      deltaR <- summ$mean[which(summ$param == "deltaR")]
+      tauR <- summ$mean[which(summ$param == "tauR")]
+    } else { # else left only
+      deltaR <- NULL
+      tauR <- NULL
+    }
+  } else if ("deltaR" %in% summ$param) { # if right only
+      deltaR <- summ$mean[which(summ$param == "deltaR")]
+      tauR <- summ$mean[which(summ$param == "tauR")]
+      deltaL <- NULL
+      tauL <- NULL
+  } else { # no tails
     deltaL <- NULL
     deltaR <- NULL
-  }
-  if ("tauM" %in% cline_params$param) {
-    tauL <- cline_params$mean[which(cline_params$param == "tauM")]
-    tauR <- cline_params$mean[which(cline_params$param == "tauM")]
-  } else if ("tauL" %in% cline_params$param) {
-    tauL <- cline_params$mean[which(cline_params$param == "tauL")]
-    tauR <- cline_params$mean[which(cline_params$param == "tauR")]
-  } else {
     tauL <- NULL
     tauR <- NULL
   }
 
+  #Pass those in to a loop with the general_cline_equation
   xrange <- -300:300
   y <- NULL
   i <- 1
@@ -87,7 +91,7 @@ plot_cline <- function(stanfit) {
     i <- i + 1
   }
 
-  tibble(transectDist = xrange,
+  dplyr::tibble(transectDist = xrange,
          p = y)
 
 }

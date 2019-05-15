@@ -40,7 +40,11 @@ cline_summary(fit_right_b)
 cline_summary(fit_mirror_b)
 cline_summary(fit_ind_b)
 
-
+plot(-300:300, plot_cline(fit_none_b)$p, type = "l")
+lines(-300:300, plot_cline(fit_left_b)$p, type = "l", col = "red")
+lines(-300:300, plot_cline(fit_right_b)$p, type = "l", col = "blue")
+lines(-300:300, plot_cline(fit_mirror_b)$p, type = "l", col = "orange")
+lines(-300:300, plot_cline(fit_ind_b)$p, type = "l", col = "green")
 
 # Fit the model, binomial
 fit_none_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
