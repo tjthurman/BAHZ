@@ -9,17 +9,16 @@ library(bahz)
 library(rstan)
 options(mc.cores = parallel::detectCores())
 library(tidyverse)
-library(dplyr)
 library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 30, Fis = 0,
+data <- sim_geno_cline(transect_distances = seq(-200,136,20), n_ind = 30, Fis = 0,
                     decrease = T, center = 10, width = 80, pmin = 0.03, pmax = .95)
 plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
 
-
+make_prior_config()
 # Fit the model, binomial
 fit_none_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "bi", tails = "none")
@@ -32,6 +31,16 @@ fit_mirror_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "ind")
 
+z <- plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "red")
+plot_geno_cline(fit_left_b, data = data, add.obs.freqs = T, col = "red")
+plot_geno_cline(fit_right_b, data = data, add.obs.freqs = T, col = "red")
+plot_geno_cline(fit_mirror_b, data = data, add.obs.freqs = T, col = "red")
+plot_geno_cline(fit_ind_b, data = data, add.obs.freqs = T, col = "red")
+
+plot_geno_cline(fit_none_b, data = data, main = "test", col = "red", xlab = "distance", ylab = "allele frequency")
+
+
+z <- predict_geno_cline(fit_none_b, data = data)
 
 
 cline_summary(fit_none_b)
@@ -40,7 +49,13 @@ cline_summary(fit_right_b)
 cline_summary(fit_mirror_b)
 cline_summary(fit_ind_b)
 
+plot(predict_geno_cline(fit_none_b, data = data)$transectDist, predict_geno_cline(fit_none_b, data = data)$p, type = "l")
 
+plot(-300:300, $p, type = "l")
+lines(-300:300, plot_cline(fit_left_b)$p, type = "l", col = "red")
+lines(-300:300, plot_cline(fit_right_b)$p, type = "l", col = "blue")
+lines(-300:300, plot_cline(fit_mirror_b)$p, type = "l", col = "orange")
+lines(-300:300, plot_cline(fit_ind_b)$p, type = "l", col = "green")
 
 # Fit the model, binomial
 fit_none_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
