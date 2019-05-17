@@ -74,13 +74,6 @@ With our data and priors ready, we can now fit a cline model. For now, we will f
 set.seed(456)
 cline.fit <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "none")
-#> Warning: There were 2080 divergent transitions after warmup. Increasing adapt_delta above 0.95 may help. See
-#> http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
-#> Warning: There were 1001 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
-#> http://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
-#> Warning: There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See
-#> http://mc-stan.org/misc/warnings.html#bfmi-low
-#> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
 
 #### Analyze the results
@@ -89,12 +82,12 @@ We can summarize the posterior distribution of the cline parameters:
 
 ``` r
 cline_summary(cline.fit)
-#>    param    mean se_mean      sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
-#> 1 center   15.04   94.54  135.65       -104.41       239.14     2 6.38
-#> 2  width   81.15   52.10  138.89          4.21       401.22     7 1.49
-#> 3   pmin    0.16    0.04    0.07          0.03         0.20     2 3.26
-#> 4   pmax    0.90    0.04    0.06          0.80         0.99     2 4.08
-#> 5    dev 2142.53  790.45 1145.03        112.82      3000.82     2 5.43
+#>    param   mean se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
+#> 1 center 237.48    0.04 2.41        232.50       242.03  4272    1
+#> 2  width  67.62    0.09 6.01         56.19        79.63  4577    1
+#> 3   pmin   0.04    0.00 0.01          0.03         0.05  4575    1
+#> 4   pmax   0.99    0.00 0.00          0.98         0.99  5085    1
+#> 5    dev 116.04    0.07 2.86        112.21       121.59  1740    1
 ```
 
 The model has done a good job. The point estimates of the parameters are quite close to the values we specified, and the 95% credible intervals contain the simulated values.
@@ -116,12 +109,12 @@ head(pred_cline)
 #> # A tibble: 6 x 2
 #>   transectDist     p
 #>          <dbl> <dbl>
-#> 1        -9    0.727
-#> 2        -8.48 0.723
-#> 3        -7.96 0.720
-#> 4        -7.44 0.716
-#> 5        -6.93 0.713
-#> 6        -6.41 0.709
+#> 1        -9    0.990
+#> 2        -8.48 0.990
+#> 3        -7.96 0.990
+#> 4        -7.44 0.990
+#> 5        -6.93 0.990
+#> 6        -6.41 0.990
 ```
 
 ``` r
@@ -130,7 +123,8 @@ library(ggplot2)
 ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
   geom_line(color = "orange") +
   xlab("distance along transect") +
-  ylab("allele frequency")
+  ylab("allele frequency") +
+  theme_classic()
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
