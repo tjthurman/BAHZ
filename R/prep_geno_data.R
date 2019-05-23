@@ -113,7 +113,25 @@ prep_geno_data <- function(dataframe, type = c("bi", "multi")) {
                                         transectDist = transectDist,
                                         decrease = decrease))
     } else {
-      stop("Necessary data columns for binomial model not found")
+
+      missing4 <- c("AA", "Aa", "aa", "transectDist")[which((c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == F)]
+      missing3 <- c("nFocalAllele", "nTotalAlleles", "transectDist")[which((c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == F)]
+
+      if (length(missing4) < length(missing3)) {
+        missing <- missing4
+      } else {
+        missing <- missing3
+      }
+
+      stop(paste("\n",
+                 "Necessary data columns for binomial model not found",
+                 " ",
+                 "Missing columns are:",
+                 paste(missing, collapse = "\n"),
+                 " ",
+                 "See ?prep_geno_data for more info",
+                 "on the proper formatting of",
+                 "input data", sep = "\n"))
     }
   } else if (type == "multi") {
     if (sum(c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == 4) {
@@ -149,7 +167,17 @@ prep_geno_data <- function(dataframe, type = c("bi", "multi")) {
                                         transectDist = transectDist,
                                         decrease = decrease))
     } else {
-      stop("Necessary data columns for multinomial model not found")
+
+      missing <- c("AA", "Aa", "aa", "transectDist")[which((c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == F)]
+      stop(paste("\n",
+                 "Necessary data columns for multinomial model not found",
+                 " ",
+                 "Missing columns are:",
+                 paste(missing, collapse = "\n"),
+                 " ",
+                 "See ?prep_geno_data for more info",
+                 "on the proper formatting of",
+                 "input data", sep = "\n"))
     }
   } else{
     stop("\ntype must be either\n`bi` for binomial model, or\n`multi` for multinomial model")
