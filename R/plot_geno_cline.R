@@ -1,5 +1,8 @@
-#' Plot thing
+#' Plot a genetic cline
 #'
+#' Descriptions
+#'
+#' Details
 #'
 #' @importClassesFrom rstan stanfit
 #'
@@ -24,17 +27,30 @@
 #'
 #' @return invisible(NULL)
 #'
+#' @examples
+#' \dontrun{
+#'
+#' # Default plot with the cline only
+#' plot_geno_cline(yourStanfit, data)
+#'
+#'
+#' # If you want to specify only 100 data points for plotting
+#' predict_genocline(yourStanfit, data, num.out = 100)
+#' }
+#'
 #' @export
 
 
 plot_geno_cline <- function(stanfit, data, num.out = NULL, add.obs.freqs = F, point.col = "black", ...) {
 
   # Check arguments
-  # add checks for data
-  # add checks for num.out
-  assertthat::assert_that(class(stanfit)[1] == "stanfit",
-                          msg = "Model object from which to plot must be of class stanfit")
+  assertthat::assert_that(add.obs.freqs %in% c(T, F),
+                          msg = "add.obs.freq must be True or False")
 
+  assertthat::assert_that(point.col %in% colors(),
+                          msg = paste(point.col,
+                                      " is not a valid color name", sep = ""))
+  # all other args get checked in predict geno cline
   cline <- bahz::predict_geno_cline(stanfit, data, num.out = num.out)
 
   if (add.obs.freqs == T) {
@@ -70,7 +86,8 @@ plot_geno_cline <- function(stanfit, data, num.out = NULL, add.obs.freqs = F, po
         dplyr::mutate(est.p.internal = .data$nFocalAllele/.data$nTotalAlleles)
 
     } else {
-      stop("Necessary columns for calculating and plotting allele frequencies not found in data")
+      stop(paste("Necessary columns for calculating and plotting allele frequencies not found in data\n",
+                 "Make sure it is the same data frame you used to generate the cline fit", sep = ""))
     }
   }
 

@@ -11,14 +11,14 @@
 #'   evaluate the cline. By default, does twice the length of the cline, but you
 #'   can specify more or fewer. Too few may leade to a jagged-looking cline.
 #'
-#' @return a plot
+#' @return a data frame with the x y data
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #'
-#' predict_genocline(yourStanfit, data)
+#' predict_geno_cline(yourStanfit, data)
 #'
 #' # If you want to specify only 100 data points for plotting
 #' predict_genocline(yourStanfit, data, num.out = 100)
@@ -28,10 +28,24 @@
 predict_geno_cline <- function(stanfit, data, num.out = NULL) {
 
   # Check arguments
-  # add checks for data
-  # add checks for num.out
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
                           msg = "Model object from which to plot must be of class stanfit")
+  assertthat::assert_that(is.data.frame(data),
+                          msg = paste("Input data must be a data frame",
+                                      "Make sure it is the same data frame you used to generate the cline fit",
+                                      sep = "\n"))
+  assertthat::assert_that("transectDist" %in% colnames(data),
+                          msg = paste("Input data frame does not contain a transectDist column",
+                                      "Make sure it is the same dataframe you used to generate the cline fit",
+                                      sep = "\n"))
+  assertthat::assert_that(is.numeric(data$transectDist),
+                          msg = paste("transectDist column in input date must be numeric",
+                                      "Make sure it is the same dataframe you used to generate the cline fit",
+                                      sep = "\n"))
+  if (is.null(num.out) == F) {
+    assertthat::assert_that(is.numeric(num.out),
+                             msg = "num.out must be numeric")
+  }
 
   # Get summary of the model
   summ <- bahz::cline_summary(stanfit, show.all = T)
@@ -39,6 +53,22 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
   # Figure out if increasing or decreasing
   ps <- summ %>%
     dplyr::filter(stringr::str_detect(.$param, "^p\\["))
+  # Check to see if there are the same number of sites,
+  # but just give a warning
+  if (dim(ps)[1] != dim(data)[1]) {
+    sf.sites <- dim(ps)[1]
+    data.sites <- dim(data)[1]
+    warning(paste("Your stanfit object and dataframe contain data from different numbers of sites\n",
+                  "stanfit sites = ",
+                  sf.sites,
+                  "\n",
+                  "data sites = ",
+                  data.sites, sep = ""))
+  }
+  if (ps$mean[1] == ps$mean[dim(ps)[1]]) {
+    stop("Predicted allele frequencies equal at start and end of transect\n  They must be different for BAHZ to determine if cline is increasing or decreasing")
+  }
+
   if (ps$mean[1] < ps$mean[dim(ps)[1]]) {
     decreasing <- F
   } else {
@@ -91,6 +121,8 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
   # Figure out starting and ending x values
   # Give 2% visual padding
 
+
+
   start.x <- as.integer(min(data$transectDist))
   end.x <- as.integer(max(data$transectDist))
   range <- end.x - start.x
@@ -142,6 +174,6 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
   # }
 
 
-  dplyr::tibble(transectDist = xrange,
-         p = y)
+  data.frame(transectDist = xrange,
+         p = y, stringsAsFactors = F)
 }
