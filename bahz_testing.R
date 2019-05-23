@@ -31,6 +31,25 @@ fit_mirror_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "ind")
 
+dataframe <- data.frame(nFocalAllele = c(1,2,3),
+                        nTotalalleles = c(1,2,3),
+                        transectDist = c(1,2,3))
+
+dataframe <- data.frame(AA = as.integer(c(1,2,3)),
+           Aa = c(1,2,3),
+           aa= c(1,2,3),
+           transectDist = c(1,2,3))
+
+prep_geno_data(dataframe, type = "bi")
+
+
+paste("Necessary data columns for multinomial model not found",
+      "Missing cloumns are:",
+      paste(missing, collapse = "\n"), sep = "\n")
+
+missing <- c("AA", "Aa", "aa", "transectDist")[which((c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == F)]
+
+
 z <- plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "red")
 plot_geno_cline(fit_left_b, data = data, add.obs.freqs = T, col = "red")
 plot_geno_cline(fit_right_b, data = data, add.obs.freqs = T, col = "red")

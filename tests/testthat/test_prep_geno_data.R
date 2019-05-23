@@ -15,7 +15,7 @@ test_that("prep_geno_data checks for proper columns", {
                                          transectDist = c(1,2,3)), type = "multi"), "multinomial")
   expect_error(prep_geno_data(data.frame(nFocalAllele = c(1,2,3),
                                          nTotalalleles = c(1,2,3),
-                                         transectDist = c(1,2,3)), type = "bi"), "binomial")
+                                         transectDist = c(1,2,3)), type = "bi"), "nTotalAlleles")
   expect_error(prep_geno_data(data.frame(nFocalAllele = c(1,2,3),
                                          nTotalAlleles = c(1,2,3),
                                          transectDist = c("1","2","3")), type = "bi"), "numeric")
@@ -26,6 +26,10 @@ test_that("prep_geno_data checks for proper columns", {
                                          Aa = c(1,2.5,3),
                                          aa = c(1,2.5,3),
                                          transectDist = c(1,2,3)), type = "multi"), "integer")
+  expect_error(prep_geno_data(data.frame(AA = c(1,2,3),
+                                         XX = c(1,2,3),
+                                         aa = c(1,2,3),
+                                         transectDist = c(1,2,3)), type = "multi"), "Aa")
 })
 
 test_that("prep_geno_data handles flat cline error", {
