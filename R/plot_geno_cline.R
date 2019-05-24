@@ -1,20 +1,25 @@
 #' Plot a genetic cline
 #'
-#' Descriptions
+#' Makes a simple plot to visualize modeled genetic clines. The user supplies the stanfit
+#' object containing the model fit and the dataframe with the original data, and
+#' may also supply a number of optional arguments to customize the plot.
 #'
-#' Details
+#' This plotting function is mostly a wrapper around
+#' \code{\link{predict_geno_cline}}. For greater customization of plots, users
+#' are encouraged to use \code{\link{predict_geno_cline}} to generate the x- and
+#' y-coordinates for their fitted cline, and then graph those coordinates using
+#' the plotting methods and packages of their choice (base plotting, lattice, or
+#' ggplot2).
 #'
 #' @importClassesFrom rstan stanfit
 #'
 #' @importFrom graphics "plot" "title" "points"
 #'
-#' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
+#' @param stanfit A \code{\linkS4class{stanfit}} object holding your model
+#'   results.
 #'
-#' @param data The dataframe with your cline data.
-#'
-#' @param num.out Optional, the number of x values (distances) at which to
-#'   evaluate the cline. By default, does twice the length of the cline, but you
-#'   can specify more or fewer. Too few may lead to a jagged-looking cline.
+#' @param data The dataframe with your cline data (ideally, the same data frame
+#'   that was used to generate the model fit).
 #'
 #' @param add.obs.freqs Should the observed allele frequencies at each site be
 #'   plotted? TRUE or FALSE, default is FALSE.
@@ -23,25 +28,36 @@
 #'   frequencies. Default is black.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
-#'   functions, in particular graphical parameters (see \code{\link[graphics]{par}}).
+#'   functions to customize the plot (see \code{\link[graphics]{par}}).
 #'
 #' @return invisible(NULL)
 #'
 #' @examples
+#'
 #' \dontrun{
 #'
 #' # Default plot with the cline only
 #' plot_geno_cline(yourStanfit, data)
 #'
+#' # Add points showing the empirical allele frequencies at
+#' # each collecting site
+#' plot_geno_cline(yourStanfit, data, add.obs.freq = T)
 #'
-#' # If you want to specify only 100 data points for plotting
-#' predict_genocline(yourStanfit, data, num.out = 100)
+#' # Some plot customization
+#' # Adding axis labels, titles, and changing the
+#' # colors of the points and line.
+#' plot_geno_cline(yourStanfit, data, add.obs.freq = T,
+#'                 main = "My cline",
+#'                 xlab = "distance",
+#'                 ylab = "allele frequency",
+#'                 point.col = "red",
+#'                 col = "blue")
 #' }
 #'
 #' @export
 
 
-plot_geno_cline <- function(stanfit, data, num.out = NULL, add.obs.freqs = F, point.col = "black", ...) {
+plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black", ...) {
 
   # Check arguments
   assertthat::assert_that(add.obs.freqs %in% c(T, F),
@@ -51,7 +67,7 @@ plot_geno_cline <- function(stanfit, data, num.out = NULL, add.obs.freqs = F, po
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
   # all other args get checked in predict geno cline
-  cline <- bahz::predict_geno_cline(stanfit, data, num.out = num.out)
+  cline <- bahz::predict_geno_cline(stanfit, data)
 
   if (add.obs.freqs == T) {
     dataframe <- data

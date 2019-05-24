@@ -1,4 +1,5 @@
-#' Pot thing
+#' Predict allele frequencies for a genetic cline
+#'
 #'
 #'
 #' @importClassesFrom rstan stanfit
@@ -120,8 +121,6 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
 
   # Figure out starting and ending x values
   # Give 2% visual padding
-
-
 
   start.x <- as.integer(min(data$transectDist))
   end.x <- as.integer(max(data$transectDist))

@@ -17,8 +17,6 @@ test_that("plot_geno_cline checks args for type", {
   expect_error(plot_geno_cline(stanfit = ref_stanfit,
                                   data = data.frame(transectDist = c("X", "Y"))), "numeric")
   expect_error(plot_geno_cline(stanfit = ref_stanfit,
-                                  data = a.ref, num.out = "XXX"), "numeric")
-  expect_error(plot_geno_cline(stanfit = ref_stanfit,
                                data = a.ref, add.obs.freq = "XXX"), "True")
 })
 test_that("plot_geno_cline checks args for appropriateness", {

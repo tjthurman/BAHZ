@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_geno_cline.R
 \name{predict_geno_cline}
 \alias{predict_geno_cline}
-\title{Pot thing}
+\title{Predict allele frequencies for a genetic cline}
 \usage{
 predict_geno_cline(stanfit, data, num.out = NULL)
 }
@@ -16,15 +16,15 @@ evaluate the cline. By default, does twice the length of the cline, but you
 can specify more or fewer. Too few may leade to a jagged-looking cline.}
 }
 \value{
-a plot
+a data frame with the x y data
 }
 \description{
-Pot thing
+Predict allele frequencies for a genetic cline
 }
 \examples{
 \dontrun{
 
-predict_genocline(yourStanfit, data)
+predict_geno_cline(yourStanfit, data)
 
 # If you want to specify only 100 data points for plotting
 predict_genocline(yourStanfit, data, num.out = 100)
