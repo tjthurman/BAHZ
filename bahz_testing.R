@@ -31,26 +31,11 @@ fit_mirror_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "ind")
 
-dataframe <- data.frame(nFocalAllele = c(1,2,3),
-                        nTotalalleles = c(1,2,3),
-                        transectDist = c(1,2,3))
-
-dataframe <- data.frame(AA = as.integer(c(1,2,3)),
-           Aa = c(1,2,3),
-           aa= c(1,2,3),
-           transectDist = c(1,2,3))
-
-prep_geno_data(dataframe, type = "bi")
+plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "red")
+plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "xxx")
+plot_geno_cline(fit_none_b, data = dplyr::slice(data, -1), add.obs.freqs = T, point.col = "red")
 
 
-paste("Necessary data columns for multinomial model not found",
-      "Missing cloumns are:",
-      paste(missing, collapse = "\n"), sep = "\n")
-
-missing <- c("AA", "Aa", "aa", "transectDist")[which((c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == F)]
-
-
-z <- plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "red")
 plot_geno_cline(fit_left_b, data = data, add.obs.freqs = T, col = "red")
 plot_geno_cline(fit_right_b, data = data, add.obs.freqs = T, col = "red")
 plot_geno_cline(fit_mirror_b, data = data, add.obs.freqs = T, col = "red")
@@ -58,8 +43,6 @@ plot_geno_cline(fit_ind_b, data = data, add.obs.freqs = T, col = "red")
 
 plot_geno_cline(fit_none_b, data = data, main = "test", col = "red", xlab = "distance", ylab = "allele frequency")
 
-
-z <- predict_geno_cline(fit_none_b, data = data)
 
 
 cline_summary(fit_none_b)
@@ -70,7 +53,7 @@ cline_summary(fit_ind_b)
 
 plot(predict_geno_cline(fit_none_b, data = data)$transectDist, predict_geno_cline(fit_none_b, data = data)$p, type = "l")
 
-plot(-300:300, $p, type = "l")
+
 lines(-300:300, plot_cline(fit_left_b)$p, type = "l", col = "red")
 lines(-300:300, plot_cline(fit_right_b)$p, type = "l", col = "blue")
 lines(-300:300, plot_cline(fit_mirror_b)$p, type = "l", col = "orange")

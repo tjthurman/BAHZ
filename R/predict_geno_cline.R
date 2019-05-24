@@ -1,37 +1,49 @@
-#' Pot thing
+#' Predict allele frequencies for a genetic cline
 #'
+#' Uses the cline parameters from your stanfit object (the mean of the posterior
+#' distribtution of each parameter) to predict the allele frequency at the
+#' distance(s) along the transect specified by the user.
 #'
 #' @importClassesFrom rstan stanfit
 #'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
 #'
-#' @param data The dataframe with your cline data.
+#' @param distance The x value(s) (distance along the transect) at which to
+#'   predict allele frequencies for the fitted cline. Must be a numeric vector.
 #'
-#' @param num.out Optional, the number of x values (distances) at which to
-#'   evaluate the cline. By default, does twice the length of the cline, but you
-#'   can specify more or fewer. Too few may leade to a jagged-looking cline.
-#'
-#' @return a plot
+#' @return A data frame with two columns:
+#'  \itemize{
+#'  \item transectDist: the distances along the transect at which the cline
+#'  equation was evaluated. Will be the same values as were supplied in the
+#'  distance argument. Numeric.
+#'  \item p: the predict allele frequency at each distance, according to the
+#'  cline equation. Numeric.
+#'  }
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #'
-#' predict_genocline(yourStanfit, data)
+#' # Predict at one distance
+#' predict_geno_cline(yourStanfit, distance = 50)
 #'
-#' # If you want to specify only 100 data points for plotting
-#' predict_genocline(yourStanfit, data, num.out = 100)
+#' # Predict at a range of distances
+#' predict_geno_cline(yourStanfit, distance = 0:100)
+#'
 #' }
 
 
-predict_geno_cline <- function(stanfit, data, num.out = NULL) {
+predict_geno_cline <- function(stanfit, distance) {
 
   # Check arguments
-  # add checks for data
-  # add checks for num.out
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
                           msg = "Model object from which to plot must be of class stanfit")
+  assertthat::assert_that(is.vector(distance),
+                          msg = paste("distance must be a vector"))
+  assertthat::assert_that(is.numeric(distance),
+                          msg = paste("distance must be of type numeric, not ",
+                                      typeof(distance), sep = ""))
 
   # Get summary of the model
   summ <- bahz::cline_summary(stanfit, show.all = T)
@@ -88,35 +100,19 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
   }
 
 
-  # Figure out starting and ending x values
-  # Give 2% visual padding
-
-  start.x <- as.integer(min(data$transectDist))
-  end.x <- as.integer(max(data$transectDist))
-  range <- end.x - start.x
-  start.pad <- as.integer(start.x - (0.02*(range)))
-  end.pad <- as.integer(end.x + (0.02*(range)))
-
-  xrange <- seq(from = start.pad, to = end.pad,
-                length.out = ifelse(is.null(num.out) == T,
-                                    range*2,
-                                    num.out))
-
-  #Pass those in to a loop with the general_cline_equation
-  y <- NULL
-  i <- 1
-  for (x in xrange) {
-    y[i] <- bahz::general_cline_eqn(transectDist = x, decrease = decreasing,
-                              center = center,
-                              width = width,
-                              pmin = pmin,
-                              pmax = pmax,
-                              deltaL = deltaL,
-                              tauL = tauL,
-                              deltaR = deltaR,
-                              tauR = tauR)
-    i <- i + 1
-  }
+  #Pass those to general cline equation.
+  #in sapply for now, will vectorize that soon.
+  y <- sapply(distance, FUN = bahz::general_cline_eqn,
+              decrease = decreasing,
+              center = center,
+              width = width,
+              pmin = pmin,
+              pmax = pmax,
+              deltaL = deltaL,
+              tauL = tauL,
+              deltaR = deltaR,
+              tauR = tauR,
+              USE.NAMES = F)
 
 
   # Some ideas on how to add lines for every draw from the posterior.
@@ -142,6 +138,6 @@ predict_geno_cline <- function(stanfit, data, num.out = NULL) {
   # }
 
 
-  dplyr::tibble(transectDist = xrange,
-         p = y)
+  data.frame(transectDist = distance,
+         p = y, stringsAsFactors = F)
 }
