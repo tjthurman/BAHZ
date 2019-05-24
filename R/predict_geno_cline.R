@@ -101,18 +101,16 @@ predict_geno_cline <- function(stanfit, distance) {
 
 
   #Pass those to general cline equation.
-  #in sapply for now, will vectorize that soon.
-  y <- sapply(distance, FUN = bahz::general_cline_eqn,
-              decrease = decreasing,
-              center = center,
-              width = width,
-              pmin = pmin,
-              pmax = pmax,
-              deltaL = deltaL,
-              tauL = tauL,
-              deltaR = deltaR,
-              tauR = tauR,
-              USE.NAMES = F)
+  y <- general_cline_eqn(transectDist = distance,
+                         decrease = decreasing,
+                         center = center,
+                         width = width,
+                         pmin = pmin,
+                         pmax = pmax,
+                         deltaL = deltaL,
+                         tauL = tauL,
+                         deltaR = deltaR,
+                         tauR = tauR)
 
 
   # Some ideas on how to add lines for every draw from the posterior.

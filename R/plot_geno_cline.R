@@ -15,6 +15,8 @@
 #'
 #' @importFrom graphics "plot" "title" "points"
 #'
+#' @importFrom grDevices "colors"
+#'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model
 #'   results.
 #'

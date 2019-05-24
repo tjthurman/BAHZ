@@ -43,7 +43,7 @@ plot_geno_cline(fit_ind_b, data = data, add.obs.freqs = T, col = "red")
 
 plot_geno_cline(fit_none_b, data = data, main = "test", col = "red", xlab = "distance", ylab = "allele frequency")
 
-
+general_cline_eqn(c(8,10), decrease = F, center = 5, width = 8)
 
 cline_summary(fit_none_b)
 cline_summary(fit_left_b)

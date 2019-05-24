@@ -2,14 +2,15 @@
 % Please edit documentation in R/general_cline_eqn.R
 \name{general_cline_eqn}
 \alias{general_cline_eqn}
-\title{Calculate allele frequency at a position on a cline}
+\title{Calculate allele frequencies for a cline}
 \usage{
 general_cline_eqn(transectDist, decrease = c(TRUE, FALSE), center, width,
   pmin = 0, pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
   tauR = NULL)
 }
 \arguments{
-\item{transectDist}{The position at which to evaluate the cline equation.}
+\item{transectDist}{The position(s) at which to evaluate the cline equation.
+Must be a numeric vector.}
 
 \item{decrease}{Is the cline decreasing in frequency? \code{TRUE} or
 \code{FALSE}.}
@@ -34,8 +35,8 @@ exponential introgression tail. Must supply both to generate a tail. Default is
 }
 \value{
 The result of evaluating a cline equation with the specified
-parameters at the specified distance (that is, \eqn{p'} in the notation of the
-equations above). A numeric vector of length 1.
+parameters at the specified distance(s) (that is, \eqn{p'} in the notation of the
+equations above). A numeric vector equal in length to the transectDist argument.
 }
 \description{
 A flexible function to evaluate hybrid zone genetic cline equations, with or
@@ -81,13 +82,14 @@ arguments supplied by the user.
 general_cline_eqn(transectDist = 100, decrease = F,
                   center = 125, width = 40)
 
-# Calculate the allele frequency at x = 84 for a decreasing cline
+# Calculate the allele frequency at x = 84 and x = 100 for a decreasing cline
 # with a center at 76, a width of 22, and a right tail
 # with deltaR = 7.5, tauR = 0.45.
 
-general_cline_eqn(transectDist = 84, decrease = TRUE,
+general_cline_eqn(transectDist = c(84,100), decrease = TRUE,
                  center = 76, width = 22,
                  deltaR = 7.5, tauR = .45)
 }
+
 
 }

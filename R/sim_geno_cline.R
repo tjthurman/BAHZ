@@ -155,20 +155,23 @@ sim_geno_cline <- function(transect_distances, n_ind,
                       aa = rep(NA, times = sites),
                       N = Ns)
 
+  # Add the predicted cline p to each row
+  fk.dt$cline.p <- general_cline_eqn(transectDist = fk.dt$transectDist,
+                                          center = center,
+                                          width = width,
+                                          pmin = pmin,
+                                          pmax = pmax,
+                                          deltaL = deltaL,
+                                          deltaR = deltaR,
+                                          tauL = tauL,
+                                          tauR = tauR,
+                                          decrease = decrease)
   # Then add the simulated genotypes to each row
+  # Would be nice to vectorize this somehow, but I haven't figured out a nice easy way
+
   for (row in 1:sites) {
-    fk.dt$cline.p[row] <- general_cline_eqn(transectDist = fk.dt$transectDist[row],
-                                            center = center,
-                                            width = width,
-                                            pmin = pmin,
-                                            pmax = pmax,
-                                            deltaL = deltaL,
-                                            deltaR = deltaR,
-                                            tauL = tauL,
-                                            tauR = tauR,
-                                            decrease = decrease)
     AA <- fk.dt$cline.p[row]^2 + fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
-    Aa<- 2*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])*(1-fk.dt$cline.f[row])
+    Aa <- 2*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])*(1-fk.dt$cline.f[row])
     aa <- (1-fk.dt$cline.p[row])^2 +fk.dt$cline.f[row]*fk.dt$cline.p[row]*(1-fk.dt$cline.p[row])
     genotypes <- rowSums(stats::rmultinom(n = 1, size = fk.dt$N[row], prob = c(AA, Aa, aa)))
     fk.dt$AA[row] <- as.integer(genotypes[1])
