@@ -4,29 +4,37 @@
 \alias{predict_geno_cline}
 \title{Predict allele frequencies for a genetic cline}
 \usage{
-predict_geno_cline(stanfit, data, num.out = NULL)
+predict_geno_cline(stanfit, distance)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
 
-\item{data}{The dataframe with your cline data.}
-
-\item{num.out}{Optional, the number of x values (distances) at which to
-evaluate the cline. By default, does twice the length of the cline, but you
-can specify more or fewer. Too few may leade to a jagged-looking cline.}
+\item{distance}{The x value(s) (distance along the transect) at which to
+predict allele frequencies for the fitted cline. Must be a numeric vector.}
 }
 \value{
-a data frame with the x y data
+A data frame with two columns:
+\itemize{
+\item transectDist: the distances along the transect at which the cline
+equation was evaluated. Will be the same values as were supplied in the
+distance argument. Numeric.
+\item p: the predict allele frequency at each distance, according to the
+cline equation. Numeric.
+}
 }
 \description{
-Predict allele frequencies for a genetic cline
+Uses the cline parameters from your stanfit object (the mean of the posterior
+distribtution of each parameter) to predict the allele frequency at the
+distance(s) along the transect specified by the user.
 }
 \examples{
 \dontrun{
 
-predict_geno_cline(yourStanfit, data)
+# Predict at one distance
+predict_geno_cline(yourStanfit, distance = 50)
 
-# If you want to specify only 100 data points for plotting
-predict_genocline(yourStanfit, data, num.out = 100)
+# Predict at a range of distances
+predict_geno_cline(yourStanfit, distance = 0:100)
+
 }
 }

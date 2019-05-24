@@ -60,15 +60,55 @@
 plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black", ...) {
 
   # Check arguments
+  assertthat::assert_that(class(stanfit)[1] == "stanfit",
+                          msg = "Model object from which to plot must be of class stanfit")
+  assertthat::assert_that(is.data.frame(data),
+                          msg = paste("Input data must be a data frame",
+                                      "Make sure it is the same data frame you used to generate the cline fit",
+                                      sep = "\n"))
+  assertthat::assert_that("transectDist" %in% colnames(data),
+                          msg = paste("Input data frame does not contain a transectDist column",
+                                      "Make sure it is the same data frame you used to generate the cline fit",
+                                      sep = "\n"))
+  assertthat::assert_that(is.numeric(data$transectDist),
+                          msg = paste("transectDist column in input data must be numeric",
+                                      "Make sure it is the same data frame you used to generate the cline fit",
+                                      sep = "\n"))
   assertthat::assert_that(add.obs.freqs %in% c(T, F),
                           msg = "add.obs.freq must be True or False")
-
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
-  # all other args get checked in predict geno cline
-  cline <- bahz::predict_geno_cline(stanfit, data)
 
+  # Check to see if there are the same number of sites in the stanfit object
+  # as in the inout data frame. Give a warning if there's not.
+  data.sites <- dim(data)[1]
+  sf.sites <- stanfit@par_dims$p
+  if (data.sites != sf.sites) {
+    warning(paste("\n",
+                  "Your stanfit object and dataframe contain data from different numbers of sites\n",
+                  "The stanfit object may have been generated from a different data frame\n",
+                  "stanfit sites = ",
+                  sf.sites,
+                  "\n",
+                  "data sites = ",
+                  data.sites, sep = ""))
+  }
+
+  # Figure out starting and ending x values
+  start.x <- as.integer(min(data$transectDist))
+  end.x <- as.integer(max(data$transectDist))
+  range <- end.x - start.x
+  start.pad <- as.integer(start.x - (0.02*(range)))
+  end.pad <- as.integer(end.x + (0.02*(range)))
+
+  xrange <- seq(from = start.pad, to = end.pad,
+                length.out = range*2)
+
+  # Generate the cline values to plot
+  cline <- bahz::predict_geno_cline(stanfit, distance = xrange)
+
+  # If addinf the observed allele frequencies, calculate those.
   if (add.obs.freqs == T) {
     dataframe <- data
     if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {
@@ -107,6 +147,7 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
     }
   }
 
+  # Now, plot it all
   graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, ylim = c(0,1), ...)
   if (add.obs.freqs == T) {
     graphics::points(x = conv.dataframe$transectDist,
