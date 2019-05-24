@@ -59,6 +59,11 @@ test_that("general_cline_equation gives the proper results", {
                                  pmin = 0.2, pmax = 0.8,
                                  deltaR = 10, tauR = 0.6,
                                  deltaL = 14, tauL = 0.5), 0.3653458, tolerance = 1e-7)
+  expect_equal(general_cline_eqn(transectDist = c(85,115), decrease = F,
+                                 center = 100, width = 60,
+                                 pmin = 0.2, pmax = 0.8,
+                                 deltaR = 10, tauR = 0.6,
+                                 deltaL = 14, tauL = 0.5), c(0.3653458, 0.6216511), tolerance = 1e-7)
 
 })
 

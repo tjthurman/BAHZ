@@ -1,6 +1,6 @@
 Package: bahz
 Title: Bayesian Analysis of Hybrid Zones
-Version: 0.0.0.9009
+Version: 0.0.0.9011
 Authors@R:
     person(given = "Timothy",
              family = "Thurman",

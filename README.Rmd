@@ -82,7 +82,13 @@ By default this will generate a configuration file template, `prior_config_templ
 
 With our data and priors ready, we can now fit a cline model. For now, we will fit the simplest cline model, using the binomial model of allele frequencies and no introgression tails:
 
-```{r fit model, messages = F}
+```{r fit model for real, messages = F, echo=F}
+set.seed(456)
+cline.fit <- fit_geno_cline(data = data, prior_file = "inst/extdata/prior_config_template.yaml",
+                            type = "bi", tails = "none")
+```
+
+```{r fit model for display, messages = F, eval = F}
 set.seed(456)
 cline.fit <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                             type = "bi", tails = "none")
@@ -97,6 +103,30 @@ cline_summary(cline.fit)
 ```
 
 The model has done a good job. The point estimates of the parameters are quite close to the values we specified, and the 95% credible intervals contain the simulated values. 
+
+bahz provides some simple plotting functions for visualizating fitted clines:
+
+```{r}
+plot_geno_cline(stanfit = cline.fit, data = data, add.obs.freqs = T, 
+                xlab = "distance", ylab = "allele frequency")
+```
+
+For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
+
+```{r} 
+pred_cline <- predict_geno_cline(stanfit = cline.fit, data = data)
+head(pred_cline)
+```
+
+```{r}
+# Use the ggplot2 package
+library(ggplot2)
+ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
+  geom_line(color = "orange") +
+  xlab("distance along transect") +
+  ylab("allele frequency") +
+  theme_classic()
+```
 
 ## Citation
 

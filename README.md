@@ -92,6 +92,43 @@ cline_summary(cline.fit)
 
 The model has done a good job. The point estimates of the parameters are quite close to the values we specified, and the 95% credible intervals contain the simulated values.
 
+bahz provides some simple plotting functions for visualizating fitted clines:
+
+``` r
+plot_geno_cline(stanfit = cline.fit, data = data, add.obs.freqs = T, 
+                xlab = "distance", ylab = "allele frequency")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
+
+``` r
+pred_cline <- predict_geno_cline(stanfit = cline.fit, data = data)
+head(pred_cline)
+#> # A tibble: 6 x 2
+#>   transectDist     p
+#>          <dbl> <dbl>
+#> 1        -9    0.990
+#> 2        -8.48 0.990
+#> 3        -7.96 0.990
+#> 4        -7.44 0.990
+#> 5        -6.93 0.990
+#> 6        -6.41 0.990
+```
+
+``` r
+# Use the ggplot2 package
+library(ggplot2)
+ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
+  geom_line(color = "orange") +
+  xlab("distance along transect") +
+  ylab("allele frequency") +
+  theme_classic()
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
 Citation
 --------
 
