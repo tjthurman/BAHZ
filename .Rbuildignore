@@ -5,6 +5,7 @@
 ^README-.*\.png$
 ^\.travis\.yml$
 ^bahz_testing.R$
+^pheno_testing.R$
 ^prior_config_template.yaml$
 src/stan_files/.*\.o$
 src/stan_files/.*\.hpp$
