@@ -114,7 +114,7 @@ plot_geno_cline(stanfit = cline.fit, data = data, add.obs.freqs = T,
 For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
 
 ```{r} 
-pred_cline <- predict_geno_cline(stanfit = cline.fit, data = data)
+pred_cline <- predict_geno_cline(stanfit = cline.fit, distance = 0:500)
 head(pred_cline)
 ```
 
@@ -130,7 +130,9 @@ ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
 
 ## Citation
 
-No citation yet. 
+```{r, echo = F}
+citation("bahz")
+```
 
 ## License
 

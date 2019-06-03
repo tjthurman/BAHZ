@@ -104,17 +104,15 @@ plot_geno_cline(stanfit = cline.fit, data = data, add.obs.freqs = T,
 For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
 
 ``` r
-pred_cline <- predict_geno_cline(stanfit = cline.fit, data = data)
+pred_cline <- predict_geno_cline(stanfit = cline.fit, distance = 0:500)
 head(pred_cline)
-#> # A tibble: 6 x 2
-#>   transectDist     p
-#>          <dbl> <dbl>
-#> 1        -9    0.990
-#> 2        -8.48 0.990
-#> 3        -7.96 0.990
-#> 4        -7.44 0.990
-#> 5        -6.93 0.990
-#> 6        -6.41 0.990
+#>   transectDist         p
+#> 1            0 0.9899992
+#> 2            1 0.9899992
+#> 3            2 0.9899992
+#> 4            3 0.9899991
+#> 5            4 0.9899990
+#> 6            5 0.9899990
 ```
 
 ``` r
@@ -132,7 +130,21 @@ ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
 Citation
 --------
 
-No citation yet.
+    #> 
+    #> To cite bahz in publications use:
+    #> 
+    #>   Timothy J Thurman (2019). bahz: Bayesian Analysis of Hybrid
+    #>   Zones R package. URL https://github.com/tjthurman/BAHZ
+    #> 
+    #> A BibTeX entry for LaTeX users is
+    #> 
+    #>   @Article{,
+    #>     title = {{bahz}citation(: Bayesian Analysis of Hybrid Zones},
+    #>     author = {Timothy J Thurman},
+    #>     journal = {R Package},
+    #>     year = {2019},
+    #>     url = {https://github.com/tjthurman/BAHZ},
+    #>   }
 
 License
 -------
