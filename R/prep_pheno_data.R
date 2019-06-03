@@ -44,14 +44,14 @@ prep_pheno_data <- function(dataframe) {
                             msg = "traitValue column must be numeric")
 
       dataframe <- dataframe %>%
-        dplyr::arrange(transectDist)
+        dplyr::arrange(.data$transectDist)
 
       # Guess whether cline is decreasing:
       # Find row containing the first and last site on the transect
       site_means <- dataframe %>%
-        dplyr::group_by(transectDist) %>%
-        dplyr::summarize(site_means = mean(traitValue),
-                         n_per_site = length(traitValue))
+        dplyr::group_by(.data$transectDist) %>%
+        dplyr::summarize(site_means = mean(.data$traitValue),
+                         n_per_site = length(.data$traitValue))
 
       f <- which(site_means$transectDist == min(dataframe$transectDist))
       l <- which(site_means$transectDist == max(dataframe$transectDist))

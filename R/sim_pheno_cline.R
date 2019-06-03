@@ -50,7 +50,7 @@
 #'
 #' set.seed(123)
 #' sim_pheno_cline(transect_distance = seq(0,200,20),
-#'                n_ind = 20, sigma = 6
+#'                n_ind = 20, sigma = 6,
 #'                decrease = TRUE,
 #'                center = 100, width = 30,
 #'                pmin = 10, pmax = 40)
@@ -94,6 +94,7 @@ sim_pheno_cline <- function(transect_distances, n_ind,
   }
   assertthat::assert_that(min(sigma) >=0, msg = "sigma cannot be less than 0")
   assertthat::assert_that(min(n_ind) >=1, msg = "n_ind values cannot be less than 1")
+  assertthat::assert_that(pmin < pmax, msg = "pmin must be less than pmax")
   # All other args will get checked in the cline equation.
 
   # Get number of sites from the vector of transect data.

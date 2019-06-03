@@ -9,3 +9,4 @@
 ^prior_config_template.yaml$
 src/stan_files/.*\.o$
 src/stan_files/.*\.hpp$
+^\.github$

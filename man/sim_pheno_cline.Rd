@@ -63,7 +63,7 @@ phenotype and standard devitation equal to the provided sigma.
 
 set.seed(123)
 sim_pheno_cline(transect_distance = seq(0,200,20),
-               n_ind = 20, sigma = 6
+               n_ind = 20, sigma = 6,
                decrease = TRUE,
                center = 100, width = 30,
                pmin = 10, pmax = 40)
