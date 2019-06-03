@@ -20,9 +20,6 @@ test_that("general cline equation checks arguments for appropriateness", {
                                  pmin = 0.2, pmax = 0.8), "width")
   expect_error(general_cline_eqn(transectDist = 20, decrease = T,
                                  center = 20, width = 10,
-                                 pmin = -0.2, pmax = 0.8), "between")
-  expect_error(general_cline_eqn(transectDist = 20, decrease = T,
-                                 center = 20, width = 10,
                                  pmin = 0.2, pmax = 0.8, tauL = 1.1, deltaL = 10), "between")
   expect_error(general_cline_eqn(transectDist = 20, decrease = T,
                                  center = 20, width = 10,
