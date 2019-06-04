@@ -88,16 +88,23 @@ good <- list(center = 10,
               tauR = 0.5,
               f = 0.5)
 
+test_that("check_init_chain checks argument", {
+  expect_error(check_init_chain(good, type = "xxx"), "should")
+})
+
 test_that("check_init_chain output is correct", {
-  expect_equal(check_init_chain(width.bad), "width")
-  expect_equal(check_init_chain(pmin.bad), "pmin")
-  expect_equal(check_init_chain(pmax.bad), "pmax")
-  expect_equal(check_init_chain(pmax.small), c("pmin", "pmax"))
-  expect_equal(check_init_chain(deltaL.bad), "deltaL")
-  expect_equal(check_init_chain(deltaR.bad), "deltaR")
-  expect_equal(check_init_chain(deltaM.bad), "deltaM")
-  expect_equal(check_init_chain(tauL.bad), "tauL")
-  expect_equal(check_init_chain(tauR.bad), "tauR")
-  expect_equal(check_init_chain(tauM.bad), "tauM")
+  expect_equal(check_init_chain(width.bad, type = "geno"), "width")
+  expect_equal(check_init_chain(pmin.bad, type = "geno"), "pmin")
+  expect_equal(check_init_chain(pmax.bad, type = "geno"), "pmax")
+  expect_equal(check_init_chain(pmax.small, type = "geno"), c("pmin", "pmax"))
+  expect_null(check_init_chain(pmin.bad, type = "pheno"))
+  expect_null(check_init_chain(pmax.bad, type = "pheno"))
+  expect_equal(check_init_chain(pmax.small, type = "pheno"), c("pmin", "pmax"))
+  expect_equal(check_init_chain(deltaL.bad, type = "geno"), "deltaL")
+  expect_equal(check_init_chain(deltaR.bad, type = "geno"), "deltaR")
+  expect_equal(check_init_chain(deltaM.bad, type = "geno"), "deltaM")
+  expect_equal(check_init_chain(tauL.bad, type = "geno"), "tauL")
+  expect_equal(check_init_chain(tauR.bad, type = "geno"), "tauR")
+  expect_equal(check_init_chain(tauM.bad, type = "geno"), "tauM")
   expect_null(check_init_chain(good))
 })

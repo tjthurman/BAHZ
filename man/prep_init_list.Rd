@@ -5,7 +5,7 @@
 \title{Prepare the list of values for initializing the Stan model}
 \usage{
 prep_init_list(prior_file, tails = c("none", "left", "right", "mirror",
-  "ind"), chains)
+  "ind"), chains, type = c("pheno", "geno"))
 }
 \arguments{
 \item{prior_file}{Path to the \code{.yaml} file containing the prior specifications.}
@@ -13,6 +13,10 @@ prep_init_list(prior_file, tails = c("none", "left", "right", "mirror",
 \item{tails}{Which type of tails for the model: "none", "left", "right", "mirror", or "ind"?}
 
 \item{chains}{The number of chains to be used in Stan. Integer.}
+
+\item{type}{Are the intial values for a phenotypic cline or genetic cline:
+"pheno", or "geno"?  Only affects limit checking for the pmin and pmax
+initial values, which must be between 0 and 1 for genetic clines.}
 }
 \value{
 A list of lists containing initialization values for the Stan model.

@@ -83,28 +83,16 @@ prep_pheno_data(dplyr::sample_frac(pheno, 1))
 
 z2 <- stan(model_code = prelim_pheno_stan2,
            data = prep_pheno_data(dplyr::sample_frac(pheno, 1)),
-           init = list(list(center = rnorm(1,100, 100),
-                            width = abs(rnorm(1, 50, 100)),
-                            pmin = abs(rnorm(1, 50, 100)),
-                            pmax = abs(rnorm(1, 50,100)),
-                            sigma = abs(rnorm(1, 0,100))),
-                       list(center = rnorm(1,100, 100),
-                            width = abs(rnorm(1, 50, 100)),
-                            pmin = abs(rnorm(1, 50, 100)),
-                            pmax = abs(rnorm(1, 50,100)),
-                            sigma = abs(rnorm(1, 0,100))),
-                       list(center = rnorm(1,100, 100),
-                            width = abs(rnorm(1, 50, 100)),
-                            pmin = abs(rnorm(1, 50, 100)),
-                            pmax = abs(rnorm(1, 50,100)),
-                            sigma = abs(rnorm(1, 0,100))),
-                       list(center = rnorm(1,100, 100),
-                            width = abs(rnorm(1, 50, 100)),
-                            pmin = abs(rnorm(1, 50, 100)),
-                            pmax = abs(rnorm(1, 50,100)),
-                            sigma = abs(rnorm(1, 0,100)))))
+           init = prep_init_list("prior_config_template.yaml",
+                                 tails = "none",
+                                 chains = as.integer(4),
+                                 type = "pheno"))
 cline_summary(z)
 cline_summary(z2)
+
+
+prep_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(4), type = "pheno")
+
 
 pred2 <- predict_geno_cline(z2, distance = 0:200)
 

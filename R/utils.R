@@ -358,17 +358,16 @@ assign_stan_dist_int <- function(distribution) {
 #'
 #' @param single.init.list The list of initial values to be checked.
 #'
+#' @param type Are the intial values for a phenotypic cline or genetic cline:
+#'   "pheno", or "geno"?  Only affects limit checking for the pmin and pmax
+#'   initial values, which must be between 0 and 1 for genetic clines.
+#'
 #' @return NULL, if no problems, otherwise a vector of parameters which have
 #'   inappropriate initial values.
 #'
-#' @examples
-#' \dontrun{
-#' assign_stan_dist_int("normal") # returns 0
-#' assign_stan_dist_int("uniform") # returns 1
-#' assign_stan_dist_int("exponential") # returns 2
-#' }
 #'
-check_init_chain <- function(single.init.list) {
+check_init_chain <- function(single.init.list, type = c("pheno", "geno")) {
+  type <- match.arg(type, several.ok = F)
   problems <- NULL
   for (j in 1:length(single.init.list)) {
     if (names(single.init.list)[j] == "width") {
@@ -407,13 +406,17 @@ check_init_chain <- function(single.init.list) {
       }
     }
     if (names(single.init.list)[j] == "pmin") {
-      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
-        problems <- c(problems, "pmin")
+      if (type == "geno") {
+        if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+          problems <- c(problems, "pmin")
+        }
       }
     }
     if (names(single.init.list)[j] == "pmax") {
-      if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
-        problems <- c(problems, "pmax")
+      if (type == "geno") {
+        if (dplyr::between(single.init.list[[j]], 0, 1) == F) {
+          problems <- c(problems, "pmax")
+        }
       }
     }
     # if (names(single.init.list)[j] == "f") {

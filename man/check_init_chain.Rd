@@ -4,10 +4,14 @@
 \alias{check_init_chain}
 \title{Check whether the random initial values for a chain are appropriate.}
 \usage{
-check_init_chain(single.init.list)
+check_init_chain(single.init.list, type = c("pheno", "geno"))
 }
 \arguments{
 \item{single.init.list}{The list of initial values to be checked.}
+
+\item{type}{Are the intial values for a phenotypic cline or genetic cline:
+"pheno", or "geno"?  Only affects limit checking for the pmin and pmax
+initial values, which must be between 0 and 1 for genetic clines.}
 }
 \value{
 NULL, if no problems, otherwise a vector of parameters which have
@@ -22,13 +26,5 @@ Used internally, in \code{\link{prep_init_list}}.
 Checks that: width is positive, delta parameters are positive, tau
 parameters, pmin/pmax, and f are between 0 and 1, and that pmin is less than
 pmax.
-}
-\examples{
-\dontrun{
-assign_stan_dist_int("normal") # returns 0
-assign_stan_dist_int("uniform") # returns 1
-assign_stan_dist_int("exponential") # returns 2
-}
-
 }
 \keyword{internal}
