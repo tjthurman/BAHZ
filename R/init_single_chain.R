@@ -65,6 +65,11 @@ init_single_chain <- function(prior_file,
       rate <- extract_only(prior_list[[i]])
       init.name <- paste("init", names(prior_list)[i], sep = ".")
       assign(x = init.name, value = rlang::expr(rexp(n = 1, rate = !!rate)), inherits = T)
+    } else if (stringr::str_count(prior_list[[i]], "^beta\\(") == 1) {
+      low <- extract_first(prior_list[[i]])
+      up <- extract_last(prior_list[[i]])
+      init.name <- paste("init", names(prior_list)[i], sep = ".")
+      assign(x = init.name, value = rlang::expr(rbeta(n = 1, shape1 = !!low, shape2 = !!up)), inherits = T)
     } else {
       message <- paste0("The distribution you've selected for parameter\n",
                         names(prior_list[i]), "\n",

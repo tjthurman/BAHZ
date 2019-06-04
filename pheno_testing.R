@@ -79,6 +79,8 @@ pos = pos + s[k];
 "
 
 
+make_prior_config(name = "all_betas.yaml")
+
 prep_pheno_data(dplyr::sample_frac(pheno, 1))
 
 z2 <- stan(model_code = prelim_pheno_stan2,

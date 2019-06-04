@@ -237,6 +237,7 @@ extract_only <- function(string) {
 #' \dontrun{
 #' check_prior_supported("center", "normal") # returns T
 #' check_prior_supported("center", "beta") # returns F
+#' check_prior_supported("pmin", "beta") # returns T
 #' check_prior_supported("deltaL", "normal") # returns F
 #' }
 
@@ -249,7 +250,7 @@ check_prior_supported <- function(parameter, distribution) {
     }
   }
   if (parameter %in% c("pmin", "pmax")) {
-    if (distribution %in% c("uniform")) {
+    if (distribution %in% c("uniform", "normal", "beta")) {
       result <- T
     }
   }
@@ -259,12 +260,12 @@ check_prior_supported <- function(parameter, distribution) {
     }
   }
   if (parameter %in% c("tauL", "tauR", "tauM")) {
-    if (distribution %in% c("uniform")) {
+    if (distribution %in% c("uniform", "beta")) {
       result <- T
     }
   }
   if (parameter %in% c("f")) {
-    if (distribution %in% c("uniform")) {
+    if (distribution %in% c("uniform", "beta")) {
       result <- T
     }
   }
@@ -311,7 +312,7 @@ check_prior_specification <- function(distribution, string) {
 # Assign Stan distribution integer ----------------------------------------
 #' Return the integer value for STAN that corresponds to each supported distribution
 #'
-#' Currently supported distributions: normal (0), uniform (1), exponential (2).
+#' Currently supported distributions: normal (0), uniform (1), exponential (2), beta (3).
 #'
 #' Used internally, in \code{\link{prep_init_list}}.
 #'
@@ -326,6 +327,7 @@ check_prior_specification <- function(distribution, string) {
 #' assign_stan_dist_int("normal") # returns 0
 #' assign_stan_dist_int("uniform") # returns 1
 #' assign_stan_dist_int("exponential") # returns 2
+#' assign_stan_dist_int("beta") # returns 3
 #' }
 #'
 
@@ -338,6 +340,9 @@ assign_stan_dist_int <- function(distribution) {
   }
   if (distribution == "exponential") {
     result <- as.integer(2)
+  }
+  if (distribution == "beta") {
+    result <- as.integer(3)
   }
   result
 }
