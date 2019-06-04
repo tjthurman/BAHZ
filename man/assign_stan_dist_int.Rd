@@ -13,7 +13,7 @@ assign_stan_dist_int(distribution)
 Integer value corresponding to chosen distribution.
 }
 \description{
-Currently supported distributions: normal (0), uniform (1), exponential (2).
+Currently supported distributions: normal (0), uniform (1), exponential (2), beta (3).
 }
 \details{
 Used internally, in \code{\link{prep_init_list}}.
@@ -23,6 +23,7 @@ Used internally, in \code{\link{prep_init_list}}.
 assign_stan_dist_int("normal") # returns 0
 assign_stan_dist_int("uniform") # returns 1
 assign_stan_dist_int("exponential") # returns 2
+assign_stan_dist_int("beta") # returns 3
 }
 
 }
