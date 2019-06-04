@@ -3,6 +3,7 @@
 export("%>%")
 export(cline_summary)
 export(fit_geno_cline)
+export(fit_pheno_cline)
 export(general_cline_eqn)
 export(make_prior_config)
 export(plot_geno_cline)
