@@ -75,6 +75,7 @@ prep_pheno_data <- function(dataframe) {
       data.list <- with(dataframe, list(N = length(traitValue),
                                         K = length(unique(transectDist)),
                                         pheno = traitValue,
+                                        indDist = transectDist,
                                         s = site_means$n_per_site,
                                         transectDist = unique(transectDist),
                                         decrease = decrease,
