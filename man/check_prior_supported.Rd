@@ -25,6 +25,7 @@ supported.
 \dontrun{
 check_prior_supported("center", "normal") # returns T
 check_prior_supported("center", "beta") # returns F
+check_prior_supported("pmin", "beta") # returns T
 check_prior_supported("deltaL", "normal") # returns F
 }
 }

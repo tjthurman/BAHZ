@@ -6,5 +6,6 @@ test_that("prep pior list gives informative warnings when priors are wrong", {
 })
 
 test_that("prep prior list makes the right list", {
-  expect_equal_to_reference(prep_prior_list("prior_config_test1.yaml"), file = "ref_prep_prior_list.Rda")
+  expect_equal_to_reference(prep_prior_list("prior_config_test1.yaml"), file = "ref_prep_prior_list1.Rda")
+  expect_equal_to_reference(prep_prior_list("prior_config_test2.yaml"), file = "ref_prep_prior_list2.Rda")
 })

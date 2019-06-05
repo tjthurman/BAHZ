@@ -129,10 +129,18 @@ sim_geno_cline <- function(transect_distances, n_ind,
   assertthat::assert_that(min(Fis) >=0, msg = "Fis values cannot be less than 0")
   assertthat::assert_that(min(Fis) <=1, msg = "Fis values cannot be greater than 1")
   assertthat::assert_that(min(n_ind) >=1, msg = "n_ind values cannot be less than 1")
+
+  # For geno, check limits of pmin and pmax
+  for (num.arg in alist(pmin, pmax)) {
+    if (is.null(eval(num.arg)) == F) {
+      assertthat::assert_that(eval(num.arg) >= 0, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))
+      assertthat::assert_that(eval(num.arg) <= 1, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))
+    }
+  }
   # All other args will get checked in the cline equation.
 
   # Get number of sites from the vector of transect data.
-  sites <- length(transect_distances)
+  sites <- length(unique(transect_distances))
   # Get the vector of f values for each site
   if (length(n_ind) == 1) {
     Ns <- as.integer(rep(n_ind, times = sites))

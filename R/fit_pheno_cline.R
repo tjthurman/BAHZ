@@ -1,6 +1,6 @@
-#' Fit a genetic cline model to your data
+#' Fit a phenotypic cline model to your data
 #'
-#' Use Rstan to fit Bayesian hybrid zone cline models to genetic data.
+#' Use Rstan to fit Bayesian hybrid zone cline models to phenotypic data.
 #'
 #' This is a wrapper function, which calls various data- and model-preparation
 #' functions from \code{bahz} before passing the results to the
@@ -8,7 +8,7 @@
 #' fitting. Specifically, this function calls:
 #'
 #' \enumerate{
-#'  \item \code{\link{prep_geno_data}} to format the provided
+#'  \item \code{\link{prep_pheno_data}} to format the provided
 #'  \code{data}.
 #'  \item \code{\link{prep_prior_list}}, which creates a list containing
 #'  the specifications of the prior distributions, to be passed to Stan.
@@ -30,14 +30,9 @@
 #' adapt_delta to the \code{stan} default of 0.8.
 #'
 #' @param data A dataframe containing your cline data. See
-#'   \code{\link{prep_geno_data}} for possible formats.
+#'   \code{\link{prep_pheno_data}} for possible formats.
 #' @param prior_file The path to the \code{.yaml} file which contains the
 #'   specifications of the priors.
-#' @param type The type of model to fit. Either "bi", for a binomial model
-#'   of allele frequencies, or "multi" for a multinomial model of genotype
-#'   frequencies.
-#' @param tails Which type of tails for the model: "none", "left", "right", "mirror", or
-#'   "ind"?
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
 #'   integer. Default is 4.
 #' @param init Optional, default is \code{NULL}. A user-provided list of
@@ -55,51 +50,43 @@
 #' @export
 #'
 #'
-#' @seealso \code{\link{prep_geno_data}}, \code{\link{prep_prior_list}},
+#' @seealso \code{\link{prep_pheno_data}}, \code{\link{prep_prior_list}},
 #'   \code{\link{prep_init_list}}, \code{\link[rstan]{sampling}}
 #'
 #' @examples
 #' \dontrun{
-#' # Fit a multinomial cline
-#' # with mirrored introgression tails.
+#' # Fit a phenotypic cline
 #' # Uses default number of chains and stan parameters.
-#' results <- fit_geno_cline(clinedata, "prior_file.yaml",
-#'                      type = "multi", tails = "mirror")
+#' results <- fit_pheno_cline(clinedata, "prior_file.yaml")
 #'
-#' # Fit a binomial cline
-#' # with no introgression tails.
+#' # Fit a phenotypic cline
 #' # Use 5 chains with 4000 warmup iterations
 #' # and 8000 total iterations per chain.
 #' # Note that this changes the adapt_delta to
 #' # the stan default of 0.8
 #'
-#' results2 <- fit_geno_cline(clinedata, "prior_file.yaml",
-#'                      type = "bi", tails = "none",
+#' results2 <- fit_pheno_cline(clinedata, "prior_file.yaml",
 #'                      chains = 5,
 #'                      iter = 8000, warmup = 4000)
 #' }
 #'
 
 
-fit_geno_cline <- function(data, prior_file,
-                      type = c("bi", "multi"),
-                      tails = c("none", "left", "right", "mirror", "ind"),
-                      chains = 4, init = NULL, ...) {
+fit_pheno_cline <- function(data, prior_file,
+                           chains = 4, init = NULL, ...) {
   # Argument checking
-  type <- match.arg(type, several.ok = F)
-  tails <- match.arg(tails, several.ok = F)
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
   ch <- as.integer(chains)
 
   # Calling internal functions
   # Prep data
-  stan_data <- prep_geno_data(data, type = type)
+  stan_data <- prep_pheno_data(data)
   # Make list of prior values
   # this also runs a bunch of prior compatibility checks
   prior_list <- prep_prior_list(prior_file)
   # Make list of initial values
   if (is.null(init)) {
-    init_list <- prep_init_list(prior_file, tails = tails, chains = ch, type = "geno")
+    init_list <- prep_init_list(prior_file, tails = "none", chains = ch, type = "pheno")
   } else {
     init_list <- init
   }
@@ -107,35 +94,16 @@ fit_geno_cline <- function(data, prior_file,
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user
-  model_index <- which(names(stanmodels) == type)
-  # set up which tail model gets used.
-  tail_type <- list(tails = as.integer(0))
-  pars <- c("deltaL", "deltaR", "tauL", "tauR", "deltaM", "tauM")
-  if (tails == "left") {
-    tail_type[[1]] <- as.integer(1)
-    pars <- c("deltaR","tauR", "deltaM", "tauM")
-  }
-  if (tails == "right") {
-    tail_type[[1]] <- as.integer(2)
-    pars <- c("deltaL", "tauL", "deltaM", "tauM")
-  }
-  if (tails == "ind") {
-    tail_type[[1]] <- as.integer(4)
-    pars <- c("deltaM", "tauM")
-  }
-  if (tails == "mirror") {
-    tail_type[[1]] <- as.integer(3)
-    pars <- c("deltaL", "deltaR", "tauL", "tauR")
-  }
+  model_index <- which(names(stanmodels) == "pheno")
 
   # Pass everything to stan
   if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, tail_type),
-                                chains = ch, init = init_list, pars = pars, include = F, ...)
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, ...)
   } else {# otherwise, use the bahz defaults
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, tail_type),
-                                chains = ch, init = init_list, pars = pars, include = F, control = list(adapt_delta = 0.95))
-    }
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, control = list(adapt_delta = 0.95))
+  }
 
   clinefit
 }
