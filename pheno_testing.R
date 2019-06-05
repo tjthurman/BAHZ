@@ -43,7 +43,11 @@ z <- fit_pheno_cline(data = pheno,
 
 cline_summary(z)
 
+plot_pheno_cline(z, data = pheno)
+plot_pheno_cline(z, data = pheno, add.obs.pheno = T, point.col = "red", col = "blue")
+
 pred <- predict_geno_cline(z, -200:200)
+
 
 
 x <- cline_summary(z, show.all = T)

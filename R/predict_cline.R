@@ -1,7 +1,8 @@
-#' Predict allele frequencies for a genetic cline
+#' Predict allele frequencies or mean phenotypes for a cline
 #'
 #' Uses the cline parameters from your stanfit object (the mean of the posterior
-#' distribtution of each parameter) to predict the allele frequency at the
+#' distribtution of each parameter) to predict the allele frequency (for genetic
+#' clines) or the mean phenotype value (for phenotypic clines) at the
 #' distance(s) along the transect specified by the user.
 #'
 #' @importClassesFrom rstan stanfit
@@ -9,15 +10,16 @@
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
 #'
 #' @param distance The x value(s) (distance along the transect) at which to
-#'   predict allele frequencies for the fitted cline. Must be a numeric vector.
+#'   predict allele frequencies or mean phenotypes for the fitted cline. Must be
+#'   a numeric vector.
 #'
 #' @return A data frame with two columns:
 #'  \itemize{
 #'  \item transectDist: the distances along the transect at which the cline
 #'  equation was evaluated. Will be the same values as were supplied in the
 #'  distance argument. Numeric.
-#'  \item p: the predict allele frequency at each distance, according to the
-#'  cline equation. Numeric.
+#'  \item p: the predict allele frequency or mean phenotype at each distance,
+#'  according to the cline equation. Numeric.
 #'  }
 #'
 #' @export
@@ -26,15 +28,15 @@
 #' \dontrun{
 #'
 #' # Predict at one distance
-#' predict_geno_cline(yourStanfit, distance = 50)
+#' predict_cline(yourStanfit, distance = 50)
 #'
 #' # Predict at a range of distances
-#' predict_geno_cline(yourStanfit, distance = 0:100)
+#' predict_cline(yourStanfit, distance = 0:100)
 #'
 #' }
 
 
-predict_geno_cline <- function(stanfit, distance) {
+predict_cline <- function(stanfit, distance) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",

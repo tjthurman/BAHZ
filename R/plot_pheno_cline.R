@@ -1,6 +1,6 @@
-#' Plot a genetic cline
+#' Plot a phenotypic cline
 #'
-#' Makes a simple plot to visualize modeled genetic clines. The user supplies the stanfit
+#' Makes a simple plot to visualize modeled phenotypic clines. The user supplies the stanfit
 #' object containing the model fit and the dataframe with the original data, and
 #' may also supply a number of optional arguments to customize the plot.
 #'
@@ -23,11 +23,11 @@
 #' @param data The dataframe with your cline data (ideally, the same data frame
 #'   that was used to generate the model fit).
 #'
-#' @param add.obs.freqs Should the observed allele frequencies at each site be
+#' @param add.obs.pheno Should the observed trait values for each individual be
 #'   plotted? TRUE or FALSE, default is FALSE.
 #'
-#' @param point.col The color to use for plotting the observed allele
-#'   frequencies. Default is black.
+#' @param point.col The color to use for plotting the observed trait
+#'   values. Default is black.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
 #'   functions to customize the plot (see \code{\link[graphics]{par}}).
@@ -39,19 +39,18 @@
 #' \dontrun{
 #'
 #' # Default plot with the cline only
-#' plot_geno_cline(yourStanfit, data)
+#' plot_pheno_cline(yourStanfit, data)
 #'
-#' # Add points showing the empirical allele frequencies at
-#' # each collecting site
-#' plot_geno_cline(yourStanfit, data, add.obs.freq = T)
+#' # Add points showing the observed trait values for each individual
+#' plot_pheno_cline(yourStanfit, data, add.obs.pheno = T)
 #'
 #' # Some plot customization
 #' # Adding axis labels, titles, and changing the
 #' # colors of the points and line.
-#' plot_geno_cline(yourStanfit, data, add.obs.freq = T,
+#' plot_pheno_cline(yourStanfit, data, add.obs.pheno = T,
 #'                 main = "My cline",
 #'                 xlab = "distance",
-#'                 ylab = "allele frequency",
+#'                 ylab = "trait value",
 #'                 point.col = "red",
 #'                 col = "blue")
 #' }
@@ -59,7 +58,7 @@
 #' @export
 
 
-plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black", ...) {
+plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "black", ...) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -76,25 +75,25 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
                           msg = paste("transectDist column in input data must be numeric",
                                       "Make sure it is the same data frame you used to generate the cline fit",
                                       sep = "\n"))
-  assertthat::assert_that(add.obs.freqs %in% c(T, F),
-                          msg = "add.obs.freq must be True or False")
+  assertthat::assert_that(add.obs.pheno %in% c(T, F),
+                          msg = "add.obs.pheno must be True or False")
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
 
-  # Check to see if there are the same number of sites in the stanfit object
-  # as in the inout data frame. Give a warning if there's not.
-  data.sites <- dim(data)[1]
-  sf.sites <- stanfit@par_dims$p
-  if (data.sites != sf.sites) {
+  # Check to see if there are the same number of individuals in the stanfit object
+  # as in the input data frame. Give a warning if there's not.
+  data.inds <- dim(data)[1]
+  sf.inds <- stanfit@par_dims$y_rep
+  if (data.inds != sf.inds) {
     warning(paste("\n",
-                  "Your stanfit object and dataframe contain data from different numbers of sites\n",
+                  "Your stanfit object and dataframe contain data from different numbers of individuals\n",
                   "The stanfit object may have been generated from a different data frame\n",
-                  "stanfit sites = ",
-                  sf.sites,
+                  "stanfit individuals = ",
+                  sf.inds,
                   "\n",
-                  "data sites = ",
-                  data.sites, sep = ""))
+                  "data individuals = ",
+                  data.inds, sep = ""))
   }
 
   # Figure out starting and ending x values
@@ -111,51 +110,32 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
   cline <- bahz::predict_cline(stanfit, distance = xrange)
 
   # If addinf the observed allele frequencies, calculate those.
-  if (add.obs.freqs == T) {
-    dataframe <- data
-    if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {
-      assertthat::assert_that(is.numeric(dataframe$transectDist) == T,
+  if (add.obs.pheno == T) {
+    if (sum(c("transectDist", "traitValue") %in% names(data)) == 2) {
+      assertthat::assert_that(is.numeric(data$transectDist) == T,
                               msg = "transectDist column must be numeric")
-      assertthat::assert_that(is.integer(dataframe$nFocalAllele) == T,
-                              msg = "nFocalAllele column must be integer")
-      assertthat::assert_that(is.integer(dataframe$nTotalAlleles) == T,
-                              msg = "nFocalAllele column must be integer")
+      assertthat::assert_that(is.numeric(data$traitValue) == T,
+                              msg = "traitValue column must be numeric")
 
-      # estimate allele freqs
-      conv.dataframe <- dataframe %>%
-        dplyr::mutate(est.p.internal = .data$nFocalAllele/.data$nTotalAlleles)
+      dataframe <- data %>%
+        dplyr::arrange(.data$transectDist)
 
+    }
 
-    } else if (sum(c("AA", "Aa", "aa", "transectDist") %in% names(dataframe)) == 4) {
-      assertthat::assert_that(is.numeric(dataframe$transectDist) == T,
-                              msg = "transectDist column must be numeric")
-      assertthat::assert_that(is.integer(dataframe$AA) == T,
-                              msg = "AA column must be integer")
-      assertthat::assert_that(is.integer(dataframe$Aa) == T,
-                              msg = "Aa column must be integer")
-      assertthat::assert_that(is.integer(dataframe$aa) == T,
-                              msg = "aa column must be integer")
-
-
-      # estimate allele freqs
-      conv.dataframe <- dataframe %>%
-        dplyr::mutate(nFocalAllele = 2*.data$AA + .data$Aa,
-                      nTotalAlleles = (.data$AA+.data$Aa+.data$aa)*2) %>%
-        dplyr::mutate(est.p.internal = .data$nFocalAllele/.data$nTotalAlleles)
-
-    } else {
-      stop(paste("Necessary columns for calculating and plotting allele frequencies not found in data\n",
-                 "Make sure it is the same data frame you used to generate the cline fit", sep = ""))
+  # If the data columns aren't present
+  else {
+    stop(paste("Necessary columns for plotting observed trait values not found in data\n",
+               "Make sure it is the same data frame you used to generate the cline fit", sep = ""))
     }
   }
 
   # Now, plot it all
-  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, ylim = c(0,1), ...)
-  if (add.obs.freqs == T) {
-    graphics::points(x = conv.dataframe$transectDist,
-           y = conv.dataframe$est.p.internal,
-           pch = 1,
-           col = point.col)
+  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, ylim = c(min(data$traitValue), max(data$traitValue)), ...)
+  if (add.obs.pheno == T) {
+    graphics::points(x = dataframe$transectDist,
+                     y = dataframe$traitValue,
+                     pch = 1,
+                     col = point.col)
   }
   graphics::title(...)
 
