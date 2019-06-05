@@ -39,7 +39,7 @@ z <- fit_pheno_cline(data = pheno,
                 prior_file = "prior_config_template.yaml",
                 chains = 4)
 
-cline_summary(z)
+cline_summary(z, show.all = T)
 
 pred <- predict_geno_cline(z, distance = -200:200)
 

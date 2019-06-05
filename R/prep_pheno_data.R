@@ -64,13 +64,22 @@ prep_pheno_data <- function(dataframe) {
       }
       decrease <- as.integer(freq.f > freq.l)
 
+      starts <- rep(NA, times = length(site_means$transectDist))
+      ends <- rep(NA, times = length(site_means$transectDist))
+      for (site in 1:dim(site_means)[1]) {
+        starts[site] <- min(which(dataframe$transectDist == site_means$transectDist[site]))
+        ends[site] <- max(which(dataframe$transectDist == site_means$transectDist[site]))
+      }
+
       # Convert to list for Stan
       data.list <- with(dataframe, list(N = length(traitValue),
                                         K = length(unique(transectDist)),
                                         pheno = traitValue,
                                         s = site_means$n_per_site,
                                         transectDist = unique(transectDist),
-                                        decrease = decrease))
+                                        decrease = decrease,
+                                        starts = starts,
+                                        ends = ends))
     }
 
   # If the data columns aren't present

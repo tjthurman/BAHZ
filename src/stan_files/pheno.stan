@@ -24,16 +24,13 @@ for (i in 1:K) {
 model{
   // The statistical model
 
-int pos;
-pos = 1;
 sigma ~ normal(0, 100);
 #include /model/model_ps.stan
 #include /model/model_width.stan
 #include /model/model_center.stan
 
 for (k in 1:K) {
-  segment(pheno, pos, s[k]) ~ normal(p[k], sigma);
-  pos = pos + s[k];
+  pheno[starts[k]:ends[k]] ~ normal(p[k], sigma);
   }
 }
 
