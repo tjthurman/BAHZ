@@ -6,6 +6,7 @@ library(rstan)
 #library(bahz)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
+library(bayesplot)
 
 # Generate phenotypic data from a cline -----------------------------------
 x <-  seq(-200, 200, 20)
@@ -40,6 +41,15 @@ z <- fit_pheno_cline(data = pheno,
                 chains = 4)
 
 cline_summary(z, show.all = T)
+
+yrep <- as.data.frame(z) %>%
+ select(starts_with("y_rep")) %>%
+  as.matrix(.)
+
+dim(yrep)
+
+
+ppc_dens_overlay(y = pheno$traitValue, yrep = yrep[1:200,])
 
 pred <- predict_geno_cline(z, distance = -200:200)
 
