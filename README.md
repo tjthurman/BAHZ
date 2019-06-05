@@ -6,7 +6,7 @@
 bahz
 ====
 
-bahz (Bayesian Analysis of Hybrid Zones) is an R package for fitting and analyzing one-dimensional, geographic cline models in hybrd zones.
+bahz (Bayesian Analysis of Hybrid Zones) is an R package for fitting and analyzing one-dimensional, geographic cline models in hybrid zones.
 
 bahz is currently under active development.
 
@@ -104,7 +104,7 @@ plot_geno_cline(stanfit = cline.fit, data = data, add.obs.freqs = T,
 For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
 
 ``` r
-pred_cline <- predict_geno_cline(stanfit = cline.fit, distance = 0:500)
+pred_cline <- predict_cline(stanfit = cline.fit, distance = 0:500)
 head(pred_cline)
 #>   transectDist         p
 #> 1            0 0.9899992
@@ -130,20 +130,22 @@ ggplot(data = pred_cline, aes(x = transectDist, y = p)) +
 Citation
 --------
 
+    #> Warning in citation("bahz"): no date field in DESCRIPTION file of package
+    #> 'bahz'
+    #> Warning in citation("bahz"): could not determine year for 'bahz' from
+    #> package DESCRIPTION file
     #> 
-    #> To cite bahz in publications use:
+    #> To cite package 'bahz' in publications use:
     #> 
-    #>   Timothy J Thurman (2019). bahz: Bayesian Analysis of Hybrid
-    #>   Zones R package. URL https://github.com/tjthurman/BAHZ
+    #>   Timothy Thurman (NA). bahz: Bayesian Analysis of Hybrid Zones. R
+    #>   package version 0.0.0.9011.
     #> 
     #> A BibTeX entry for LaTeX users is
     #> 
-    #>   @Article{,
-    #>     title = {{bahz}citation(: Bayesian Analysis of Hybrid Zones},
-    #>     author = {Timothy J Thurman},
-    #>     journal = {R Package},
-    #>     year = {2019},
-    #>     url = {https://github.com/tjthurman/BAHZ},
+    #>   @Manual{,
+    #>     title = {bahz: Bayesian Analysis of Hybrid Zones},
+    #>     author = {Timothy Thurman},
+    #>     note = {R package version 0.0.0.9011},
     #>   }
 
 License

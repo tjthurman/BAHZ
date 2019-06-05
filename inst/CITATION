@@ -1,7 +1,7 @@
 citHeader("To cite bahz in publications use:")
 
 citEntry(entry = "Article",
-  title        = "{bahz}citation(: Bayesian Analysis of Hybrid Zones",
+  title        = "{bahz}citation(: Bayesian Analysis of Hybrid Zones.",
   author       = personList(as.person("Timothy J Thurman")),
   journal      = "R Package",
   year         = "2019",
