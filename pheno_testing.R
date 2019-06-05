@@ -8,12 +8,11 @@ options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
 # Generate phenotypic data from a cline -----------------------------------
-x <-  seq(0, 300, 20)
+x <-  seq(-200, 200, 20)
 
 set.seed(123)
-sim_geno_cline(10, 10, 0, T, 10, 10)
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
-                         sigma = 6, decrease = F, center = 150, width = 30, pmin = 8, pmax = 22)
+                         sigma = 6, decrease = F, center = 15, width = 30, pmin = 8, pmax = 22)
 # Out of interest, simulate non-constant variance and see how it does
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
                          sigma = abs(rnorm(n = length(x), mean = 10, sd = 5)),
@@ -31,79 +30,18 @@ plot(pheno$transectDist, pheno$traitValue)
 lines(x, site.means$mean.pheno, col = "red")
 # So far, very simple: cline describes the mean phenotype, and variance is constant across the cline.
 
-# Can I fix the bad vectorization -----------------------------------------
-
-# Trying a model based on the Ragged array design in
-# section 8.2 of the Stan User's guide v2.19
-prelim_pheno_stan2 <- "
-data{
-int<lower=0> N; // number of individuals
-int<lower=0> K; // number of sites
-vector[N] pheno; // phenotype for an individual
-int s[K]; //number of individuals sampled per site
-real transectDist[K]; // distance along transect for a site
 
 
-}
-parameters{
-real center; // the center of the cline, in km.
-real<lower=0> width; // the width of the cline. Also can't be negative
-real pmin; // minimum mean pheno value
-real pmax; // maximum mean pheno value
-real<lower =0> sigma; // phenotypic variance (constant for now, must be positive)
-}
+# Fit the model -----------------------------------------------------------
 
-transformed parameters{
-vector[K] p; // the expected phenotype for each site
-for (i in 1:K)
-{
-  p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
-}
-}
+# Works! but no generated quantities yet.
+z <- fit_pheno_cline(data = pheno,
+                prior_file = "prior_config_template.yaml",
+                chains = 4)
 
-model{
-int pos;
-pos = 1;
-sigma ~ normal(0, 100);
-pmin ~ normal(50, 100);
-pmax ~ normal(50, 100);
-width ~ normal(50, 100);
-center ~ normal(100, 100);
-
-for (k in 1:K) {
-segment(pheno, pos, s[k]) ~ normal(p[k], sigma);
-pos = pos + s[k];
-}
-}
-
-"
-
-
-make_prior_config(name = "all_betas.yaml")
-
-prep_pheno_data(dplyr::sample_frac(pheno, 1))
-
-z2 <- stan(model_code = prelim_pheno_stan2,
-           data = prep_pheno_data(dplyr::sample_frac(pheno, 1)),
-           init = prep_init_list("prior_config_template.yaml",
-                                 tails = "none",
-                                 chains = as.integer(4),
-                                 type = "pheno"))
 cline_summary(z)
-cline_summary(z2)
 
+pred <- predict_geno_cline(z, distance = -200:200)
 
-prep_init_list("prior_config_template.yaml", tails = "none", chains = as.integer(4), type = "pheno")
-
-
-pred2 <- predict_geno_cline(z2, distance = 0:200)
-
-plot(inds$distance, inds$pheno)
-lines(pred$transectDist, pred$p, col = "red")
-lines(pred2$transectDist, pred2$p, col = "blue")
-
-# That worked! same numerical result, and the stan fit object is way smaller.
-cline_summary(z2, show.all = T)
-# Only found mean phenotypes for the 21 sites, not for all
-# 201 individuals
-cline_summary(z, show.all = T)
+plot(pheno$transectDist, pheno$traitValue)
+lines(pred$transectDist, pred$p, col = "blue")

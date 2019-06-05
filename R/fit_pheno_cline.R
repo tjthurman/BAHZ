@@ -86,7 +86,7 @@ fit_pheno_cline <- function(data, prior_file,
   prior_list <- prep_prior_list(prior_file)
   # Make list of initial values
   if (is.null(init)) {
-    init_list <- prep_init_list(prior_file, tails = tails, chains = ch, type = "pheno")
+    init_list <- prep_init_list(prior_file, tails = "none", chains = ch, type = "pheno")
   } else {
     init_list <- init
   }
@@ -99,10 +99,10 @@ fit_pheno_cline <- function(data, prior_file,
   # Pass everything to stan
   if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
     clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
-                                chains = ch, init = init_list, pars = pars, include = F, ...)
+                                chains = ch, init = init_list, ...)
   } else {# otherwise, use the bahz defaults
     clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
-                                chains = ch, init = init_list, pars = pars, include = F, control = list(adapt_delta = 0.95))
+                                chains = ch, init = init_list, control = list(adapt_delta = 0.95))
   }
 
   clinefit
