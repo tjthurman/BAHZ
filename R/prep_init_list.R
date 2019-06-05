@@ -27,6 +27,10 @@
 #'
 #' @param chains The number of chains to be used in Stan. Integer.
 #'
+#' @param type Are the intial values for a phenotypic cline or genetic cline:
+#'   "pheno", or "geno"?  Only affects limit checking for the pmin and pmax
+#'   initial values, which must be between 0 and 1 for genetic clines.
+#'
 #' @return A list of lists containing initialization values for the Stan model.
 #'
 #' @seealso \code{\link{init_single_chain}}, \code{\link{fit_geno_cline}}
@@ -39,10 +43,13 @@
 
 
 prep_init_list <- function(prior_file,
-                           tails = c("none", "left", "right", "mirror", "ind"), chains) {
+                           tails = c("none", "left", "right", "mirror", "ind"),
+                           chains,
+                           type = c("pheno", "geno")) {
   #argument checking
   assertthat::assert_that(is.integer(chains) == T, msg = "chains must be an integer")
   tails <- match.arg(tails, several.ok = F)
+  type <- match.arg(type, several.ok = F)
   assertthat::assert_that(length((chains)) == 1,
                           msg = "You must pick a single value for chains.")
 
@@ -54,8 +61,8 @@ prep_init_list <- function(prior_file,
     init.list[[i]] <- eval(single.chain)
     n <- 0
     bad.inits <- NULL
-    while (is.null(check_init_chain(init.list[[i]])) == F) {
-      bad.inits <- c(bad.inits, check_init_chain(init.list[[i]]))
+    while (is.null(check_init_chain(init.list[[i]], type = type)) == F) {
+      bad.inits <- c(bad.inits, check_init_chain(init.list[[i]], type = type))
       n <- n + 1
       if (n >= 100) {
        as.data.frame(table(bad.inits)) %>%

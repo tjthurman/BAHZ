@@ -1,24 +1,67 @@
-#
+# Template for prior specification file
 
-# You can check out the STAN manual for a full list of
-# possible distributions. Some common examples are given below.
+# All lines which start with the
+# hashtag/pound symbol (#) are comments
+# and are ignored (and could be deleted).
 
-# Currently supported prior distributions:
-# exponential, normal, uniform.
+# This file is used to specify the prior distributions
+# for each parameter in a cline analysis.
+# We strongly recommend editing this file and not
+# relying on the default values, which are likely to be
+# inappropriate for your analysis
 
+###################################
+## INSTRUCTIONS                  ##
+###################################
 
-# Note that starting values are drawn from the prior distributions,
-# so improper priors might cause problems in model fitting.
+# 1) Only edit the names and values for your chosen
+# distributions. E.g., change normal() to uniform(),
+# Don't edit or delete the names of the parameters.
 
-# Explanation of Parameters
-center: normal(250, 50)
-width: normal(50, 50)
-pmin: uniform(0, 0.2)
-pmax: uniform(0.8, 1)
-deltaL: exponential(0.05)
-deltaR: exponential(0.05)
-deltaM: exponential(0.05)
-tauL: uniform(0, 1)
-tauR: uniform(0, 1)
-tauM: uniform(0, 1)
-f: uniform(0,1)
+# 2) If you don't need a parameter, do not delete it.
+# Just leave it at the default value, and it won't
+# affect your inference. E.g., if you are not using
+# models with introgression tails, leave those
+# parameters at the defaults.
+
+# 3) Only use supported distributions. The distributions
+# that are supported for each parameter are listed
+# below in a comment next to the parameter. If you attempt to use
+# an unsupported distribution (or misspell the distribution),
+# bahz will throw an error.
+
+# 4) Be mindful of the numerical limits of some parameters.
+# They are listed below. Prior distributions are also used to
+# initialize the Markov chains for analysis. Using inappropriate
+# priors will cause problems with initialization. E.g., a
+# prior of uniform(1,10) for tauL will not work: tauL must be between
+# 0 and 1.
+
+###################################
+## Main cline parameters         ##
+###################################
+# Limits: width > 0. For genetic clines,
+# pmin and pmax must be between 0 and 1.
+# For phenotypic clines, there are no limits
+# on pmin and pmax
+center: normal(250, 50) # normal, uniform
+width: normal(50, 50) # normal, uniform
+pmin: uniform(0, 0.2) # normal, uniform, beta
+pmax: uniform(0.8, 1) # normal, uniform, beta
+
+###################################
+## Introgression tail parameters ##
+###################################
+# Limits: delta > 0, tau between 0 and 1.
+deltaL: exponential(0.05) #exponential
+deltaR: exponential(0.05) #exponential
+deltaM: exponential(0.05) #exponential
+tauL: uniform(0, 1) #uniform, beta
+tauR: uniform(0, 1) #uniform, beta
+tauM: uniform(0, 1) #uniform, beta
+
+###################################
+## Inbreeding parameter          ##
+###################################
+# Limits: f between 0 and 1.
+f: uniform(0,1) # uniform, beta

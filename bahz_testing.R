@@ -12,23 +12,28 @@ library(tidyverse)
 library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_geno_cline(transect_distances = seq(-200,136,20), n_ind = 30, Fis = 0,
-                    decrease = T, center = 10, width = 80, pmin = 0.03, pmax = .95)
+data <- sim_geno_cline(transect_distances = seq(0,500,20), n_ind = 30, Fis = 0,
+                    decrease = T, center = 238, width = 66, pmin = 0.03, pmax = .95, tauL = 0.5, deltaL = 12)
+
+set.seed(22)
+data <- sim_geno_cline(transect_distances = seq(-300,300,75), n_ind = 40, Fis = 0,
+                       decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95)
+
 plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
 data2 <- rbind(data[1,])
 
 make_prior_config()
 # Fit the model, binomial
-fit_none_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_none_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "none")
-fit_left_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_left_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                       type = "bi", tails = "left")
-fit_right_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_right_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "right")
-fit_mirror_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_mirror_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "mirror")
-fit_ind_b <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
+fit_ind_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                             type = "bi", tails = "ind")
 
 plot_geno_cline(fit_none_b, data = data, add.obs.freqs = T, col = "red")
@@ -50,6 +55,16 @@ cline_summary(fit_left_b)
 cline_summary(fit_right_b)
 cline_summary(fit_mirror_b)
 cline_summary(fit_ind_b)
+
+z <- fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml", type = "bi", tails = "none", chains = 1)
+
+
+
+inits <- prep_init_list("prior_config_test1.yaml", tails = "none", chains = as.integer(1), type = "geno")
+priors <- prep_prior_list("prior_config_test1.yaml")
+
+z@inits
+
 
 plot(predict_geno_cline(fit_none_b, data = data)$transectDist, predict_geno_cline(fit_none_b, data = data)$p, type = "l")
 

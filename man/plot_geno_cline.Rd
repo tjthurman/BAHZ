@@ -33,8 +33,8 @@ may also supply a number of optional arguments to customize the plot.
 }
 \details{
 This plotting function is mostly a wrapper around
-\code{\link{predict_geno_cline}}. For greater customization of plots, users
-are encouraged to use \code{\link{predict_geno_cline}} to generate the x- and
+\code{\link{predict_cline}}. For greater customization of plots, users
+are encouraged to use \code{\link{predict_cline}} to generate the x- and
 y-coordinates for their fitted cline, and then graph those coordinates using
 the plotting methods and packages of their choice (base plotting, lattice, or
 ggplot2).

@@ -104,7 +104,7 @@ general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
   assertthat::assert_that(width >= 0, msg = "width must be greater than 0")
 
   # Pmin, pmax, tauL, and tauR must be between 0 and 1
-  for (num.arg in alist(pmin, pmax, tauL, tauR)) {
+  for (num.arg in alist(tauL, tauR)) {
     if (is.null(eval(num.arg)) == F) {
       assertthat::assert_that(eval(num.arg) >= 0, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))
       assertthat::assert_that(eval(num.arg) <= 1, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))

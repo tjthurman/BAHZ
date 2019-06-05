@@ -48,6 +48,18 @@ test_that("sim_geno_cline checks that ind and fis are in proper range", {
                               Fis = 0.5,
                               decrease = F, center = 300, width = 80), "less")
 })
+test_that("sim_geno_cline checks that ps are in proper range", {
+  expect_error(sim_geno_cline(transect_distances = seq(0,600,20),
+                              n_ind = 20,
+                              Fis = 0,
+                              decrease = F, center = 300, width = 80,
+                              pmin = -0.1), "between")
+  expect_error(sim_geno_cline(transect_distances = seq(0,600,20),
+                              n_ind = 20,
+                              Fis = 0,
+                              decrease = F, center = 300, width = 80,
+                              pmin = 10), "between")
+})
 
 # Test cline generation
 
