@@ -14,16 +14,16 @@ x <-  seq(-200, 200, 20)
 
 set.seed(123)
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
-                         sigma = 6, decrease = F, center = 15, width = 30, pmin = 8, pmax = 22)
+                         sigma = 6, decrease = T, center = 15, width = 30, pmin = 8, pmax = 22)
 # Out of interest, simulate non-constant variance and see how it does
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
                          sigma = abs(rnorm(n = length(x), mean = 10, sd = 5)),
                          decrease = F, center = 150, width = 30, pmin = 8, pmax = 22)
 # that worked fine. What about a more possibly interesting case: higher variance in the center
-z <- ifelse(abs(150-x) <= 15, 14, 7)
+z <- ifelse(abs(15-x) <= 25, 14, 8)
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 17,
                          sigma = z,
-                         decrease = F, center = 150, width = 30, pmin = 35, pmax = 65)
+                         decrease = T, center = 15, width = 30, pmin = 35, pmax = 65)
 
 site.means <- pheno %>%
   group_by(transectDist) %>%

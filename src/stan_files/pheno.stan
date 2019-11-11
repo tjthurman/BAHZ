@@ -16,10 +16,16 @@ parameters{
 transformed parameters{
 vector[K] p; // the expected phenotype for each site
 for (i in 1:K) {
-  p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
-  }
+  if (decrease == 0) // if increasing
+      {
+        p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
+        }
+  if (decrease == 1) // if decreasing
+      {
+        p[i] =   pmin + (pmax - pmin) * (1-(exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width))));
+        }
 }
-
+}
 
 model{
   // The statistical model

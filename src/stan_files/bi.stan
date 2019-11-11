@@ -82,7 +82,7 @@ transformed parameters {
           p[i] =   pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
        }
       }
-       if (decrease == 1) // if decreasing # NEED TO MAKE ALL CHANGES
+       if (decrease == 1) // if decreasing
       {
         if (tails == 1) // if left tail model
         {
