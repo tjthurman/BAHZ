@@ -30,10 +30,10 @@ test_that("fit_geno_cline works with user-defined init list", {
   expect_equal(class(suppressWarnings(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
                                     type = "bi", tails = "none",
                                     chains = 1,
-                                    init = list(center = 9,
+                                    init = list(list(center = 9,
                                                 width =  49,
                                                 pmin = 0.031,
-                                                pmax = .94))))[1], "stanfit")
+                                                pmax = .94)))))[1], "stanfit")
 })
 
 z_p2 <- suppressWarnings(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
