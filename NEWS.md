@@ -1,3 +1,9 @@
+# bahz 0.0.0.9013
+
+Bugfix update
+
+* Fixes #57- A bug which caused bahz to always estimate increasing phenotypic clines, even when data were for a decreasing cline.
+
 # bahz 0.0.0.9012
 
 Major update implementing phenotypic clines:.

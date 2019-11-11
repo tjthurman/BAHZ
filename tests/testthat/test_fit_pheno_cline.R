@@ -17,10 +17,10 @@ test_that("fit pheno cline runs the model and makes a stanfit object", {
 test_that("fit_pheno_cline works with user-defined init list", {
   expect_equal(class(suppressWarnings(fit_pheno_cline(data = data, prior_file = "prior_config_test3.yaml",
                                                      chains = 1,
-                                                     init = list(center = 9,
+                                                     init = list(list(center = 9,
                                                                  width =  49,
                                                                  pmin = 29,
-                                                                 pmax = 49))))[1], "stanfit")
+                                                                 pmax = 49)))))[1], "stanfit")
 })
 
 z_p2 <- suppressWarnings(fit_pheno_cline(data = data, prior_file = "prior_config_test1.yaml",
@@ -28,4 +28,3 @@ z_p2 <- suppressWarnings(fit_pheno_cline(data = data, prior_file = "prior_config
 test_that("fit pheno cline allows stan control parameters to be changed", {
   expect_equal(attr(z_p2@sim$samples[[1]], "args")$control$adapt_delta, 0.85)
 })
-
