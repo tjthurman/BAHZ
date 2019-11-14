@@ -33,6 +33,7 @@
 #'   \code{\link{prep_pheno_data}} for possible formats.
 #' @param prior_file The path to the \code{.yaml} file which contains the
 #'   specifications of the priors.
+#' @param pheno_variance TO BE WRITTEN
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
 #'   integer. Default is 4.
 #' @param init Optional, default is \code{NULL}. A user-provided list of
@@ -72,10 +73,12 @@
 #'
 
 
-fit_pheno_cline <- function(data, prior_file,
-                           chains = 4, init = NULL, ...) {
+fit_pheno_cline <- function(data, prior_file, pheno_variance = "constant",
+                           chains = 4,
+                           init = NULL, ...) {
   # Argument checking
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
+  match.arg(pheno_variance, choices = c("constant", "pooling", "independent"), several.ok = F)
   ch <- as.integer(chains)
 
   # Calling internal functions
@@ -94,7 +97,7 @@ fit_pheno_cline <- function(data, prior_file,
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user
-  model_index <- which(names(stanmodels) == "pheno")
+  model_index <- which(names(stanmodels) == paste("pheno", pheno_variance, sep = "_"))
 
   # Pass everything to stan
   if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
