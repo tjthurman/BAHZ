@@ -10,7 +10,7 @@ data {
 parameters{
 
 #include /parameters/param_pheno.stan
-#include /parameters/param_pheno_independent.stan
+#include /parameters/param_pheno_pooling.stan
 
 }
 
@@ -32,7 +32,9 @@ for (i in 1:K) {
 model{
   // The statistical model
 
-site_sigma ~ cauchy(0, 50);
+sigma_sigma ~ cauchy(0, 50);
+global_sigma ~ cauchy(0, 50);
+site_sigma ~ normal(global_sigma, sigma_sigma);
 #include /model/model_ps.stan
 #include /model/model_width.stan
 #include /model/model_center.stan

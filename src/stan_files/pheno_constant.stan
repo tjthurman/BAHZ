@@ -32,7 +32,7 @@ for (i in 1:K) {
 model{
   // The statistical model
 
-global_sigma ~ normal(0, 100);
+global_sigma ~ cauchy(0, 50);
 #include /model/model_ps.stan
 #include /model/model_width.stan
 #include /model/model_center.stan
