@@ -86,6 +86,56 @@ fit_mirror_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                           type = "multi", tails = "ind")
 
+z <- predict_cline(stanfit = fit_none_m, distance = 0:500, confidence = T, prob = 0.95)
+z2 <- predict_cline(stanfit = fit_left_m, distance = 0:500, confidence = T, prob = 0.95)
+z3 <- predict_cline(stanfit = fit_right_m, distance = 0:500, confidence = T, prob = 0.95)
+z4 <- predict_cline(stanfit = fit_mirror_m, distance = 0:500, confidence = T, prob = 0.95)
+z5 <- predict_cline(stanfit = fit_ind_m, distance = 0:500, confidence = T, prob = 0.95)
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z) +
+  geom_point(aes(x = transectDist, y = emp.p), data = data) +
+  geom_line(aes(x = transectDist, y = p), data = z) +
+  ggtitle("none")
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z2) +
+  geom_point(aes(x = transectDist, y = emp.p), data = data) +
+  geom_line(aes(x = transectDist, y = p), data = z2) +
+  ggtitle("left")
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z3) +
+  geom_point(aes(x = transectDist, y = emp.p), data = data) +
+  geom_line(aes(x = transectDist, y = p), data = z3) +
+  ggtitle("right")
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z4) +
+  geom_point(aes(x = transectDist, y = emp.p), data = data) +
+  geom_line(aes(x = transectDist, y = p), data = z4) +
+  ggtitle("mirror")
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z5) +
+  geom_point(aes(x = transectDist, y = emp.p), data = data) +
+  geom_line(aes(x = transectDist, y = p), data = z5) +
+  ggtitle("ind")
+
+rethinking::compare(fit)
+
+cline_summary(fit_left_m)
+
 prep_init_list("prior_config_template.yaml", tails = "ind", chains = as.integer(1))
 
 fit_none_m@inits

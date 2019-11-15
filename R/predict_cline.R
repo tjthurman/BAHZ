@@ -35,8 +35,7 @@
 #'
 #' }
 
-
-predict_cline <- function(stanfit, distance) {
+predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -46,6 +45,12 @@ predict_cline <- function(stanfit, distance) {
   assertthat::assert_that(is.numeric(distance),
                           msg = paste("distance must be of type numeric, not ",
                                       typeof(distance), sep = ""))
+  assertthat::assert_that(is.numeric(prob) == T, msg = "prob must be numeric")
+  assertthat::assert_that(length(prob) == 1, msg = "prob must be of length 1")
+  assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
+
 
   # Get summary of the model
   summ <- bahz::cline_summary(stanfit, show.all = T)
@@ -101,8 +106,8 @@ predict_cline <- function(stanfit, distance) {
     tauR <- NULL
   }
 
-
-  #Pass those to general cline equation.
+  #Pass those to general cline equation to get the
+  # best fit cline
   y <- general_cline_eqn(transectDist = distance,
                          decrease = decreasing,
                          center = center,
@@ -115,29 +120,77 @@ predict_cline <- function(stanfit, distance) {
                          tauR = tauR)
 
 
-  # Some ideas on how to add lines for every draw from the posterior.
-  # But, pretty slow. Would want to find a way to vectorize/apply over
-  # the posterior matrix.
 
-  # posterior <- as.matrix(stanfit)
-  # y_post <- matrix(NA, nrow = length(xrange), ncol = dim(posterior)[1])
-  # for (sample in 1:dim(posterior)[1]) {
-  #   i <- 1
-  #   for (x in xrange) {
-  #     y_post[i, sample] <- bahz::general_cline_eqn(transectDist = x, decrease = decreasing,
-  #                                     center = posterior[sample, which(colnames(posterior) == "center")],
-  #                                     width = posterior[sample, which(colnames(posterior) == "width")],
-  #                                     pmin = posterior[sample, which(colnames(posterior) == "pmin")],
-  #                                     pmax = posterior[sample, which(colnames(posterior) == "pmax")],
-  #                                     deltaL = NULL,
-  #                                     tauL = NULL,
-  #                                     deltaR = NULL,
-  #                                     tauR = NULL)
-  #     i <- i + 1
-  #   }
-  # }
+  # If we want to add confidence intervals.
+  # Could possible speed this up a bit by writing around the loop somehow.
+  # Not sure.
+  if (confidence == T) {
+    # make col names for CI columns
+    # tail <- (1 - prob) / 2
+    low.name <- paste("low", prob, "HPDI", sep = "_")
+    up.name <- paste("up", prob, "HPDI", sep = "_")
 
+    posterior <- as.matrix(stanfit)
+    y_post <- matrix(NA, nrow = length(distance), ncol = dim(posterior)[1])
 
-  data.frame(transectDist = distance,
-         p = y, stringsAsFactors = F)
+    # Set up vectors of parameters for general cline_eqn.
+    post_center <- posterior[ , which(colnames(posterior) == "center")]
+    post_width <- posterior[ , which(colnames(posterior) == "width")]
+    post_pmin <- posterior[ , which(colnames(posterior) == "pmin")]
+    post_pmax <- posterior[ , which(colnames(posterior) == "pmax")]
+    if ("deltaM" %in% colnames(posterior)) { # If mirror
+      post_deltaL <- posterior[ , which(colnames(posterior) == "deltaM")]
+      post_deltaR <- posterior[ , which(colnames(posterior) == "deltaM")]
+      post_tauL <- posterior[ , which(colnames(posterior) == "tauM")]
+      post_tauR <- posterior[ , which(colnames(posterior) == "tauM")]
+    } else if ("deltaL" %in% colnames(posterior)) { # if there's a left
+      post_deltaL <- posterior[ , which(colnames(posterior) == "deltaL")]
+      post_tauL <- posterior[ , which(colnames(posterior) == "tauL")]
+      if ("deltaR" %in% colnames(posterior)) { # if there's also a right, independent
+        post_deltaR <-  posterior[ , which(colnames(posterior) == "deltaR")]
+        post_tauR <- posterior[ , which(colnames(posterior) == "tauR")]
+      } else { # else left only
+        post_deltaR <- NULL
+        post_tauR <- NULL
+      }
+    } else if ("deltaR" %in% colnames(posterior)) { # if right only
+      post_deltaR <-  posterior[ , which(colnames(posterior) == "deltaR")]
+      post_tauR <- posterior[ , which(colnames(posterior) == "tauR")]
+      post_deltaL <- NULL
+      post_tauL <- NULL
+    } else { # no tails
+      post_deltaL <- NULL
+      post_deltaR <- NULL
+      post_tauL <- NULL
+      post_tauR <- NULL
+    }
+    for (sample in 1:dim(posterior)[1]) {
+      y_post[ , sample] <- bahz::general_cline_eqn(transectDist = distance, decrease = decreasing,
+                                                   center = post_center[sample],
+                                                   width = post_width[sample],
+                                                   pmin = post_pmin[sample],
+                                                   pmax = post_pmax[sample],
+                                                   deltaL = post_deltaL[sample],
+                                                   deltaR = post_deltaR[sample],
+                                                   tauL = post_tauL[sample],
+                                                   tauR = post_tauR[sample])
+    }
+    y_CI <- y_post %>%
+      t(.) %>%
+      coda::as.mcmc(.) %>%
+      coda::HPDinterval(obj = ., prob = prob)
+
+    result <- data.frame(transectDist = distance,
+                         p = y,
+                         lower = y_CI[,1],
+                         upper = y_CI[,2],
+                         stringsAsFactors = F, row.names = NULL)
+    names(result) <- c("transectDist", "p", low.name, up.name)
+
+  } else {
+    result <- data.frame(transectDist = distance,
+               p = y, stringsAsFactors = F)
+  }
+
+  result
 }

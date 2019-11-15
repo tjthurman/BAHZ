@@ -14,11 +14,11 @@ x <-  seq(-200, 200, 20)
 
 set.seed(123)
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
-                         sigma = 6, decrease = T, center = 15, width = 30, pmin = 8, pmax = 22)
+                         sigma = 1.2, decrease = T, center = 15, width = 30, pmin = 8, pmax = 22)
 # Out of interest, simulate non-constant variance and see how it does
-pheno <- sim_pheno_cline(transect_distances = x, n_ind = 20,
-                         sigma = abs(rnorm(n = length(x), mean = 10, sd = 5)),
-                         decrease = F, center = 150, width = 30, pmin = 8, pmax = 22)
+pheno <- sim_pheno_cline(transect_distances = x, n_ind = as.integer(abs(rnorm(n = length(x), mean = 10, sd = 5))),
+                         sigma = abs(rnorm(n = length(x), mean = 1, sd = 0.7)),
+                         decrease = F, center = 15, width = 80, pmin = 8, pmax = 22)
 # that worked fine. What about a more possibly interesting case: higher variance in the center
 z <- ifelse(abs(15-x) <= 25, 14, 8)
 pheno <- sim_pheno_cline(transect_distances = x, n_ind = 17,
@@ -42,6 +42,15 @@ z <- fit_pheno_cline(data = pheno,
                 chains = 4)
 
 cline_summary(z)
+
+z2 <- predict_cline(z, -200:200, confidence = T)
+
+ggplot() +
+  geom_ribbon(fill = "grey90",
+              aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),
+              data = z2) +
+  geom_point(aes(x = transectDist, y = traitValue), data = pheno) +
+  geom_line(aes(x = transectDist, y = p), data = z2)
 
 plot_pheno_cline(z, data = pheno)
 plot_pheno_cline(z, data = pheno, add.obs.pheno = T, point.col = "red", col = "blue")
