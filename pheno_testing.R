@@ -57,7 +57,7 @@ constant_sig <- fit_pheno_cline(data = pheno,
                 prior_file = "prior_config_template.yaml", pheno_variance = "constant",
                 chains = 4)
 pool_sig <- fit_pheno_cline(data = pheno,
-                            prior_file = "prior_config_template.yaml", pheno_variance = "pooling",
+                            prior_file = "prior_config_template.yaml", pheno_variance = "pooled",
                             chains = 4)
 ind_sig <- fit_pheno_cline(data = pheno,
                      prior_file = "prior_config_template.yaml", pheno_variance = "independent",
@@ -86,6 +86,12 @@ waic_pool <- waic(extract_log_lik(pool_sig))
 waic_ind <- waic(extract_log_lik(ind_sig))
 
 compare(waic_pool, waic_constant,  waic_ind)
+
+loo_constant <- loo(constant_sig)
+loo_pool <- loo(pool_sig)
+loo_ind <- loo(ind_sig)
+
+compare(loo_pool, loo_constant,  loo_ind)
 
 pred <- predict_geno_cline(z, -200:200)
 

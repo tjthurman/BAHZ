@@ -1,6 +1,7 @@
 #' Fit a phenotypic cline model to your data
 #'
 #' Use Rstan to fit Bayesian hybrid zone cline models to phenotypic data.
+#' The phenotypic cline models in BAHZ assume that phenotypes are normally distributed.
 #'
 #' This is a wrapper function, which calls various data- and model-preparation
 #' functions from \code{bahz} before passing the results to the
@@ -33,7 +34,16 @@
 #'   \code{\link{prep_pheno_data}} for possible formats.
 #' @param prior_file The path to the \code{.yaml} file which contains the
 #'   specifications of the priors.
-#' @param pheno_variance TO BE WRITTEN
+#' @param pheno_variance The method used to estimate phenotypic variance.
+#'   Either "constant" (the default), "pooled", or "independent". If "constant", bahz
+#'   estimates a single, constant phenotypic variance across all sites
+#'   (global_sigma). If "independent", bahz estimates phenotypic variance
+#'   independently at each site (site_sigma). If "pooled", bahz uses a
+#'   hierarchical model which shares information across sites to estimate
+#'   both the average phenotypic variance (global_sigma) and site-specific
+#'   variances (site_sigma). The site-specific variances are assumed to be
+#'   normally distributed around the global_sigma with their own variance,
+#'   which is estimated (sigma_sigma).
 #' @param chains The number of MCMC chains to create. Numeric, coerced to
 #'   integer. Default is 4.
 #' @param init Optional, default is \code{NULL}. A user-provided list of
@@ -78,7 +88,7 @@ fit_pheno_cline <- function(data, prior_file, pheno_variance = "constant",
                            init = NULL, ...) {
   # Argument checking
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
-  match.arg(pheno_variance, choices = c("constant", "pooling", "independent"), several.ok = F)
+  pheno_variance <- match.arg(pheno_variance, choices = c("constant", "pooled", "independent"), several.ok = F)
   ch <- as.integer(chains)
 
   # Calling internal functions
