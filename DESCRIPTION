@@ -22,7 +22,8 @@ Imports:
     rstantools (>= 1.5.1),
     stringr,
     tidyr,
-    yaml
+    yaml,
+    progress
 LinkingTo:
     BH (>= 1.66.0-1),
     Rcpp (>= 0.12.19),

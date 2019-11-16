@@ -4,7 +4,8 @@
 \alias{predict_cline}
 \title{Predict allele frequencies or mean phenotypes for a cline}
 \usage{
-predict_cline(stanfit, distance)
+predict_cline(stanfit, distance, confidence = F, prob = 0.95,
+  progress = T)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
@@ -12,15 +13,26 @@ predict_cline(stanfit, distance)
 \item{distance}{The x value(s) (distance along the transect) at which to
 predict allele frequencies or mean phenotypes for the fitted cline. Must be
 a numeric vector.}
+
+\item{confidence}{Calculate credible intervals around the cline? TRUE or FALSE, default False.}
+
+\item{prob}{The probability interval to calculate for the cline. Default is .95. Numeric,
+between 0 and 1.}
+
+\item{progress}{Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.}
 }
 \value{
-A data frame with two columns:
+A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
 \itemize{
 \item transectDist: the distances along the transect at which the cline
 equation was evaluated. Will be the same values as were supplied in the
 distance argument. Numeric.
 \item p: the predict allele frequency or mean phenotype at each distance,
 according to the cline equation. Numeric.
+\item lower: Only if confidence = T. The lower limit of the credible interval. The column name
+will include the probability value used for calculating the CI.
+\item upper: Only if confidence = T. The upper limit of the credible interval. The column name
+will include the probability value used for calculating the CI.
 }
 }
 \description{

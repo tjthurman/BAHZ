@@ -7,19 +7,32 @@
 #'
 #' @importClassesFrom rstan stanfit
 #'
+#' @import progress
+#'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
 #'
 #' @param distance The x value(s) (distance along the transect) at which to
 #'   predict allele frequencies or mean phenotypes for the fitted cline. Must be
 #'   a numeric vector.
 #'
-#' @return A data frame with two columns:
+#' @param confidence Calculate credible intervals around the cline? TRUE or FALSE, default FALSE.
+#'
+#' @param prob The probability interval to calculate for the cline. Default is .95. Numeric,
+#'   between 0 and 1.
+#'
+#' @param progress Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.
+#'
+#' @return A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
 #'  \itemize{
 #'  \item transectDist: the distances along the transect at which the cline
 #'  equation was evaluated. Will be the same values as were supplied in the
 #'  distance argument. Numeric.
 #'  \item p: the predict allele frequency or mean phenotype at each distance,
 #'  according to the cline equation. Numeric.
+#'  \item lower: Only if confidence = T. The lower limit of the credible interval. The column name
+#'  will include the probability value used for calculating the CI.
+#'  \item upper: Only if confidence = T. The upper limit of the credible interval. The column name
+#'  will include the probability value used for calculating the CI.
 #'  }
 #'
 #' @export
@@ -35,7 +48,7 @@
 #'
 #' }
 
-predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95) {
+predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95, progress = T) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -50,10 +63,12 @@ predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95) {
   assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(progress) == T, msg = "progress must be either TRUE or FALSE")
 
 
   # Get summary of the model
   summ <- bahz::cline_summary(stanfit, show.all = T)
+
 
   # Figure out if increasing or decreasing
   ps <- summ %>%
@@ -164,6 +179,13 @@ predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95) {
       post_tauL <- NULL
       post_tauR <- NULL
     }
+    if (progress) {
+      pb <- progress::progress_bar$new(total = dim(posterior)[1],
+                             format = " Posterior sample [:bar] :current/:total",
+                             clear = F, width= 60)
+    }
+
+    pb$tick(0)
     for (sample in 1:dim(posterior)[1]) {
       y_post[ , sample] <- bahz::general_cline_eqn(transectDist = distance, decrease = decreasing,
                                                    center = post_center[sample],
@@ -174,6 +196,11 @@ predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95) {
                                                    deltaR = post_deltaR[sample],
                                                    tauL = post_tauL[sample],
                                                    tauR = post_tauR[sample])
+      if (progress) {
+        if(sample %% 100 == 0) {
+          pb$tick(100)
+        }
+      }
     }
     y_CI <- y_post %>%
       t(.) %>%
