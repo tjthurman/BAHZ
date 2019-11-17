@@ -26,8 +26,15 @@
 #' @param add.obs.freqs Should the observed allele frequencies at each site be
 #'   plotted? TRUE or FALSE, default is FALSE.
 #'
+#' @param cline.col the color of the cline and confidence intervals. Default is black.
+#'
 #' @param point.col The color to use for plotting the observed allele
 #'   frequencies. Default is black.
+#'
+#' @param confidence Display credible intervals around the cline? TRUE or FALSE, default FALSE.
+#'
+#' @param prob The probability interval to calculate for the cline. Default is .95. Numeric,
+#'   between 0 and 1.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
 #'   functions to customize the plot (see \code{\link[graphics]{par}}).
@@ -59,7 +66,8 @@
 #' @export
 
 
-plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black", ...) {
+plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
+                            prob = 0.95, cline.col = "black", point.col = "black", ...) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -81,6 +89,17 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
+  assertthat::assert_that(is.numeric(prob) == T, msg = "prob must be numeric")
+  assertthat::assert_that(length(prob) == 1, msg = "prob must be of length 1")
+  assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
+
+  extra.args <- list(...)
+
+  if ("col" %in% names(extra.args)) {
+    stop("Use cline.col and point.col to specifiy colors, don't include col as an additional argument.")
+  }
 
   # Check to see if there are the same number of sites in the stanfit object
   # as in the inout data frame. Give a warning if there's not.
@@ -108,9 +127,11 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
                 length.out = range*2)
 
   # Generate the cline values to plot
-  cline <- bahz::predict_cline(stanfit, distance = xrange)
+  cline <- bahz::predict_cline(stanfit, distance = xrange,
+                               confidence = confidence,
+                               prob = prob)
 
-  # If addinf the observed allele frequencies, calculate those.
+  # If adding the observed allele frequencies, calculate those.
   if (add.obs.freqs == T) {
     dataframe <- data
     if (sum(c("nFocalAllele", "nTotalAlleles", "transectDist") %in% names(dataframe)) == 3) {
@@ -149,13 +170,17 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, point.col = "black
     }
   }
 
-  # Now, plot it all
-  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, ylim = c(0,1), ...)
-  if (add.obs.freqs == T) {
+  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, col = cline.col, ylim = c(0,1), ...)
+  if (confidence) {
+    graphics::polygon(x = c(cline$transectDist, rev(cline$transectDist)),
+                     y = c(cline[,3], rev(cline[,4])), border = NA,
+                     col = alpha(cline.col, 0.2), ...)
+    graphics::lines(cline$transectDist, cline$p, col = cline.col, ...)
+  }
+  if (add.obs.freqs) {
     graphics::points(x = conv.dataframe$transectDist,
            y = conv.dataframe$est.p.internal,
-           pch = 1,
-           col = point.col)
+           col = point.col, ...)
   }
   graphics::title(...)
 

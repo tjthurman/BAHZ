@@ -29,6 +29,11 @@
 #' @param point.col The color to use for plotting the observed trait
 #'   values. Default is black.
 #'
+#' @param confidence Display credible intervals around the cline? TRUE or FALSE, default FALSE.
+#'
+#' @param prob The probability interval to calculate for the cline. Default is .95. Numeric,
+#'   between 0 and 1.
+#'
 #' @param ... Further graphical parameters to be passed to the base R plotting
 #'   functions to customize the plot (see \code{\link[graphics]{par}}).
 #'
@@ -80,6 +85,12 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "blac
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
+  assertthat::assert_that(is.numeric(prob) == T, msg = "prob must be numeric")
+  assertthat::assert_that(length(prob) == 1, msg = "prob must be of length 1")
+  assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
+  assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
+
 
   # Check to see if there are the same number of individuals in the stanfit object
   # as in the input data frame. Give a warning if there's not.

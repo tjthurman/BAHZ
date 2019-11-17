@@ -16,7 +16,7 @@ data <- sim_geno_cline(transect_distances = seq(0,500,20), n_ind = 30, Fis = 0,
                     decrease = T, center = 238, width = 66, pmin = 0.03, pmax = .95, tauL = 0.5, deltaL = 12)
 
 set.seed(22)
-data <- sim_geno_cline(transect_distances = seq(-300,300,75), n_ind = 40, Fis = 0,
+data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
                        decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95)
 
 plot(x = data$transectDist, y = data$emp.p)
@@ -91,6 +91,12 @@ z2 <- predict_cline(stanfit = fit_left_m, distance = 0:500, confidence = T, prob
 z3 <- predict_cline(stanfit = fit_right_m, distance = 0:500, confidence = T, prob = 0.95)
 z4 <- predict_cline(stanfit = fit_mirror_m, distance = 0:500, confidence = T, prob = 0.95)
 z5 <- predict_cline(stanfit = fit_ind_m, distance = 0:500, confidence = T, prob = 0.95)
+
+plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T)
+plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T,
+                cline.col = "orange", point.col = "dodgerblue", lwd = 4, pch = 21, cex = 4, bg = "green")
+
+par()
 
 ggplot() +
   geom_ribbon(fill = "grey90",
