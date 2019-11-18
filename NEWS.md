@@ -1,3 +1,12 @@
+# bahz 0.0.0.9014
+
+New features:
+
+* Ability to add credible intervals when predicting clines and plotting clines.
+
+* Updated phenotypic models to allow three different variance structures: constant across sites, differing across sites, or a pooled hierachical model. 
+
+
 # bahz 0.0.0.9013
 
 Bugfix update
