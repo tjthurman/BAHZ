@@ -14,7 +14,7 @@ predict_cline(stanfit, distance, confidence = F, prob = 0.95,
 predict allele frequencies or mean phenotypes for the fitted cline. Must be
 a numeric vector.}
 
-\item{confidence}{Calculate credible intervals around the cline? TRUE or FALSE, default False.}
+\item{confidence}{Calculate credible intervals around the cline? TRUE or FALSE, default FALSE.}
 
 \item{prob}{The probability interval to calculate for the cline. Default is .95. Numeric,
 between 0 and 1.}

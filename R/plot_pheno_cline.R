@@ -7,7 +7,8 @@
 #' This plotting function is mostly a wrapper around
 #' \code{\link{predict_cline}}. For greater customization of plots, users
 #' are encouraged to use \code{\link{predict_cline}} to generate the x- and
-#' y-coordinates for their fitted cline, and then graph those coordinates using
+#' y-coordinates for their fitted cline and confidence intervals,
+#' and then graph those coordinates using
 #' the plotting methods and packages of their choice (base plotting, lattice, or
 #' ggplot2).
 #'
@@ -16,6 +17,8 @@
 #' @importFrom graphics "plot" "title" "points"
 #'
 #' @importFrom grDevices "colors"
+#'
+#' @importFrom scales "alpha"
 #'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model
 #'   results.
@@ -26,12 +29,14 @@
 #' @param add.obs.pheno Should the observed trait values for each individual be
 #'   plotted? TRUE or FALSE, default is FALSE.
 #'
+#' @param cline.col the color of the cline and confidence intervals. Default is black.
+#'
 #' @param point.col The color to use for plotting the observed trait
 #'   values. Default is black.
 #'
 #' @param confidence Display credible intervals around the cline? TRUE or FALSE, default FALSE.
 #'
-#' @param prob The probability interval to calculate for the cline. Default is .95. Numeric,
+#' @param prob The probability interval to calculate around the cline. Default is .95. Numeric,
 #'   between 0 and 1.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
@@ -49,6 +54,9 @@
 #' # Add points showing the observed trait values for each individual
 #' plot_pheno_cline(yourStanfit, data, add.obs.pheno = T)
 #'
+#' # Add credible intervals around the cline
+#' plot_pheno_cline(yourStanfit, data, confidence = T)
+#'
 #' # Some plot customization
 #' # Adding axis labels, titles, and changing the
 #' # colors of the points and line.
@@ -63,7 +71,8 @@
 #' @export
 
 
-plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "black", ...) {
+plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, confidence = F,
+                             prob = 0.95, cline.col = "black", point.col = "black", ...) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -82,6 +91,9 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "blac
                                       sep = "\n"))
   assertthat::assert_that(add.obs.pheno %in% c(T, F),
                           msg = "add.obs.pheno must be True or False")
+  assertthat::assert_that(cline.col %in% colors(),
+                          msg = paste(point.col,
+                                      " is not a valid color name", sep = ""))
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
@@ -91,6 +103,30 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "blac
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
 
+  # Check supplied extra graphical parameters
+  extra.args <- list(...)
+  reserved.par <- c("ann", "border", "col", "type", "ylim")
+  if (sum(reserved.par %in% names(extra.args)) > 0) {
+    errs <- reserved.par[which(reserved.par %in% names(extra.args))]
+    if ("col" %in% errs) {
+      msg <- paste("Some graphical parameters supplied in ...",
+                   "have default values in bahz and cannot be overridden.",
+                   "\n",
+                   "Remove these arguments:",
+                   toString(errs),
+                   "\n",
+                   "Use cline.col and point.col to specify colors,",
+                   "don't include col as an additional argument.", sep = "\n")
+    } else {
+      msg <- paste("Some graphical parameters supplied in ...",
+                   "have default values in bahz and cannot be overridden:",
+                   "\n",
+                   "Remove these arguments:",
+                   toString(errs),
+                   sep = "\n")
+      }
+    stop(msg)
+  }
 
   # Check to see if there are the same number of individuals in the stanfit object
   # as in the input data frame. Give a warning if there's not.
@@ -118,9 +154,11 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "blac
                 length.out = range*2)
 
   # Generate the cline values to plot
-  cline <- bahz::predict_cline(stanfit, distance = xrange)
+  cline <- bahz::predict_cline(stanfit, distance = xrange,
+                               confidence = confidence,
+                               prob = prob)
 
-  # If addinf the observed allele frequencies, calculate those.
+  # If adding the observed  phenotypes, check that appropriate columns are there.
   if (add.obs.pheno == T) {
     if (sum(c("transectDist", "traitValue") %in% names(data)) == 2) {
       assertthat::assert_that(is.numeric(data$transectDist) == T,
@@ -141,15 +179,21 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, point.col = "blac
   }
 
   # Now, plot it all
-  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, ylim = c(min(data$traitValue), max(data$traitValue)), ...)
+  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, col = cline.col, ylim = c(min(data$traitValue), max(data$traitValue)), ...)
+  if (confidence) {
+    graphics::polygon(x = c(cline$transectDist, rev(cline$transectDist)),
+                      y = c(cline[,3], rev(cline[,4])), border = NA,
+                      col = scales::alpha(cline.col, 0.2), ...)
+    graphics::lines(cline$transectDist, cline$p, col = cline.col, ...)
+  }
+
+
   if (add.obs.pheno == T) {
     graphics::points(x = dataframe$transectDist,
                      y = dataframe$traitValue,
-                     pch = 1,
-                     col = point.col)
+                     col = point.col, ...)
   }
   graphics::title(...)
 
   return(invisible(NULL))
-
 }

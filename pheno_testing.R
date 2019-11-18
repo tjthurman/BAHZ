@@ -45,6 +45,11 @@ cline_summary(z)
 
 z2 <- predict_cline(z, -200:200, confidence = T)
 
+plot_pheno_cline(z, data = pheno, main = "test",
+                 add.obs.pheno = F, confidence = F, prob = 0.5,
+                 cline.col = "red", ann = T, type = "p")
+
+
 ggplot() +
   geom_ribbon(fill = "grey90",
               aes(x = transectDist, ymin = low_0.95_HPDI, ymax = up_0.95_HPDI),

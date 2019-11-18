@@ -7,7 +7,8 @@
 #' This plotting function is mostly a wrapper around
 #' \code{\link{predict_cline}}. For greater customization of plots, users
 #' are encouraged to use \code{\link{predict_cline}} to generate the x- and
-#' y-coordinates for their fitted cline, and then graph those coordinates using
+#' y-coordinates for their fitted cline and confidence intervals,
+#' and then graph those coordinates using
 #' the plotting methods and packages of their choice (base plotting, lattice, or
 #' ggplot2).
 #'
@@ -16,6 +17,8 @@
 #' @importFrom graphics "plot" "title" "points"
 #'
 #' @importFrom grDevices "colors"
+#'
+#' @importFrom scales "alpha"
 #'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model
 #'   results.
@@ -33,7 +36,7 @@
 #'
 #' @param confidence Display credible intervals around the cline? TRUE or FALSE, default FALSE.
 #'
-#' @param prob The probability interval to calculate for the cline. Default is .95. Numeric,
+#' @param prob The probability interval to calculate around the cline. Default is .95. Numeric,
 #'   between 0 and 1.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
@@ -51,6 +54,9 @@
 #' # Add points showing the empirical allele frequencies at
 #' # each collecting site
 #' plot_geno_cline(yourStanfit, data, add.obs.freq = T)
+#'
+#' # Add credible intervals around the cline.
+#' plot_geno_cline(yourStanfit, data, confidence = T)
 #'
 #' # Some plot customization
 #' # Adding axis labels, titles, and changing the
@@ -86,6 +92,9 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
                                       sep = "\n"))
   assertthat::assert_that(add.obs.freqs %in% c(T, F),
                           msg = "add.obs.freq must be True or False")
+  assertthat::assert_that(cline.col %in% colors(),
+                          msg = paste(point.col,
+                                      " is not a valid color name", sep = ""))
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
@@ -95,12 +104,30 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
 
+  # Check supplied extra graphical parameters
   extra.args <- list(...)
-
-  if ("col" %in% names(extra.args)) {
-    stop("Use cline.col and point.col to specifiy colors, don't include col as an additional argument.")
+  reserved.par <- c("ann", "border", "col", "type", "ylim")
+  if (sum(reserved.par %in% names(extra.args)) > 0) {
+    errs <- reserved.par[which(reserved.par %in% names(extra.args))]
+    if ("col" %in% errs) {
+      msg <- paste("Some graphical parameters supplied in ...",
+                   "have default values in bahz and cannot be overridden.",
+                   "\n",
+                   "Remove these arguments:",
+                   toString(errs),
+                   "\n",
+                   "Use cline.col and point.col to specify colors,",
+                   "don't include col as an additional argument.", sep = "\n")
+    } else {
+      msg <- paste("Some graphical parameters supplied in ...",
+                   "have default values in bahz and cannot be overridden:",
+                   "\n",
+                   "Remove these arguments:",
+                   toString(errs),
+                   sep = "\n")
+    }
+    stop(msg)
   }
-
   # Check to see if there are the same number of sites in the stanfit object
   # as in the inout data frame. Give a warning if there's not.
   data.sites <- dim(data)[1]
@@ -174,7 +201,7 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
   if (confidence) {
     graphics::polygon(x = c(cline$transectDist, rev(cline$transectDist)),
                      y = c(cline[,3], rev(cline[,4])), border = NA,
-                     col = alpha(cline.col, 0.2), ...)
+                     col = scales::alpha(cline.col, 0.2), ...)
     graphics::lines(cline$transectDist, cline$p, col = cline.col, ...)
   }
   if (add.obs.freqs) {

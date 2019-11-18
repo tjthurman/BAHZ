@@ -4,8 +4,8 @@
 \alias{plot_pheno_cline}
 \title{Plot a phenotypic cline}
 \usage{
-plot_pheno_cline(stanfit, data, add.obs.pheno = F, point.col = "black",
-  ...)
+plot_pheno_cline(stanfit, data, add.obs.pheno = F, confidence = F,
+  prob = 0.95, cline.col = "black", point.col = "black", ...)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model
@@ -16,6 +16,13 @@ that was used to generate the model fit).}
 
 \item{add.obs.pheno}{Should the observed trait values for each individual be
 plotted? TRUE or FALSE, default is FALSE.}
+
+\item{confidence}{Display credible intervals around the cline? TRUE or FALSE, default FALSE.}
+
+\item{prob}{The probability interval to calculate around the cline. Default is .95. Numeric,
+between 0 and 1.}
+
+\item{cline.col}{the color of the cline and confidence intervals. Default is black.}
 
 \item{point.col}{The color to use for plotting the observed trait
 values. Default is black.}
@@ -35,7 +42,8 @@ may also supply a number of optional arguments to customize the plot.
 This plotting function is mostly a wrapper around
 \code{\link{predict_cline}}. For greater customization of plots, users
 are encouraged to use \code{\link{predict_cline}} to generate the x- and
-y-coordinates for their fitted cline, and then graph those coordinates using
+y-coordinates for their fitted cline and confidence intervals,
+and then graph those coordinates using
 the plotting methods and packages of their choice (base plotting, lattice, or
 ggplot2).
 }
@@ -48,6 +56,9 @@ plot_pheno_cline(yourStanfit, data)
 
 # Add points showing the observed trait values for each individual
 plot_pheno_cline(yourStanfit, data, add.obs.pheno = T)
+
+# Add credible intervals around the cline
+plot_pheno_cline(yourStanfit, data, confidence = T)
 
 # Some plot customization
 # Adding axis labels, titles, and changing the
