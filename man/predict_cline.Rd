@@ -5,7 +5,7 @@
 \title{Predict allele frequencies or mean phenotypes for a cline}
 \usage{
 predict_cline(stanfit, distance, confidence = F, prob = 0.95,
-  progress = T)
+  progress = T, clear_cache = F)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
@@ -20,6 +20,9 @@ a numeric vector.}
 between 0 and 1.}
 
 \item{progress}{Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.}
+
+\item{clear_cache}{Clear the cache of saved results to ensure recalculation of predicted cline?
+TRUE or FALSE, default FALSE.}
 }
 \value{
 A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
@@ -39,7 +42,9 @@ will include the probability value used for calculating the CI.
 Uses the cline parameters from your stanfit object (the mean of the posterior
 distribtution of each parameter) to predict the allele frequency (for genetic
 clines) or the mean phenotype value (for phenotypic clines) at the
-distance(s) along the transect specified by the user.
+distance(s) along the transect specified by the user. To save computation time, this function use the
+\code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
+of saved results, use \code{\link{clear_bahz_cache}}.
 }
 \examples{
 \dontrun{

@@ -39,6 +39,9 @@
 #' @param prob The probability interval to calculate around the cline. Default is .95. Numeric,
 #'   between 0 and 1.
 #'
+#' @param clear_cache Clear the cache of saved results to ensure recalculation of predicted cline?
+#' TRUE or FALSE, default FALSE.
+#'
 #' @param ... Further graphical parameters to be passed to the base R plotting
 #'   functions to customize the plot (see \code{\link[graphics]{par}}).
 #'
@@ -103,6 +106,7 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
   assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(clear_cache) == T, msg = "clear_cache must be either TRUE or FALSE")
 
   # Check supplied extra graphical parameters
   extra.args <- list(...)
@@ -156,7 +160,7 @@ plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
   # Generate the cline values to plot
   cline <- bahz::predict_cline(stanfit, distance = xrange,
                                confidence = confidence,
-                               prob = prob)
+                               prob = prob, clear_cache = clear_cache)
 
   # If adding the observed allele frequencies, calculate those.
   if (add.obs.freqs == T) {

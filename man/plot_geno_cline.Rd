@@ -29,6 +29,9 @@ frequencies. Default is black.}
 
 \item{...}{Further graphical parameters to be passed to the base R plotting
 functions to customize the plot (see \code{\link[graphics]{par}}).}
+
+\item{clear_cache}{Clear the cache of saved results to ensure recalculation of predicted cline?
+TRUE or FALSE, default FALSE.}
 }
 \value{
 invisible(NULL)
