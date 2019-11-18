@@ -222,7 +222,7 @@ internal_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
     prop <- 1
   }
 
-  # Rescale tp pmin/pmax and do increase/decrease
+  # Rescale to pmin/pmax and do increase/decrease
   if (decrease == T) {
     p <- pmin + (pmax - pmin)*(1 - prop)
   }
