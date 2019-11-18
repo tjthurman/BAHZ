@@ -76,7 +76,8 @@
 
 
 plot_geno_cline <- function(stanfit, data, add.obs.freqs = F, confidence = F,
-                            prob = 0.95, cline.col = "black", point.col = "black", ...) {
+                            prob = 0.95, cline.col = "black", point.col = "black",
+                            clear_cache = F, ...) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
