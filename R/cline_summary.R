@@ -3,7 +3,7 @@
 #' Summarizes the results of the cline model by providing the posterior mean,
 #' credible intervals, and diagnostics for the model parameters. To save computation time, this function use the
 #' \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
-#' of saved results, use clear_cache = F or run the \code{\link{clear_bahz_cache}} function.
+#' of saved results, use clear.cache = F or run the \code{\link{clear_bahz_cache}} function.
 #'
 #' Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects
 #' for calculating posterior means, SEM, standard deviations, equal tail
@@ -26,7 +26,7 @@
 #' @param show.all By default, function returns summaries only for the main cline
 #'   parameters. Set show.all to T to see summaries for matrix and vector parameters.
 #'
-#' @param clear_cache Clear the cache of saved results to ensure recalculation of summary?
+#' @param clear.cache Clear the cache of saved results to ensure recalculation of summary?
 #' TRUE or FALSE, default FALSE.
 #'
 #' @return A summary data frame with the columns:
@@ -56,7 +56,7 @@
 
 cline_summary <- memoise::memoise(function(stanfit, prob = .95, method = "HPDI",
                                            show.all = F,
-                                           clear_cache = F) {
+                                           clear.cache = F) {
   # A bunch of argument checking
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
                           msg = "Object to be summarized must be of class stanfit")
@@ -67,9 +67,9 @@ cline_summary <- memoise::memoise(function(stanfit, prob = .95, method = "HPDI",
   assertthat::assert_that((method %in% c("HPDI", "ET")) == T,
                           msg = "method must be either 'HPDI' or 'ET")
   assertthat::assert_that(is.logical(show.all) == T, msg = "show.all must be either TRUE or FALSE")
-  assertthat::assert_that(is.logical(clear_cache) == T, msg = "clear_cache must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(clear.cache) == T, msg = "clear.cache must be either TRUE or FALSE")
 
-  if (clear_cache) {
+  if (clear.cache) {
     memoise::forget(bahz::cline_summary)
   }
 

@@ -5,7 +5,7 @@
 \title{Summarize cline model results}
 \usage{
 cline_summary(stanfit, prob = 0.95, method = "HPDI", show.all = F,
-  clear_cache = F)
+  clear.cache = F)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
@@ -20,7 +20,7 @@ intervals. Default is "HPDI".}
 \item{show.all}{By default, function returns summaries only for the main cline
 parameters. Set show.all to T to see summaries for matrix and vector parameters.}
 
-\item{clear_cache}{Clear the cache of saved results to ensure recalculation of summary?
+\item{clear.cache}{Clear the cache of saved results to ensure recalculation of summary?
 TRUE or FALSE, default FALSE.}
 }
 \value{
@@ -45,7 +45,7 @@ other value is indicative of a problem during sampling.
 Summarizes the results of the cline model by providing the posterior mean,
 credible intervals, and diagnostics for the model parameters. To save computation time, this function use the
 \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
-of saved results, use clear_cache = F or run the \code{\link{clear_bahz_cache}} function.
+of saved results, use clear.cache = F or run the \code{\link{clear_bahz_cache}} function.
 }
 \details{
 Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects

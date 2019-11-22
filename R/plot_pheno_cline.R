@@ -39,7 +39,7 @@
 #' @param prob The probability interval to calculate around the cline. Default is .95. Numeric,
 #'   between 0 and 1.
 #'
-#' @param clear_cache Clear the cache of saved results to ensure recalculation predicted cline?
+#' @param clear.cache Clear the cache of saved results to ensure recalculation predicted cline?
 #' TRUE or FALSE, default FALSE.
 #'
 #' @param ... Further graphical parameters to be passed to the base R plotting
@@ -76,7 +76,7 @@
 
 plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, confidence = F,
                              prob = 0.95, cline.col = "black", point.col = "black",
-                             clear_cache = F, ...) {
+                             clear.cache = F, ...) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -106,7 +106,7 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, confidence = F,
   assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
-  assertthat::assert_that(is.logical(clear_cache) == T, msg = "clear_cache must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(clear.cache) == T, msg = "clear_cache must be either TRUE or FALSE")
 
   # Check supplied extra graphical parameters
   extra.args <- list(...)
@@ -162,7 +162,7 @@ plot_pheno_cline <- function(stanfit, data, add.obs.pheno = F, confidence = F,
   cline <- bahz::predict_cline(stanfit, distance = xrange,
                                confidence = confidence,
                                prob = prob,
-                               clear_cache = clear_cache)
+                               clear.cache = clear.cache)
 
   # If adding the observed  phenotypes, check that appropriate columns are there.
   if (add.obs.pheno == T) {

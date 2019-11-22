@@ -5,7 +5,7 @@
 #' clines) or the mean phenotype value (for phenotypic clines) at the
 #' distance(s) along the transect specified by the user. To save computation time, this function use the
 #' \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
-#' of saved results, use \code{\link{clear_bahz_cache}}.
+#' of saved results, use clear.cache = F or \code{\link{clear_bahz_cache}}.
 #'
 #' @importClassesFrom rstan stanfit
 #'
@@ -26,7 +26,7 @@
 #'
 #' @param progress Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.
 #'
-#' @param clear_cache Clear the cache of saved results to ensure recalculation of predicted cline?
+#' @param clear.cache Clear the cache of saved results to ensure recalculation of predicted cline?
 #' TRUE or FALSE, default FALSE.
 #'
 #' @return A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
@@ -58,7 +58,7 @@
 predict_cline <- memoise::memoise(function(stanfit, distance,
                                            confidence = F, prob = 0.95,
                                            progress = T,
-                                           clear_cache = F) {
+                                           clear.cache = F) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -74,9 +74,9 @@ predict_cline <- memoise::memoise(function(stanfit, distance,
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
   assertthat::assert_that(is.logical(progress) == T, msg = "progress must be either TRUE or FALSE")
-  assertthat::assert_that(is.logical(clear_cache) == T, msg = "clear_cache must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(clear.cache) == T, msg = "clear.cache must be either TRUE or FALSE")
 
-  if (clear_cache) {
+  if (clear.cache) {
     memoise::forget(bahz::predict_cline)
   }
 
