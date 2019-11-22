@@ -5,7 +5,8 @@
 \title{Plot a genetic cline}
 \usage{
 plot_geno_cline(stanfit, data, add.obs.freqs = F, confidence = F,
-  prob = 0.95, cline.col = "black", point.col = "black", ...)
+  prob = 0.95, cline.col = "black", point.col = "black",
+  clear.cache = F, ...)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model
@@ -26,6 +27,9 @@ between 0 and 1.}
 
 \item{point.col}{The color to use for plotting the observed allele
 frequencies. Default is black.}
+
+\item{clear.cache}{Clear the cache of saved results to ensure recalculation of predicted cline?
+TRUE or FALSE, default FALSE.}
 
 \item{...}{Further graphical parameters to be passed to the base R plotting
 functions to customize the plot (see \code{\link[graphics]{par}}).}

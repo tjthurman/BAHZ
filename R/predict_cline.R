@@ -3,11 +3,15 @@
 #' Uses the cline parameters from your stanfit object (the mean of the posterior
 #' distribtution of each parameter) to predict the allele frequency (for genetic
 #' clines) or the mean phenotype value (for phenotypic clines) at the
-#' distance(s) along the transect specified by the user.
+#' distance(s) along the transect specified by the user. To save computation time, this function use the
+#' \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
+#' of saved results, use clear.cache = F or \code{\link{clear_bahz_cache}}.
 #'
 #' @importClassesFrom rstan stanfit
 #'
 #' @import progress
+#'
+#' @import memoise
 #'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model results.
 #'
@@ -21,6 +25,9 @@
 #'   between 0 and 1.
 #'
 #' @param progress Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.
+#'
+#' @param clear.cache Clear the cache of saved results to ensure recalculation of predicted cline?
+#' TRUE or FALSE, default FALSE.
 #'
 #' @return A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
 #'  \itemize{
@@ -48,7 +55,10 @@
 #'
 #' }
 
-predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95, progress = T) {
+predict_cline <- memoise::memoise(function(stanfit, distance,
+                                           confidence = F, prob = 0.95,
+                                           progress = T,
+                                           clear.cache = F) {
 
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -64,7 +74,11 @@ predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95, progre
   assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
   assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
   assertthat::assert_that(is.logical(progress) == T, msg = "progress must be either TRUE or FALSE")
+  assertthat::assert_that(is.logical(clear.cache) == T, msg = "clear.cache must be either TRUE or FALSE")
 
+  if (clear.cache) {
+    memoise::forget(bahz::predict_cline)
+  }
 
   # Get summary of the model
   summ <- bahz::cline_summary(stanfit, show.all = T)
@@ -220,4 +234,4 @@ predict_cline <- function(stanfit, distance, confidence = F, prob = 0.95, progre
   }
 
   result
-}
+})

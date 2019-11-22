@@ -76,7 +76,7 @@ lines(-300:300, plot_cline(fit_ind_b)$p, type = "l", col = "green")
 
 # Fit the model, binomial
 fit_none_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                           type = "multi", tails = "none")
+                           type = "bi", tails = "none")
 fit_left_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "multi", tails = "left")
 fit_right_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
@@ -86,15 +86,32 @@ fit_mirror_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                           type = "multi", tails = "ind")
 
-z <- predict_cline(stanfit = fit_none_m, distance = 0:500, confidence = T, prob = 0.95)
+z <- predict_cline(stanfit = fit_none_m, distance = 0:500, confidence = T, prob = 0.94)
 z2 <- predict_cline(stanfit = fit_left_m, distance = 0:500, confidence = T, prob = 0.95)
 z3 <- predict_cline(stanfit = fit_right_m, distance = 0:500, confidence = T, prob = 0.95)
 z4 <- predict_cline(stanfit = fit_mirror_m, distance = 0:500, confidence = T, prob = 0.95)
 z5 <- predict_cline(stanfit = fit_ind_m, distance = 0:500, confidence = T, prob = 0.95)
 
+
+install.packages("memoise")
+
+library(memoise)
+
+mem_pred_cline <- memoise(predict_cline)
+
+test <- memoise(function(x) {x + 1})
+
+test(1)
+
+z <- predict_cline(stanfit = fit_none_m, distance = -300:300, confidence = T, prob = 0.95)
+z2 <- predict_cline(stanfit = fit_none_m, distance = -300:300, confidence = T, prob = 0.95)
+
+data$transectDist[2] <- -281
+
 plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T)
 plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T,
-                cline.col = "orange", point.col = "dodgerblue", lwd = 4, pch = 21, cex = 4, bg = "green")
+                cline.col = "orange", point.col = "yellow", prob = 0.5,
+                lwd = 4, pch = 22, cex = 4, bg = "green")
 
 par()
 
