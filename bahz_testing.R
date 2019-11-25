@@ -12,18 +12,57 @@ library(tidyverse)
 library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_geno_cline(transect_distances = seq(0,500,20), n_ind = 30, Fis = 0,
-                    decrease = T, center = 238, width = 66, pmin = 0.03, pmax = .95, tauL = 0.5, deltaL = 12)
-
 set.seed(22)
 data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
                        decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95)
 
 plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
-data2 <- rbind(data[1,])
 
-make_prior_config()
+# Fit the model
+
+geno_fit_bi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                           type = "bi", tails = "none")
+geno_fit_multi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                           type = "multi", tails = "none")
+
+plot_geno_cline(geno_fit_bi, data = data, add.obs.freqs = T, confidence = T, main = "Binomial")
+plot_cline(geno_fit_bi, data = data, add.obs = F, confidence = F, main = "Binomial_C")
+
+
+plot_geno_cline(geno_fit_multi, data = data, add.obs.freqs = T, confidence = T, main = "Multinomial")
+plot_cline(geno_fit_multi, data = data, add.obs = T, confidence = T, main = "Multinomial_C")
+
+
+# And a phenotypic model
+x <- seq(-100, 100, 20)
+pheno <- sim_pheno_cline(transect_distances = x, n_ind = as.integer(abs(rnorm(length(x), mean = 15, sd = 9))),
+                         sigma = rnorm(length(x), mean = 2, sd = 0.75),
+                         decrease = F, center = 15, width = 30, pmin = 12, pmax = 24)
+site.means <- pheno %>%
+  group_by(transectDist) %>%
+  summarize(mean.pheno = mean(traitValue))
+plot(pheno$transectDist, pheno$traitValue)
+lines(x, site.means$mean.pheno, col = "red")
+
+constant_sig <- fit_pheno_cline(data = pheno,
+                                prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "constant",
+                                chains = 4)
+pool_sig <- fit_pheno_cline(data = pheno,
+                            prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "pooled",
+                            chains = 4)
+ind_sig <- fit_pheno_cline(data = pheno,
+                           prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "independent",
+                           chains = 4)
+
+plot_pheno_cline(constant_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "constant")
+plot_cline(constant_sig, data = pheno, add.obs = T, confidence = T, main = "constant_C")
+plot_pheno_cline(pool_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "pooled")
+plot_cline(pool_sig, data = pheno, add.obs = T, confidence = T, main = "pooled_C")
+plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "independent", prob = 0.5)
+plot_cline(ind_sig, data = pheno, add.obs = T, confidence = T, main = "independent_C", prob = 0.5)
+
+
 # Fit the model, binomial
 fit_none_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "none")
