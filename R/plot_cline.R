@@ -102,12 +102,6 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
-  assertthat::assert_that(is.numeric(prob) == T, msg = "prob must be numeric")
-  assertthat::assert_that(length(prob) == 1, msg = "prob must be of length 1")
-  assertthat::assert_that(prob <= 1, msg = "prob must be between 0 and 1")
-  assertthat::assert_that(prob > 0, msg = "prob must be between 0 and 1")
-  assertthat::assert_that(is.logical(confidence) == T, msg = "confidence must be either TRUE or FALSE")
-  assertthat::assert_that(is.logical(clear.cache) == T, msg = "clear_cache must be either TRUE or FALSE")
 
   # Check supplied extra graphical parameters
   extra.args <- list(...)
