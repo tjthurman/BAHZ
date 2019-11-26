@@ -61,8 +61,6 @@ predict_cline <- memoise::memoise(function(stanfit, distance,
                                            clear.cache = F) {
 
   # Check arguments
-  assertthat::assert_that(class(stanfit)[1] == "stanfit",
-                          msg = "Model object from which to plot must be of class stanfit")
   assertthat::assert_that(is.vector(distance),
                           msg = paste("distance must be a vector"))
   assertthat::assert_that(is.numeric(distance),
