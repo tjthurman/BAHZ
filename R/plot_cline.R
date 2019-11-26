@@ -20,6 +20,8 @@
 #'
 #' @importFrom scales "alpha"
 #'
+#' @importFrom stringr "str_detect"
+#'
 #' @param stanfit A \code{\linkS4class{stanfit}} object holding your model
 #'   results.
 #'
@@ -92,7 +94,7 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
                           msg = paste("transectDist column in input data must be numeric",
                                       "Make sure it is the same data frame you used to generate the cline fit",
                                       sep = "\n"))
-  assertthat::assert_that(add.obs %in% c(T, F),
+  assertthat::assert_that(is.logical(add.obs),
                           msg = "add.obs must be True or False")
   assertthat::assert_that(cline.col %in% colors(),
                           msg = paste(point.col,

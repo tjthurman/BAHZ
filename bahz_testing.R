@@ -63,6 +63,25 @@ plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, confidence = T, main 
 plot_cline(ind_sig, data = pheno, add.obs = T, confidence = T, main = "independent_C", prob = 0.5)
 
 
+load("tests/testthat/ref_simulated_pheno_clines.Rda")
+load("tests/testthat/ref_geno_stanfit.Rda")
+ref_geno_stanfit <- ref_stanfit
+save(ref_geno_stanfit, file = "tests/testthat/ref_geno_stanfit.Rda")
+
+
+
+x <- seq(-75, 75, 25)
+ref.pheno.data <- sim_pheno_cline(transect_distances = x, n_ind = 10,
+                         sigma = 1,
+                         decrease = F, center = 15, width = 30, pmin = 12, pmax = 24)
+
+
+ref_pheno_stanfit <- fit_pheno_cline(data = ref.pheno, prior_file = "~/Desktop/pheno_priors.yaml")
+save(ref_pheno_stanfit, file = "tests/testthat/ref_pheno_stanfit.Rda")
+save(ref.pheno.data, file = "tests/testthat/ref_pheno_data.Rda")
+
+# NEED TO GENERATE A NEW DATASET FOR THE PLOT CLINE TESTS FOR PHENO, THE A>REF AND B>REF ETC FILES ALL MAKE GIGANTC STANFITS.
+
 # Fit the model, binomial
 fit_none_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "none")
