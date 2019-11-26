@@ -67,17 +67,22 @@ cline_summary(constant_sig, show.all = F)
 cline_summary(pool_sig, show.all = F)
 cline_summary(ind_sig, show.all = F)
 
-cline_summary(constant_sig, show.all = T)
+cline_summary(constant_sig, show.all = T, clear_cache = T)
 cline_summary(pool_sig, show.all = T)
 cline_summary(ind_sig, show.all = T)
 
+z <- predict_cline(constant_sig, distance = -300:300, confidence = T, prob = 0.5, clear_cache = F)
 
-
+clear_bahz_cache()
 plot_pheno_cline(ind_sig, data = pheno)
-plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, point.col = "red", col = "blue")
+plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, point.col = "blue", confidence = T)
 
 plot_pheno_cline(constant_sig, data = pheno)
-plot_pheno_cline(constant_sig, data = pheno, add.obs.pheno = T, point.col = "red", col = "blue")
+plot_pheno_cline(constant_sig, data = pheno, add.obs.pheno = T, point.col = "blue", confidence = T, title = "constant")
+plot_pheno_cline(pool_sig, data = pheno, add.obs.pheno = T, point.col = "blue", confidence = T, title = "pooled")
+plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, point.col = "blue", confidence = T, title = "independent")
+
+
 plot_pheno_cline(pool_sig, data = pheno, add.obs.pheno = T, point.col = "red", col = "blue")
 
 

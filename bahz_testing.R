@@ -12,18 +12,76 @@ library(tidyverse)
 library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
-data <- sim_geno_cline(transect_distances = seq(0,500,20), n_ind = 30, Fis = 0,
-                    decrease = T, center = 238, width = 66, pmin = 0.03, pmax = .95, tauL = 0.5, deltaL = 12)
-
 set.seed(22)
 data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
                        decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95)
 
 plot(x = data$transectDist, y = data$emp.p)
 lines(x = data$transectDist, y = data$cline.p)
-data2 <- rbind(data[1,])
 
-make_prior_config()
+# Fit the model
+
+geno_fit_bi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                           type = "bi", tails = "none")
+geno_fit_multi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                           type = "multi", tails = "none")
+
+plot_geno_cline(geno_fit_bi, data = data, add.obs.freqs = T, confidence = T, main = "Binomial")
+plot_cline(geno_fit_bi, data = data, add.obs = F, confidence = F, main = "Binomial_C")
+
+
+plot_geno_cline(geno_fit_multi, data = data, add.obs.freqs = T, confidence = T, main = "Multinomial")
+plot_cline(geno_fit_multi, data = data, add.obs = T, confidence = T, main = "Multinomial_C")
+
+
+# And a phenotypic model
+x <- seq(-100, 100, 20)
+pheno <- sim_pheno_cline(transect_distances = x, n_ind = as.integer(abs(rnorm(length(x), mean = 15, sd = 9))),
+                         sigma = rnorm(length(x), mean = 2, sd = 0.75),
+                         decrease = F, center = 15, width = 30, pmin = 12, pmax = 24)
+site.means <- pheno %>%
+  group_by(transectDist) %>%
+  summarize(mean.pheno = mean(traitValue))
+plot(pheno$transectDist, pheno$traitValue)
+lines(x, site.means$mean.pheno, col = "red")
+
+constant_sig <- fit_pheno_cline(data = pheno,
+                                prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "constant",
+                                chains = 4)
+pool_sig <- fit_pheno_cline(data = pheno,
+                            prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "pooled",
+                            chains = 4)
+ind_sig <- fit_pheno_cline(data = pheno,
+                           prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "independent",
+                           chains = 4)
+
+plot_pheno_cline(constant_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "constant")
+plot_cline(constant_sig, data = pheno, add.obs = T, confidence = T, main = "constant_C")
+plot_pheno_cline(pool_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "pooled")
+plot_cline(pool_sig, data = pheno, add.obs = T, confidence = T, main = "pooled_C")
+plot_pheno_cline(ind_sig, data = pheno, add.obs.pheno = T, confidence = T, main = "independent", prob = 0.5)
+plot_cline(ind_sig, data = pheno, add.obs = T, confidence = T, main = "independent_C", prob = 0.5)
+
+
+load("tests/testthat/ref_simulated_pheno_clines.Rda")
+load("tests/testthat/ref_geno_stanfit.Rda")
+ref_geno_stanfit <- ref_stanfit
+save(ref_geno_stanfit, file = "tests/testthat/ref_geno_stanfit.Rda")
+
+
+
+x <- seq(-75, 75, 25)
+ref.pheno.data <- sim_pheno_cline(transect_distances = x, n_ind = 10,
+                         sigma = 1,
+                         decrease = F, center = 15, width = 30, pmin = 12, pmax = 24)
+
+
+ref_pheno_stanfit <- fit_pheno_cline(data = ref.pheno, prior_file = "~/Desktop/pheno_priors.yaml")
+save(ref_pheno_stanfit, file = "tests/testthat/ref_pheno_stanfit.Rda")
+save(ref.pheno.data, file = "tests/testthat/ref_pheno_data.Rda")
+
+# NEED TO GENERATE A NEW DATASET FOR THE PLOT CLINE TESTS FOR PHENO, THE A>REF AND B>REF ETC FILES ALL MAKE GIGANTC STANFITS.
+
 # Fit the model, binomial
 fit_none_b <- fit_geno_cline(data = data, prior_file = "all_betas.yaml",
                            type = "bi", tails = "none")
@@ -76,7 +134,7 @@ lines(-300:300, plot_cline(fit_ind_b)$p, type = "l", col = "green")
 
 # Fit the model, binomial
 fit_none_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
-                           type = "multi", tails = "none")
+                           type = "bi", tails = "none")
 fit_left_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                            type = "multi", tails = "left")
 fit_right_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
@@ -86,15 +144,32 @@ fit_mirror_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.
 fit_ind_m <- fit_geno_cline(data = data, prior_file = "prior_config_template.yaml",
                           type = "multi", tails = "ind")
 
-z <- predict_cline(stanfit = fit_none_m, distance = 0:500, confidence = T, prob = 0.95)
+z <- predict_cline(stanfit = fit_none_m, distance = 0:500, confidence = T, prob = 0.94)
 z2 <- predict_cline(stanfit = fit_left_m, distance = 0:500, confidence = T, prob = 0.95)
 z3 <- predict_cline(stanfit = fit_right_m, distance = 0:500, confidence = T, prob = 0.95)
 z4 <- predict_cline(stanfit = fit_mirror_m, distance = 0:500, confidence = T, prob = 0.95)
 z5 <- predict_cline(stanfit = fit_ind_m, distance = 0:500, confidence = T, prob = 0.95)
 
+
+install.packages("memoise")
+
+library(memoise)
+
+mem_pred_cline <- memoise(predict_cline)
+
+test <- memoise(function(x) {x + 1})
+
+test(1)
+
+z <- predict_cline(stanfit = fit_none_m, distance = -300:300, confidence = T, prob = 0.95)
+z2 <- predict_cline(stanfit = fit_none_m, distance = -300:300, confidence = T, prob = 0.95)
+
+data$transectDist[2] <- -281
+
 plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T)
 plot_geno_cline(stanfit = fit_none_m, data = data, add.obs.freqs = T, confidence = T,
-                cline.col = "orange", point.col = "dodgerblue", lwd = 4, pch = 21, cex = 4, bg = "green")
+                cline.col = "orange", point.col = "yellow", prob = 0.5,
+                lwd = 4, pch = 22, cex = 4, bg = "green")
 
 par()
 

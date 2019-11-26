@@ -1,3 +1,13 @@
+# bahz 0.0.0.9015
+
+Changes:
+
+* Consolidated `plot_geno_cline()` and `plot_pheno_cline()` into a single function, `plot_cline()`.
+
+Behind the scenes:
+
+* Streamlining of testing and argument checking for `plot_cline()`, `predict_cline()`, and `cline_summary()` functions. 
+
 # bahz 0.0.0.9014
 
 New features:
