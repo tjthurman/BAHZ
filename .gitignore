@@ -6,6 +6,7 @@ src/stan_files/*.o
 src/stan_files/*.hpp
 src/bahz.so
 src/init.o
+*.so
 
 inst/extdata/multinomial/binom_free_none_DEC\.rds
 
