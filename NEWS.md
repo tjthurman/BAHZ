@@ -1,3 +1,12 @@
+# bahz 0.0.0.9016
+
+Changes:
+
+* Deleting unnecessary files that prevented installation on Windows and Linux.
+
+* Remake corrupted file in test suite.
+
+
 # bahz 0.0.0.9015
 
 Changes:
