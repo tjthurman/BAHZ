@@ -4,6 +4,7 @@ rm(list = ls())
 library(devtools)
 detach("package:bahz", unload=TRUE)
 install_github("tjthurman/BAHZ")
+devtools::install_github("tjthurman/BAHZ@feature/dongyiyi_install_fixes")
 install.packages("~/Documents/Work/PhD:McGill/Projects/BAHZ/", repos = NULL, type = "source")
 library(bahz)
 library(rstan)
@@ -76,7 +77,7 @@ ref.pheno.data <- sim_pheno_cline(transect_distances = x, n_ind = 10,
                          decrease = F, center = 15, width = 30, pmin = 12, pmax = 24)
 
 
-ref_pheno_stanfit <- fit_pheno_cline(data = ref.pheno, prior_file = "~/Desktop/pheno_priors.yaml")
+ref_pheno_stanfit <- fit_pheno_cline(data = ref.pheno.data, prior_file = "~/Desktop/pheno_priors.yaml")
 save(ref_pheno_stanfit, file = "tests/testthat/ref_pheno_stanfit.Rda")
 save(ref.pheno.data, file = "tests/testthat/ref_pheno_data.Rda")
 
