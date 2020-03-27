@@ -1,3 +1,13 @@
+# bahz 0.0.0.9017
+
+New features/changes:
+
+* `cline_summary()` now provides both posterior means and posterior medians for each parameter.
+
+* `predict_cline()` outputs best fit estimates based on both posterior means and posterior medians, and `plot_cline()` can plot best-fit lines based on either of these best-fit estimates (defaults to posterior means).
+
+* `predict_cline()` and `plot_cline()` can now output both HPDI credible intervals (the default) and equal-tail (ET) credible intervals.
+
 # bahz 0.0.0.9016
 
 Changes:
@@ -5,7 +15,6 @@ Changes:
 * Deleting unnecessary files that prevented installation on Windows and Linux.
 
 * Remake corrupted file in test suite.
-
 
 # bahz 0.0.0.9015
 

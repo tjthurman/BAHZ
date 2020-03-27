@@ -28,18 +28,29 @@
 #' @param data The dataframe with your cline data (ideally, the same data frame
 #'   that was used to generate the model fit).
 #'
+#' @param best.fit.line  The point estimates to use for drawing the best fit
+#'   line. Either "mean" for the mean of the posterior distribution of each
+#'   paramer, or "median" for the median of the posterior distribution of each
+#'   parameter.
+#'
 #' @param add.obs Should the observed allele frequencies or trait values be
 #'   plotted? TRUE or FALSE, default is FALSE.
 #'
-#' @param cline.col the color of the cline and confidence intervals. Default is black.
+#' @param cline.col the color of the cline and confidence intervals. Default is
+#'   black.
 #'
-#' @param point.col The color to use for plotting the observed trait
-#'   values. Default is black.
+#' @param point.col The color to use for plotting the observed trait values.
+#'   Default is black.
 #'
-#' @param confidence Display credible intervals around the cline? TRUE or FALSE, default FALSE.
+#' @param confidence Display credible intervals around the cline? TRUE or FALSE,
+#'   default FALSE.
 #'
-#' @param prob The probability interval to calculate around the cline. Default is .95. Numeric,
-#'   between 0 and 1.
+#' @param prob The probability interval to calculate around the cline. Default
+#'   is .95. Numeric, between 0 and 1.
+#'
+#' @param method The method for calculating credible intervals. Either "ET" for
+#'   equal-tail probability intervals, or "HPDI" for highest posterior density
+#'   intervals. Default is "HPDI".
 #'
 #' @param clear.cache Clear the cache of saved results to ensure recalculation predicted cline?
 #' TRUE or FALSE, default FALSE.
@@ -76,8 +87,11 @@
 #' @export
 #'
 
-plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
-                       prob = 0.95, cline.col = "black", point.col = "black",
+plot_cline <- function(stanfit, data, best.fit.line = "mean",
+                       add.obs = F, confidence = F,
+                       prob = 0.95,
+                       method = "HPDI",
+                       cline.col = "black", point.col = "black",
                        clear.cache = F, ...) {
   # Check arguments
   assertthat::assert_that(class(stanfit)[1] == "stanfit",
@@ -86,6 +100,7 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
                           msg = paste("Input data must be a data frame",
                                       "Make sure it is the same data frame you used to generate the cline fit",
                                       sep = "\n"))
+  match.arg(best.fit.line, choices = c("mean", "median"), several.ok = F)
   assertthat::assert_that("transectDist" %in% colnames(data),
                           msg = paste("Input data frame does not contain a transectDist column",
                                       "Make sure it is the same data frame you used to generate the cline fit",
@@ -102,6 +117,8 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
   assertthat::assert_that(point.col %in% colors(),
                           msg = paste(point.col,
                                       " is not a valid color name", sep = ""))
+  assertthat::assert_that((method %in% c("HPDI", "ET")) == T,
+                          msg = "method must be either 'HPDI' or 'ET")
 
   # Check supplied extra graphical parameters
   extra.args <- list(...)
@@ -170,7 +187,7 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
   # Generate the cline values to plot
   cline <- bahz::predict_cline(stanfit, distance = xrange,
                                confidence = confidence,
-                               prob = prob,
+                               prob = prob, method = method,
                                clear.cache = clear.cache)
 
   # If adding the observed data, check that the decessary rows are there.
@@ -248,12 +265,21 @@ plot_cline <- function(stanfit, data, add.obs = F, confidence = F,
   } else {
     ylims <- c(0,1)
   }
-  graphics::plot(cline$transectDist, cline$p, type = "l", ann = F, col = cline.col, ylim = ylims, ...)
+  if (best.fit.line == "median") {
+    graphics::plot(cline$transectDist, cline$p_median, type = "l", ann = F, col = cline.col, ylim = ylims, ...)
+  } else {
+    graphics::plot(cline$transectDist, cline$p_mean, type = "l", ann = F, col = cline.col, ylim = ylims, ...)
+
+  }
   if (confidence) {
     graphics::polygon(x = c(cline$transectDist, rev(cline$transectDist)),
-                      y = c(cline[,3], rev(cline[,4])), border = NA,
+                      y = c(cline[,4], rev(cline[,5])), border = NA,
                       col = scales::alpha(cline.col, 0.2), ...)
-    graphics::lines(cline$transectDist, cline$p, col = cline.col, ...)
+    if (best.fit.line == "median") {
+      graphics::lines(cline$transectDist, cline$p_median, col = cline.col, ...)
+    } else {
+      graphics::lines(cline$transectDist, cline$p_mean, col = cline.col, ...)
+    }
   }
 
   if (add.obs == T) {

@@ -35,7 +35,8 @@ stanfit <- geno_fit_bi
 plot(z$transectDist, z$p_mean, type = "l")
 lines(z$transectDist, z$p_median, col = "red")
 
-plot_cline(stanfit = geno_fit_bi, data = data, add.obs = T)
+plot_cline(stanfit = geno_fit_bi, data = data, add.obs = T, confidence = T, method = "HPDI",
+           prob = 0.99)
 
 plot_geno_cline(geno_fit_bi, data = data, add.obs.freqs = T, confidence = T, main = "Binomial")
 plot_cline(geno_fit_bi, data = data, add.obs = F, confidence = F, main = "Binomial_C")

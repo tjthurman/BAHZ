@@ -4,7 +4,8 @@
 \alias{plot_cline}
 \title{Plot a cline}
 \usage{
-plot_cline(stanfit, data, add.obs = F, confidence = F, prob = 0.95,
+plot_cline(stanfit, data, best.fit.line = "mean", add.obs = F,
+  confidence = F, prob = 0.95, method = "HPDI",
   cline.col = "black", point.col = "black", clear.cache = F, ...)
 }
 \arguments{
@@ -14,18 +15,29 @@ results.}
 \item{data}{The dataframe with your cline data (ideally, the same data frame
 that was used to generate the model fit).}
 
+\item{best.fit.line}{The point estimates to use for drawing the best fit
+line. Either "mean" for the mean of the posterior distribution of each
+paramer, or "median" for the median of the posterior distribution of each
+parameter.}
+
 \item{add.obs}{Should the observed allele frequencies or trait values be
 plotted? TRUE or FALSE, default is FALSE.}
 
-\item{confidence}{Display credible intervals around the cline? TRUE or FALSE, default FALSE.}
+\item{confidence}{Display credible intervals around the cline? TRUE or FALSE,
+default FALSE.}
 
-\item{prob}{The probability interval to calculate around the cline. Default is .95. Numeric,
-between 0 and 1.}
+\item{prob}{The probability interval to calculate around the cline. Default
+is .95. Numeric, between 0 and 1.}
 
-\item{cline.col}{the color of the cline and confidence intervals. Default is black.}
+\item{method}{The method for calculating credible intervals. Either "ET" for
+equal-tail probability intervals, or "HPDI" for highest posterior density
+intervals. Default is "HPDI".}
 
-\item{point.col}{The color to use for plotting the observed trait
-values. Default is black.}
+\item{cline.col}{the color of the cline and confidence intervals. Default is
+black.}
+
+\item{point.col}{The color to use for plotting the observed trait values.
+Default is black.}
 
 \item{clear.cache}{Clear the cache of saved results to ensure recalculation predicted cline?
 TRUE or FALSE, default FALSE.}
