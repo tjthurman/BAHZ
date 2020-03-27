@@ -18,27 +18,29 @@ test_that("plot_cline checks args for type", {
                           data = ref.geno.data, confidence = "XXX"), "TRUE")
   expect_error(plot_cline(stanfit = ref_geno_stanfit,
                           data = ref.geno.data, clear.cache = "XXX"), "TRUE")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, prob = "x"), "numeric")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, prob = "x"), "numeric")
   expect_error(plot_cline(stanfit = ref_geno_stanfit,
                                data = data.frame(transectDist = c("X", "Y"))), "numeric")
 })
 
 test_that("plot_cline checks args for appropriateness", {
   # Prob is good
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, prob = c(0.6, 0.9)), "length")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, prob = -.5), "between")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, prob = 1.1), "between")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, prob = c(0.6, 0.9)), "length")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, prob = -.5), "between")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, prob = 1.1), "between")
   # Colors are OK
   expect_error(plot_cline(stanfit = ref_geno_stanfit,
                           data = ref.geno.data, point.col = "xxxx"), "valid")
   expect_error(plot_cline(stanfit = ref_geno_stanfit,
                           data = ref.geno.data, cline.col = "xxxx"), "valid")
   # Check plotting extra args
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, ann = "blue"), "default")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, border = "blue"), "default")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, col = "blue"), "default")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, type = "p"), "default")
-  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, distance = 3, ylim = "blue"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, ann = "blue"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, border = "blue"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, col = "blue"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, type = "p"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, ylim = "blue"), "default")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, best.fit.line = "XXX"), "mean")
+  expect_error(plot_cline(ref_geno_stanfit, data = ref.geno.data, confidence = T, method = "XXX"), "ET")
 })
 
 
@@ -72,7 +74,7 @@ test_that("plot_cline checks that stanfit and data frame match", {
 
 # # Output
 # Don't think there's an easy way yet to check that the graphical output is correct
-# Will want to check out the vdiffr package int he future.
+# Will want to check out the vdiffr package in the future.
 # For now, can at least check that it makes it through and returns invisible NULL
 test_that("plot_pheno_cline ouputs invisible NULL", {
   # geno
@@ -84,6 +86,15 @@ test_that("plot_pheno_cline ouputs invisible NULL", {
                                            add.obs = T,
                                            confidence = T,
                                            prob = 0.5)), NULL)
+  expect_equal(suppressWarnings(plot_cline(stanfit = ref_geno_stanfit,
+                                           data = ref.geno.data,
+                                           add.obs = T,
+                                           confidence = T,
+                                           prob = 0.5, method = "ET")), NULL)
+  expect_equal(suppressWarnings(plot_cline(stanfit = ref_geno_stanfit,
+                                           data = ref.geno.data,
+                                           add.obs = T,
+                                           confidence = F, best.fit.line = "median")), NULL)
   # pheno
   expect_equal(suppressWarnings(plot_cline(stanfit = ref_pheno_stanfit,
                                            data = ref.pheno.data,
