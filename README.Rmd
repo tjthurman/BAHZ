@@ -56,7 +56,6 @@ Here, we will simulate a cline that was sampled across a 500 kilometer transect,
 ```{r, echo = F, message= F}
 library(bahz)
 options(mc.cores = parallel::detectCores())
-
 ```
 
 
@@ -125,7 +124,7 @@ head(pred_cline)
 ```{r}
 # Use the ggplot2 package
 library(ggplot2)
-ggplot(data = pred_cline, aes(x = transectDist, y = p,
+ggplot(data = pred_cline, aes(x = transectDist, y = p_mean,
                               ymin = low_0.95_HPDI,
                               ymax = up_0.95_HPDI)) +
   geom_ribbon(fill = alpha("orange", 0.3)) +

@@ -29,23 +29,13 @@ geno_fit_multi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_prior
 
 cline_summary(geno_fit_bi)
 
-keep <- grep("\\[|_",
-             names(geno_fit_bi),
-             invert = T,
-             value = T)
-tail <- (1 - 0.95) / 2
+stanfit <- geno_fit_bi
 
-rstan::summary(
-  geno_fit_bi,
-  probs = c(0 + tail, 0.5, 1 - tail),
-  pars = keep,
-  use_cache = F)$summary %>%
-  as.data.frame(.) %>%
-  round(., digits = 2) %>%
-  dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
-  dplyr::select(mean, median = `50%`, dplyr::everything()) %>%
-  cbind(keep, .)
 
+plot(z$transectDist, z$p_mean, type = "l")
+lines(z$transectDist, z$p_median, col = "red")
+
+plot_cline(stanfit = geno_fit_bi, data = data, add.obs = T)
 
 plot_geno_cline(geno_fit_bi, data = data, add.obs.freqs = T, confidence = T, main = "Binomial")
 plot_cline(geno_fit_bi, data = data, add.obs = F, confidence = F, main = "Binomial_C")

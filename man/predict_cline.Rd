@@ -5,7 +5,7 @@
 \title{Predict allele frequencies or mean phenotypes for a cline}
 \usage{
 predict_cline(stanfit, distance, confidence = F, prob = 0.95,
-  progress = T, clear.cache = F)
+  method = "HPDI", progress = T, clear.cache = F)
 }
 \arguments{
 \item{stanfit}{A \code{\linkS4class{stanfit}} object holding your model results.}
@@ -19,6 +19,10 @@ a numeric vector.}
 \item{prob}{The probability interval to calculate for the cline. Default is .95. Numeric,
 between 0 and 1.}
 
+\item{method}{The method for calculating credible intervals. Either "ET" for
+equal-tail probability intervals, or "HPDI" for highest posterior density
+intervals. Default is "HPDI".}
+
 \item{progress}{Show progress bar when calculating credible intervals? TRUE or FALSE, default TRUE.}
 
 \item{clear.cache}{Clear the cache of saved results to ensure recalculation of predicted cline?
@@ -30,8 +34,10 @@ A data frame with either 2 (confidence = F) or 4 (confidence = T) columns:
 \item transectDist: the distances along the transect at which the cline
 equation was evaluated. Will be the same values as were supplied in the
 distance argument. Numeric.
-\item p: the predict allele frequency or mean phenotype at each distance,
-according to the cline equation. Numeric.
+\item p_mean: the predicted allele frequency or mean phenotype at each distance, using the
+posterior mean for each parameter of the cline equation. Numeric.
+\item p_median: the predicted allele frequency or mean phenotype at each distance, using the
+posterior median for each parameter of the cline equation. Numeric.
 \item lower: Only if confidence = T. The lower limit of the credible interval. The column name
 will include the probability value used for calculating the CI.
 \item upper: Only if confidence = T. The upper limit of the credible interval. The column name
@@ -39,10 +45,13 @@ will include the probability value used for calculating the CI.
 }
 }
 \description{
-Uses the cline parameters from your stanfit object (the mean of the posterior
-distribtution of each parameter) to predict the allele frequency (for genetic
-clines) or the mean phenotype value (for phenotypic clines) at the
-distance(s) along the transect specified by the user. To save computation time, this function use the
+Uses the cline parameters from your stanfit object to predict the
+allele frequency (for genetic clines) or the mean phenotype value
+(for phenotypic clines) at the distance(s) along the transect specified by the user.
+Returns best-fit cline values estimated using both the mean of the
+posterior distribution of each parameter and the median of the posterior
+distribution of each parametet. Optionally, can also calculate credible
+intervals around these best-fit estimates. To save computation time, this function use the
 \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
 of saved results, use clear.cache = F or \code{\link{clear_bahz_cache}}.
 }

@@ -146,19 +146,19 @@ pred_cline <- predict_cline(stanfit = cline.fit,
                             distance = 0:500, 
                             confidence = T)
 head(pred_cline)
-#>   transectDist         p low_0.95_HPDI up_0.95_HPDI
-#> 1            0 0.9899993     0.9772721    0.9940613
-#> 2            1 0.9899992     0.9772721    0.9940612
-#> 3            2 0.9899992     0.9772721    0.9940612
-#> 4            3 0.9899991     0.9772721    0.9940611
-#> 5            4 0.9899991     0.9772721    0.9940611
-#> 6            5 0.9899990     0.9772721    0.9940610
+#>   transectDist    p_mean  p_median low_0.95_HPDI up_0.95_HPDI
+#> 1            0 0.9899993 0.9899993     0.9772721    0.9940613
+#> 2            1 0.9899992 0.9899992     0.9772721    0.9940612
+#> 3            2 0.9899992 0.9899992     0.9772721    0.9940612
+#> 4            3 0.9899991 0.9899991     0.9772721    0.9940611
+#> 5            4 0.9899991 0.9899991     0.9772721    0.9940611
+#> 6            5 0.9899990 0.9899990     0.9772721    0.9940610
 ```
 
 ``` r
 # Use the ggplot2 package
 library(ggplot2)
-ggplot(data = pred_cline, aes(x = transectDist, y = p,
+ggplot(data = pred_cline, aes(x = transectDist, y = p_mean,
                               ymin = low_0.95_HPDI,
                               ymax = up_0.95_HPDI)) +
   geom_ribbon(fill = alpha("orange", 0.3)) +
