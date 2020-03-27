@@ -56,6 +56,7 @@ Here, we will simulate a cline that was sampled across a 500 kilometer transect,
 ```{r, echo = F, message= F}
 library(bahz)
 options(mc.cores = parallel::detectCores())
+
 ```
 
 

@@ -113,12 +113,12 @@ We can summarize the posterior distribution of the cline parameters:
 
 ``` r
 cline_summary(cline.fit)
-#>    param   mean se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
-#> 1 center 237.51    0.04 2.37        232.96       242.28  4115    1
-#> 2  width  67.59    0.09 6.06         55.85        79.46  4964    1
-#> 3   pmin   0.04    0.00 0.01          0.03         0.05  4255    1
-#> 4   pmax   0.99    0.00 0.00          0.98         0.99  5226    1
-#> 5    dev 116.07    0.07 2.87        112.18       121.68  1699    1
+#>    param   mean median se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
+#> 1 center 237.51 237.49    0.04 2.37        232.96       242.28  4115    1
+#> 2  width  67.59  67.40    0.09 6.06         55.85        79.46  4964    1
+#> 3   pmin   0.04   0.04    0.00 0.01          0.03         0.05  4255    1
+#> 4   pmax   0.99   0.99    0.00 0.00          0.98         0.99  5226    1
+#> 5    dev 116.07 115.45    0.07 2.87        112.18       121.68  1699    1
 ```
 
 The model has done a good job. The point estimates of the parameters are

@@ -27,6 +27,26 @@ geno_fit_bi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.y
 geno_fit_multi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                            type = "multi", tails = "none")
 
+cline_summary(geno_fit_bi)
+
+keep <- grep("\\[|_",
+             names(geno_fit_bi),
+             invert = T,
+             value = T)
+tail <- (1 - 0.95) / 2
+
+rstan::summary(
+  geno_fit_bi,
+  probs = c(0 + tail, 0.5, 1 - tail),
+  pars = keep,
+  use_cache = F)$summary %>%
+  as.data.frame(.) %>%
+  round(., digits = 2) %>%
+  dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
+  dplyr::select(mean, median = `50%`, dplyr::everything()) %>%
+  cbind(keep, .)
+
+
 plot_geno_cline(geno_fit_bi, data = data, add.obs.freqs = T, confidence = T, main = "Binomial")
 plot_cline(geno_fit_bi, data = data, add.obs = F, confidence = F, main = "Binomial_C")
 

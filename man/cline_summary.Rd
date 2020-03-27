@@ -28,6 +28,7 @@ A summary data frame with the columns:
 \itemize{
 \item param: The model parameter.
 \item mean: The mean of the posterior distribution.
+\item median: The median of the posterior distribution.
 \item se_mean: The standard error of the mean of the posterior distribution.
 \item sd: The standard deviation of the posterior distribution.
 \item lower: The lower limit of the credible interval. The column name
@@ -42,14 +43,14 @@ other value is indicative of a problem during sampling.
 }
 }
 \description{
-Summarizes the results of the cline model by providing the posterior mean,
-credible intervals, and diagnostics for the model parameters. To save computation time, this function use the
+Summarizes the results of the cline model by providing the posterior mean and median,
+credible intervals, and diagnostics for the model parameters. To save computation time, this function uses the
 \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
-of saved results, use clear.cache = F or run the \code{\link{clear_bahz_cache}} function.
+of saved results, use clear.cache = T or run the \code{\link{clear_bahz_cache}} function.
 }
 \details{
 Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects
-for calculating posterior means, SEM, standard deviations, equal tail
+for calculating posterior means and medians, SEM, standard deviations, equal tail
 probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDinterval}} function in
 \code{coda} to calculate HPDI intervals, the default.
 }
