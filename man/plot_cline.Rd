@@ -18,7 +18,7 @@ that was used to generate the model fit).}
 \item{best.fit.line}{The point estimates to use for drawing the best fit
 line. Either "mean" for the mean of the posterior distribution of each
 paramer, or "median" for the median of the posterior distribution of each
-parameter.}
+parameter. Default is "mean".}
 
 \item{add.obs}{Should the observed allele frequencies or trait values be
 plotted? TRUE or FALSE, default is FALSE.}
