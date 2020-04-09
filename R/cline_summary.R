@@ -1,12 +1,12 @@
 #' Summarize cline model results
 #'
-#' Summarizes the results of the cline model by providing the posterior mean,
-#' credible intervals, and diagnostics for the model parameters. To save computation time, this function use the
+#' Summarizes the results of the cline model by providing the posterior mean and median,
+#' credible intervals, and diagnostics for the model parameters. To save computation time, this function uses the
 #' \code{\link[memoise]{memoise}} package to save past results and avoid recalculations. To clear the cache
-#' of saved results, use clear.cache = F or run the \code{\link{clear_bahz_cache}} function.
+#' of saved results, use clear.cache = T or run the \code{\link{clear_bahz_cache}} function.
 #'
 #' Uses the \code{rstan} summary method on class \code{\linkS4class{stanfit}} objects
-#' for calculating posterior means, SEM, standard deviations, equal tail
+#' for calculating posterior means and medians, SEM, standard deviations, equal tail
 #' probability intervals, and diagnostics. Uses the \code{\link[coda]{HPDinterval}} function in
 #' \code{coda} to calculate HPDI intervals, the default.
 #'
@@ -33,6 +33,7 @@
 #'     \itemize{
 #'     \item param: The model parameter.
 #'     \item mean: The mean of the posterior distribution.
+#'     \item median: The median of the posterior distribution.
 #'     \item se_mean: The standard error of the mean of the posterior distribution.
 #'     \item sd: The standard deviation of the posterior distribution.
 #'     \item lower: The lower limit of the credible interval. The column name
@@ -93,12 +94,13 @@ cline_summary <- memoise::memoise(function(stanfit, prob = .95, method = "HPDI",
   res <-
     rstan::summary(
       stanfit,
-      probs = c(0 + tail, 1 - tail),
+      probs = c(0 + tail, 0.5, 1 - tail),
       pars = keep,
       use_cache = F)$summary %>%
     as.data.frame(.) %>%
     round(., digits = 2) %>%
     dplyr::mutate(n_eff = as.integer(.data$n_eff)) %>%
+    dplyr::select(mean, median = `50%`, dplyr::everything()) %>%
     cbind(keep, .)
 
   # If doing HPDI, make a matrix of those columns and replace the ET
@@ -109,11 +111,11 @@ cline_summary <- memoise::memoise(function(stanfit, prob = .95, method = "HPDI",
       coda::HPDinterval(obj = ., prob = prob) %>%
       round(., digits = 2) %>%
       as.matrix(.)
-    res[, 5:6] <- hpd_cols
+    res[, 6:7] <- hpd_cols
   }
 
   # rename columns
-  names(res)[c(1, 5, 6)] <- c("param", low.name, up.name)
+  names(res)[c(1, 6, 7)] <- c("param", low.name, up.name)
 
   res
 })

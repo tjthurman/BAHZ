@@ -113,12 +113,12 @@ We can summarize the posterior distribution of the cline parameters:
 
 ``` r
 cline_summary(cline.fit)
-#>    param   mean se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
-#> 1 center 237.51    0.04 2.37        232.96       242.28  4115    1
-#> 2  width  67.59    0.09 6.06         55.85        79.46  4964    1
-#> 3   pmin   0.04    0.00 0.01          0.03         0.05  4255    1
-#> 4   pmax   0.99    0.00 0.00          0.98         0.99  5226    1
-#> 5    dev 116.07    0.07 2.87        112.18       121.68  1699    1
+#>    param   mean median se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
+#> 1 center 237.51 237.49    0.04 2.37        232.96       242.28  4115    1
+#> 2  width  67.59  67.40    0.09 6.06         55.85        79.46  4964    1
+#> 3   pmin   0.04   0.04    0.00 0.01          0.03         0.05  4255    1
+#> 4   pmax   0.99   0.99    0.00 0.00          0.98         0.99  5226    1
+#> 5    dev 116.07 115.45    0.07 2.87        112.18       121.68  1699    1
 ```
 
 The model has done a good job. The point estimates of the parameters are
@@ -137,28 +137,29 @@ plot_cline(stanfit = cline.fit, data = data,
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 For users who wish to make higher-quality, customized plots, bahz has a
-helper function to calculate predicted allele frequencies and confidence
-intervals from fitted clines. Those data can then be used in the
-plotting system of the user’s choice, e.g.:
+helper function to calculate predicted allele frequencies for the
+best-fit line (using either the posterior means or posterior medians for
+each parameter) and confidence intervals from fitted models. Those data
+can then be used in the plotting system of the user’s choice, e.g.:
 
 ``` r
 pred_cline <- predict_cline(stanfit = cline.fit, 
                             distance = 0:500, 
                             confidence = T)
 head(pred_cline)
-#>   transectDist         p low_0.95_HPDI up_0.95_HPDI
-#> 1            0 0.9899993     0.9772721    0.9940613
-#> 2            1 0.9899992     0.9772721    0.9940612
-#> 3            2 0.9899992     0.9772721    0.9940612
-#> 4            3 0.9899991     0.9772721    0.9940611
-#> 5            4 0.9899991     0.9772721    0.9940611
-#> 6            5 0.9899990     0.9772721    0.9940610
+#>   transectDist    p_mean  p_median low_0.95_HPDI up_0.95_HPDI
+#> 1            0 0.9899993 0.9899993     0.9772721    0.9940613
+#> 2            1 0.9899992 0.9899992     0.9772721    0.9940612
+#> 3            2 0.9899992 0.9899992     0.9772721    0.9940612
+#> 4            3 0.9899991 0.9899991     0.9772721    0.9940611
+#> 5            4 0.9899991 0.9899991     0.9772721    0.9940611
+#> 6            5 0.9899990 0.9899990     0.9772721    0.9940610
 ```
 
 ``` r
 # Use the ggplot2 package
 library(ggplot2)
-ggplot(data = pred_cline, aes(x = transectDist, y = p,
+ggplot(data = pred_cline, aes(x = transectDist, y = p_mean,
                               ymin = low_0.95_HPDI,
                               ymax = up_0.95_HPDI)) +
   geom_ribbon(fill = alpha("orange", 0.3)) +

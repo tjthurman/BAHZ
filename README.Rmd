@@ -112,7 +112,7 @@ plot_cline(stanfit = cline.fit, data = data,
            xlab = "distance", ylab = "allele frequency")
 ```
 
-For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies and confidence intervals from fitted clines. Those data can then be used in the plotting system of the user's choice, e.g.:
+For users who wish to make higher-quality, customized plots, bahz has a helper function to calculate predicted allele frequencies for the best-fit line (using either the posterior means or posterior medians for each parameter) and confidence intervals from fitted models. Those data can then be used in the plotting system of the user's choice, e.g.:
 
 ```{r} 
 pred_cline <- predict_cline(stanfit = cline.fit, 
@@ -124,7 +124,7 @@ head(pred_cline)
 ```{r}
 # Use the ggplot2 package
 library(ggplot2)
-ggplot(data = pred_cline, aes(x = transectDist, y = p,
+ggplot(data = pred_cline, aes(x = transectDist, y = p_mean,
                               ymin = low_0.95_HPDI,
                               ymax = up_0.95_HPDI)) +
   geom_ribbon(fill = alpha("orange", 0.3)) +
