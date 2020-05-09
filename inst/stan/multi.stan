@@ -1,4 +1,3 @@
-#include /pre/license.stan
 
 data {
 
