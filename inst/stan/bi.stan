@@ -1,5 +1,3 @@
-#include /pre/license.stan
-
 data {
 
 #include /data/data_binom.stan

@@ -1,3 +1,10 @@
+# bahz 0.0.0.9018
+
+New features/changes:
+
+* Restructured package according to updated recommended structure in `rstantools` version `2.0.0`.
+
+
 # bahz 0.0.0.9017
 
 New features/changes:
