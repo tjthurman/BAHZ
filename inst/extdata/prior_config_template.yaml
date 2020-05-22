@@ -53,12 +53,12 @@ pmax: uniform(0.8, 1) # normal, uniform, beta
 ## Introgression tail parameters ##
 ###################################
 # Limits: delta > 0, tau between 0 and 1.
-deltaL: exponential(0.05) #exponential
-deltaR: exponential(0.05) #exponential
-deltaM: exponential(0.05) #exponential
-tauL: uniform(0, 1) #uniform, beta
-tauR: uniform(0, 1) #uniform, beta
-tauM: uniform(0, 1) #uniform, beta
+deltaL: exponential(0.05) # exponential, uniform
+deltaR: exponential(0.05) # exponential, uniform
+deltaM: exponential(0.05) # exponential, uniform
+tauL: uniform(0, 1) # uniform, beta
+tauR: uniform(0, 1) # uniform, beta
+tauM: uniform(0, 1) # uniform, beta
 
 ###################################
 ## Inbreeding parameter          ##

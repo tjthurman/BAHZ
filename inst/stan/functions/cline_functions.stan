@@ -26,3 +26,19 @@ real left_tail(real dist, real c, real w, real pmi, real pmx, real dl, real tl, 
   return final_res;
 }
 
+real right_tail(real dist, real c, real w, real pmi, real pmx, real dr, real tr, int dec) {
+  real int_res;
+  real final_res;
+
+  int_res = (1-(1/(1 + exp(4*dr/w)))*exp((-4*tr*(dist - c - dr)/w)/(1 + exp(-4*dr/w))));
+
+  if (dec == 0) {
+    final_res = pmi + (pmx - pmi) * int_res;
+  }
+  if (dec == 1) {
+    final_res = pmi + (pmx - pmi) * (1-int_res);
+  }
+  return final_res;
+}
+
+
