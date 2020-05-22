@@ -145,9 +145,19 @@ transformed parameters {
 model{
   // The statistical model
 
-#include /model/model_mirror_tail.stan
-#include /model/model_left_tail.stan
-#include /model/model_right_tail.stan
+if (tails == 4) {
+  #include /model/model_left_tail.stan
+  #include /model/model_right_tail.stan
+}
+if (tails == 3) {
+  #include /model/model_mirror_tail.stan
+}
+if (tails == 2) {
+  #include /model/model_right_tail.stan
+}
+if (tails == 1) {
+  #include /model/model_left_tail.stan
+}
 #include /model/model_ps.stan
 #include /model/model_width.stan
 #include /model/model_center.stan
