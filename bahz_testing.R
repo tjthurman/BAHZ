@@ -14,7 +14,7 @@ library(loo)
 # Getting the minimal pre-compiled model to run -------------------
 # Generate a dataset
 set.seed(22)
-data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = 0,
+data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = .9,
                        decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95, deltaR = 12, tauR = 0.25)
 
 plot(x = data$transectDist, y = data$emp.p)
@@ -30,23 +30,43 @@ prep_prior_list("~/Desktop/geno_priors.yaml")
 
 none_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                            type = "bi", tails = "none")
+none_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                              type = "multi", tails = "none")
 
 left_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                                type = "bi", tails = "left")
+left_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                           type = "multi", tails = "left")
 
 right_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                            type = "bi", tails = "right")
+right_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                            type = "multi", tails = "right")
+
 mirror_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                             type = "bi", tails = "mirror")
+mirror_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                             type = "multi", tails = "mirror")
+
 ind_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
                              type = "bi", tails = "ind")
+ind_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+                          type = "multi", tails = "ind")
 
-rethinking::compare(none_bi, left_bi, right_bi)
+
+
+rethinking::compare(none_bi, left_bi, right_bi, mirror_bi, ind_bi)
 cline_summary(none_bi)
+cline_summary(none_multi)
 cline_summary(left_bi)
+cline_summary(left_multi)
 cline_summary(right_bi)
+cline_summary(right_multi)
 cline_summary(mirror_bi)
+cline_summary(mirror_multi)
 cline_summary(ind_bi)
+cline_summary(ind_multi)
+
 
 geno_fit_bi@stanmodel
 
