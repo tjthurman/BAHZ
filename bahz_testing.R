@@ -11,10 +11,13 @@ library(rstan)
 options(mc.cores = parallel::detectCores())
 library(tidyverse)
 library(loo)
-# Getting the minimal pre-compiled model to run -------------------
+
+
+
+# Testing geno models -----------------------------------------------------
 # Generate a dataset
 set.seed(22)
-data <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = .9,
+data2 <- sim_geno_cline(transect_distances = seq(-300,300,20), n_ind = 40, Fis = .9,
                        decrease = F, center = 10, width = 35, pmin = 0.08, pmax = .95, deltaR = 12, tauR = 0.25)
 
 plot(x = data$transectDist, y = data$emp.p)
@@ -23,14 +26,11 @@ lines(x = data$transectDist, y = data$cline.p)
 
 library(bahz)
 
-prep_prior_list("~/Desktop/geno_priors.yaml")
-
-
 # Fit the model
 
-none_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+none_bi <- fit_geno_cline2(data = data2, prior_file = "~/Desktop/geno_priors.yaml",
                            type = "bi", tails = "none")
-none_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
+none_multi <- fit_geno_cline2(data = data2, prior_file = "~/Desktop/geno_priors.yaml",
                               type = "multi", tails = "none")
 
 left_bi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.yaml",
@@ -57,6 +57,7 @@ ind_multi <- fit_geno_cline2(data = data, prior_file = "~/Desktop/geno_priors.ya
 
 rethinking::compare(none_bi, left_bi, right_bi, mirror_bi, ind_bi)
 cline_summary(none_bi)
+cline_summary(none_bi, show.all = T)
 cline_summary(none_multi)
 cline_summary(left_bi)
 cline_summary(left_multi)
@@ -68,40 +69,25 @@ cline_summary(ind_bi)
 cline_summary(ind_multi)
 
 
-geno_fit_bi@stanmodel
 
-geno_fit_bi@sim$samples
-library(bayesplot)
-color_scheme_set("viridis")
-mcmc_trace(as.array(geno_fit_bi), pars = c("deltaL", "deltaR"))
-mcmc_trace(as.array(geno_fit_bi), pars = c("deltaL"))
-mcmc_trace(as.array(geno_fit_bi2), pars = c("center"))
+# Testing pheno models ----------------------------------------------------
 
+set.seed(839)
+data <- sim_pheno_cline(transect_distances = seq(-200, 150, length.out = 12), n_ind = as.integer(rnorm(n = 12, mean = 30, sd = 7)),
+                        sigma = abs(rnorm(n = 12, mean = 40, sd = 8)), decrease = T, center = 9, width = 72, pmin = 220, pmax = 762)
 
-cline_summary(geno_fit_bi)
-geno_fit_bi2 <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
-                              type = "bi", tails = "left")
+constant <- fit_pheno_cline(data, prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "constant")
+independent <- fit_pheno_cline(data, prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance =  "independent")
+pooled <- fit_pheno_cline(data, prior_file = "~/Desktop/pheno_priors.yaml", pheno_variance = "pooled")
 
-pairs(geno_fit_bi)
+names(constant)
+cline_summary(constant, show.all = F)
+cline_summary(constant, show.all = T)
 
-geno_fit_bi@inits
+cline_summary(independent, show.all = T)
+cline_summary(pooled)
 
-
-log(2)
-cline_summary(geno_fit_bi)
-cline_summary(geno_fit_bi2)
-
-
-geno_fit_multi <- fit_geno_cline(data = data, prior_file = "~/Desktop/geno_priors.yaml",
-                           type = "multi", tails = "none")
-
-cline_summary(geno_fit_bi)
-
-stanfit <- geno_fit_bi
-
-
-
-
+rm(list = ls())
 # Will stan run with no priors? -------------------------------------------
 
 # Yes, stan will run with no priors! I think the default, then, is that it
