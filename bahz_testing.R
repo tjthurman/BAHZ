@@ -84,7 +84,7 @@ names(constant)
 cline_summary(constant, show.all = F)
 cline_summary(constant, show.all = T)
 
-cline_summary(independent, show.all = T)
+cline_summary(independent, show.all = F)
 cline_summary(pooled)
 
 rm(list = ls())
