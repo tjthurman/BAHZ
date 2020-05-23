@@ -107,34 +107,15 @@ fit_geno_cline <- function(data, prior_file,
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user
-  model_index <- which(names(stanmodels) == type)
-  # set up which tail model gets used.
-  tail_type <- list(tails = as.integer(0))
-  pars <- c("deltaL", "deltaR", "tauL", "tauR", "deltaM", "tauM")
-  if (tails == "left") {
-    tail_type[[1]] <- as.integer(1)
-    pars <- c("deltaR","tauR", "deltaM", "tauM")
-  }
-  if (tails == "right") {
-    tail_type[[1]] <- as.integer(2)
-    pars <- c("deltaL", "tauL", "deltaM", "tauM")
-  }
-  if (tails == "ind") {
-    tail_type[[1]] <- as.integer(4)
-    pars <- c("deltaM", "tauM")
-  }
-  if (tails == "mirror") {
-    tail_type[[1]] <- as.integer(3)
-    pars <- c("deltaL", "deltaR", "tauL", "tauR")
-  }
+  model_index <- which(names(stanmodels) == paste(type, tails, sep = "_"))
 
   # Pass everything to stan
   if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, tail_type),
-                                chains = ch, init = init_list, pars = pars, include = F, ...)
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, ...)
   } else {# otherwise, use the bahz defaults
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, tail_type),
-                                chains = ch, init = init_list, pars = pars, include = F, control = list(adapt_delta = 0.95))
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+                                chains = ch, init = init_list, control = list(adapt_delta = 0.95))
     }
 
   clinefit

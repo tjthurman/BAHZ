@@ -82,7 +82,7 @@ cline_summary <- memoise::memoise(function(stanfit, prob = .95, method = "HPDI",
   # could add [abcdeghijklmnopqrstuvwxyz] in the reg expression below to
   # also keep the column with inbreeding values
   if (show.all == F) {
-    keep <- grep("\\[|_",
+    keep <- grep("\\[|__|dev",
                  names(stanfit),
                  invert = T,
                  value = T)

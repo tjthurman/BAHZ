@@ -255,7 +255,7 @@ check_prior_supported <- function(parameter, distribution) {
     }
   }
   if (parameter %in% c("deltaL", "deltaR", "deltaM")) {
-    if (distribution %in% c("exponential")) {
+    if (distribution %in% c("exponential", "uniform")) {
       result <- T
     }
   }

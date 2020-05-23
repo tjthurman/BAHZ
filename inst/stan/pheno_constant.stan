@@ -1,3 +1,8 @@
+functions {
+
+#include /functions/cline_functions.stan
+
+}
 
 data {
 
@@ -14,18 +19,12 @@ parameters{
 }
 
 transformed parameters{
-// expected phenotype per site
-vector[K] p; // the expected phenotype for each site
-for (i in 1:K) {
-  if (decrease == 0) // if increasing
-      {
-        p[i] = pmin + (pmax - pmin) * (exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width)));
-        }
-  if (decrease == 1) // if decreasing
-      {
-        p[i] =   pmin + (pmax - pmin) * (1-(exp(4*(transectDist[i] - center)/width)/(1 + exp(4 * (transectDist[i] - center)/width))));
-        }
-}
+  // expected phenotype per site
+  vector[K] p; // the expected phenotype for each site
+  for ( i in 1:K )
+  { // for each site
+    p[i] = gen_cline_eq(transectDist[i], center, width, pmin, pmax, decrease);
+  }
 }
 
 model{

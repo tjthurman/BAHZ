@@ -1,3 +1,15 @@
+# next release
+
+New features/changes:
+
+* Added the uniform distribution as a supported prior for delta parameters. 
+
+* Tweaked which parameters are displayed with `cline_cummary()` when `show.all = F`. 
+
+Behind the scenes:
+
+* Restructuring of `Stan` model code to be more modular and to fix a bug in which unneeded parameers could impede model convergence.
+
 # bahz 0.0.0.9018
 
 New features/changes:
