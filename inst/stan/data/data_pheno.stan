@@ -7,3 +7,4 @@ int s[K]; //number of individuals sampled per site
 real transectDist[K]; // distance along transect for a site
 int starts[K]; // the indexes of the total # of individuals where each site starts
 int ends[K]; // the indexes of the total # of individuals where each site ends
+int<lower = 0, upper = 1> ignoreData; // should we ignore the data to do prior predictive modelling?

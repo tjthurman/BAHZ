@@ -50,6 +50,10 @@
 #'   initialization values for \code{stan}, to be used instead of the
 #'   \code{bahz} default of random initialization values from the prior. See
 #'   \code{\link[rstan]{stan}} for details on how to specify the init list.
+#' @param ignore_data Used for doing prior predictive checks. If FALSE, the default,
+#'   the model is fit normally. If TRUE, the data are ignored during model fitting.
+#'   This is useful for double-checking the prior distributions or parameters, and
+#'   for doing prior predictive checks of the model.
 #' @param ... Arguments to be passed to \code{stan}, e.g., number of iterations,
 #'   warmup period, etc. See \code{\link[rstan]{sampling}} and the
 #'   \code{control} argument in \code{\link[rstan]{stan}} for information on
@@ -85,10 +89,11 @@
 
 fit_pheno_cline <- function(data, prior_file, pheno_variance = "constant",
                            chains = 4,
-                           init = NULL, ...) {
+                           init = NULL, ignore_data = F, ...) {
   # Argument checking
   assertthat::assert_that(is.numeric(chains) == T, msg = "chains must be numeric")
   pheno_variance <- match.arg(pheno_variance, choices = c("constant", "pooled", "independent"), several.ok = F)
+  assertthat::assert_that(is.logical(ignore_data), msg = "ignore_data must be either TRUE or FALSE")
   ch <- as.integer(chains)
 
   # Calling internal functions
@@ -104,6 +109,12 @@ fit_pheno_cline <- function(data, prior_file, pheno_variance = "constant",
     init_list <- init
   }
 
+  # Process ignore data
+  if (ignore_data) {# if ignoring the data
+    ignoreData <- list(ignoreData = as.integer(1))
+  } else {# otherwise, use the data
+    ignoreData <- list(ignoreData = as.integer(0))
+  }
 
   # Find location of the model in the stanmodels object that matches
   # the desired model provide by the user
@@ -111,10 +122,10 @@ fit_pheno_cline <- function(data, prior_file, pheno_variance = "constant",
 
   # Pass everything to stan
   if (length(eval(substitute(alist(...)))) > 0) {# if user supplies extra parameters to go to Stan
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, ignoreData),
                                 chains = ch, init = init_list, ...)
   } else {# otherwise, use the bahz defaults
-    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list),
+    clinefit <- rstan::sampling(object = stanmodels[[model_index]], data = c(stan_data, prior_list, ignoreData),
                                 chains = ch, init = init_list, control = list(adapt_delta = 0.95))
   }
 

@@ -55,8 +55,10 @@ model{
 #include /model/model_width.stan
 #include /model/model_center.stan
 
+  if (ignoreData == 0) {
    for (i in 1:N ) { // for each site
   genos[i,] ~ multinomial(probs[i]); // the likelihood of genotype counts is multinomial for the 3 categories
+  }
   }
 
 }

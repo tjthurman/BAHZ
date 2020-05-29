@@ -37,9 +37,11 @@ site_sigma ~ normal(global_sigma, sigma_sigma);
 #include /model/model_width.stan
 #include /model/model_center.stan
 
+if (ignoreData == 0) {
 for (k in 1:K) {
   pheno[starts[k]:ends[k]] ~ normal(p[k], site_sigma[k]);
   }
+}
 
 }
 

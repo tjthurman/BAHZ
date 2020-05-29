@@ -35,9 +35,12 @@ global_sigma ~ cauchy(0, 50);
 #include /model/model_width.stan
 #include /model/model_center.stan
 
+if (ignoreData == 0) {
 for (k in 1:K) {
   pheno[starts[k]:ends[k]] ~ normal(p[k], global_sigma);
   }
+}
+
 }
 
 generated quantities{

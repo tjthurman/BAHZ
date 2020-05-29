@@ -36,7 +36,9 @@ model{
 
   // and the likelihood: observed allele counts follow a binomial liklihood,
   // based on the number of alleles sampled and the estimated allele frequency.
+  if (ignoreData == 0) {
   nFocalAllele ~ binomial(nTotalAlleles, p);
+  }
 }
 generated quantities{
 

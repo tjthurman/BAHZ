@@ -6,7 +6,7 @@
 \usage{
 fit_geno_cline(data, prior_file, type = c("bi", "multi"),
   tails = c("none", "left", "right", "mirror", "ind"), chains = 4,
-  init = NULL, ...)
+  ignore_data = FALSE, init = NULL, ...)
 }
 \arguments{
 \item{data}{A dataframe containing your cline data. See
@@ -24,6 +24,11 @@ frequencies.}
 
 \item{chains}{The number of MCMC chains to create. Numeric, coerced to
 integer. Default is 4.}
+
+\item{ignore_data}{Used for doing prior predictive checks. If FALSE, the default,
+the model is fit normally. If TRUE, the data are ignored during model fitting.
+This is useful for double-checking the prior distributions or parameters, and
+for doing prior predictive checks of the model.}
 
 \item{init}{Optional, default is \code{NULL}. A user-provided list of
 initialization values for \code{stan}, to be used instead of the
