@@ -12,6 +12,8 @@ test_that("fit geno cline checks arguments correctly", {
                               type = "bi", tails = "xxx", chains = 1), "ind")
   expect_error(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
                               type = "bi", tails = "none", chains = "xxx"), "numeric")
+  expect_error(fit_geno_cline(data = data, prior_file = "prior_config_test1.yaml",
+                              type = "bi", tails = "none", ignore_data = "xxx"), "TRUE")
 })
 
 # Test functionality

@@ -1,3 +1,26 @@
+# bahz 0.0.0.9019
+
+New features/changes:
+
+* Added the uniform distribution as a supported prior for delta parameters. 
+
+* In `fit_geno_cline()` and `fit_pheno_cline()`, added the `ignore_data` argument. This allows users to fit models using only their prior distributions, and the results of these models can be used to examine prior distributions and do prior predictive checks.
+
+which can be used to run models without
+
+* Tweaked which parameters are displayed with `cline_cummary()` when `show.all = F`. 
+
+Behind the scenes:
+
+* Restructuring of `Stan` model code to be more modular and to fix a bug in which unneeded parameers could impede model convergence.
+
+# bahz 0.0.0.9018
+
+New features/changes:
+
+* Restructured package according to updated recommended structure in `rstantools` version `2.0.0`.
+
+
 # bahz 0.0.0.9017
 
 New features/changes:

@@ -1,17 +1,17 @@
 Package: bahz
 Title: Bayesian Analysis of Hybrid Zones
-Version: 0.0.0.9017
+Version: 0.0.0.9019
 Authors@R:
     person(given = "Timothy",
              family = "Thurman",
              role = c("aut", "cre"),
-             email = "timothy.j.thurman@gmail.com")
+             email = "timothy.j.thurman@gmail.com",
+             comment = c(ORCID = "0000-0002-9602-6226"))
 Description: A package to fit hybrid zone cline models in a Bayesian framework.
 License: GPL-3 + file LICENSE
 Depends:
     methods,
-    R (>= 3.4.0),
-    Rcpp (>= 0.12.19)
+    R (>= 3.4.0)
 Imports:
     assertthat,
     coda,
@@ -19,9 +19,10 @@ Imports:
     magrittr,
     memoise,
     progress,
+    Rcpp (>= 0.12.19),
     rlang,
-    rstan (>= 2.17.4),
-    rstantools (>= 1.5.1),
+    rstan (>= 2.18.1),
+    rstantools (>= 2.0.0),
     scales,
     stringr,
     tidyr,
@@ -30,8 +31,8 @@ LinkingTo:
     BH (>= 1.66.0-1),
     Rcpp (>= 0.12.19),
     RcppEigen (>= 0.3.3.4.0),
-    rstan (>= 2.17.4),
-    StanHeaders (>= 2.17.2)
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -40,3 +41,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Suggests: 
     testthat
+Biarch: true

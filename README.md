@@ -17,10 +17,31 @@ bahz is currently under active development.
 
 ## Installation
 
-Before installing bahz, you’ll need to install the R package RStan,
-which interfaces with the Stan modelling language. To install RStan,
-follow the instructions
-[here](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+At the moment, bahz is not yet available from CRAN. Unfortunately, that
+means that bahz can be a little tricky to install: bahz fits models
+using the [Stan modeling language](https://mc-stan.org), via the
+[RStan](https://mc-stan.org/users/interfaces/rstan.html) R package, and
+these models need to be compiled to run properly. In the future, I will
+release a binary (pre-compiled) version of bahz on CRAN. For now,
+though, users needs to compile Stan programs to install bahz, and this
+requires the right version and settings for your C++ compiler and
+toolchain.
+
+So, before installing bahz, you’ll need to install the R package RStan,
+which interfaces with the Stan modeling language. To install RStan,
+follow the instructions for installing RStan **from source**, using the
+instruction found here for each operating system:
+[Linux](https://github.com/stan-dev/rstan/wiki/Installing-RStan-on-Linux),
+[Mac](https://github.com/stan-dev/rstan/wiki/Installing-RStan-from-source-on-a-Mac),
+or
+[Windows](https://github.com/stan-dev/rstan/wiki/Installing-RStan-from-source-on-Windows).
+For Mac users with Catalina (10.15.X): some of the changes Apple made in
+Catalina have made installing RStan more difficult. If the above
+instructions don’t work for you, check out the guidance at the [Stan
+discourse forums](https://discourse.mc-stan.org/search?q=catalina). When
+you’re done, [check your C++
+toolchain](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started#checking-the-c-toolchain)
+to make sure it is correct and ready to install bahz.
 
 Once Rstan is installed, you can install bahz from Github. If you don’t
 already have it, you’ll need to install the R package
@@ -37,9 +58,9 @@ devtools::install_github("tjthurman/BAHZ")
 library(bahz)
 ```
 
-bahz is not currently available from CRAN. If you have any issues
-installing bahz, please [file an issue on
-GitHub](https://github.com/tjthurman/BAHZ/issues).
+If you have any issues installing bahz, please [file an issue on
+GitHub](https://github.com/tjthurman/BAHZ/issues) and I will do my best
+to help out.
 
 ## How to use bahz
 
@@ -114,11 +135,11 @@ We can summarize the posterior distribution of the cline parameters:
 ``` r
 cline_summary(cline.fit)
 #>    param   mean median se_mean   sd low_0.95_HPDI up_0.95_HPDI n_eff Rhat
-#> 1 center 237.51 237.49    0.04 2.37        232.96       242.28  4115    1
-#> 2  width  67.59  67.40    0.09 6.06         55.85        79.46  4964    1
-#> 3   pmin   0.04   0.04    0.00 0.01          0.03         0.05  4255    1
-#> 4   pmax   0.99   0.99    0.00 0.00          0.98         0.99  5226    1
-#> 5    dev 116.07 115.45    0.07 2.87        112.18       121.68  1699    1
+#> 1 center 237.49 237.48    0.04 2.38        232.77       242.12  3917    1
+#> 2  width  67.71  67.64    0.09 6.24         56.05        80.40  4391    1
+#> 3   pmin   0.04   0.04    0.00 0.01          0.03         0.05  4187    1
+#> 4   pmax   0.99   0.99    0.00 0.00          0.98         0.99  4470    1
+#> 5    dev 116.09 115.36    0.07 2.90        112.13       121.88  1791    1
 ```
 
 The model has done a good job. The point estimates of the parameters are
@@ -148,12 +169,12 @@ pred_cline <- predict_cline(stanfit = cline.fit,
                             confidence = T)
 head(pred_cline)
 #>   transectDist    p_mean  p_median low_0.95_HPDI up_0.95_HPDI
-#> 1            0 0.9899993 0.9899993     0.9772721    0.9940613
-#> 2            1 0.9899992 0.9899992     0.9772721    0.9940612
-#> 3            2 0.9899992 0.9899992     0.9772721    0.9940612
-#> 4            3 0.9899991 0.9899991     0.9772721    0.9940611
-#> 5            4 0.9899991 0.9899991     0.9772721    0.9940611
-#> 6            5 0.9899990 0.9899990     0.9772721    0.9940610
+#> 1            0 0.9899992 0.9899992     0.9777101    0.9942627
+#> 2            1 0.9899992 0.9899992     0.9777101    0.9942626
+#> 3            2 0.9899991 0.9899991     0.9777100    0.9942625
+#> 4            3 0.9899991 0.9899991     0.9777100    0.9942625
+#> 5            4 0.9899990 0.9899990     0.9777100    0.9942624
+#> 6            5 0.9899990 0.9899990     0.9777100    0.9942623
 ```
 
 ``` r

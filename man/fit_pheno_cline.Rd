@@ -5,7 +5,7 @@
 \title{Fit a phenotypic cline model to your data}
 \usage{
 fit_pheno_cline(data, prior_file, pheno_variance = "constant",
-  chains = 4, init = NULL, ...)
+  chains = 4, init = NULL, ignore_data = F, ...)
 }
 \arguments{
 \item{data}{A dataframe containing your cline data. See
@@ -32,6 +32,11 @@ integer. Default is 4.}
 initialization values for \code{stan}, to be used instead of the
 \code{bahz} default of random initialization values from the prior. See
 \code{\link[rstan]{stan}} for details on how to specify the init list.}
+
+\item{ignore_data}{Used for doing prior predictive checks. If FALSE, the default,
+the model is fit normally. If TRUE, the data are ignored during model fitting.
+This is useful for double-checking the prior distributions or parameters, and
+for doing prior predictive checks of the model.}
 
 \item{...}{Arguments to be passed to \code{stan}, e.g., number of iterations,
 warmup period, etc. See \code{\link[rstan]{sampling}} and the

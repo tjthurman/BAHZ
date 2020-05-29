@@ -11,6 +11,8 @@ test_that("fit pheno cline checks arguments", {
                                chains = 1, pheno_variance = "XXX"), "constant")
   expect_error(fit_pheno_cline(data = data, prior_file = "prior_config_test3.yaml",
                                chains = "xxx"), "numeric")
+  expect_error(fit_pheno_cline(data = data, prior_file = "prior_config_test3.yaml",
+                               ignore_data = "xxx"), "TRUE")
 })
 
 
