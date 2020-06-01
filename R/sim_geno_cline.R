@@ -50,10 +50,10 @@
 #'   in the tails of the cline. Default values are \code{0} and \code{1}, respectively.
 #'   Must be between 0 and 1 (inclusive). Numeric.
 #' @param deltaL,tauL Optional delta and tau parameters which describe the left
-#'   exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+#'   exponential tail. Must supply both to generate a tail. Default is \code{NA} (no
 #'   tails). Numeric. tauL must be between 0 and 1 (inclusive).
 #' @param deltaR,tauR Optional delta and tau parameters which describe the right
-#'   exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+#'   exponential tail. Must supply both to generate a tail. Default is \code{NA} (no
 #'   tails). Numeric. tauR must be between 0 and 1 (inclusive).
 #'
 #'
@@ -111,8 +111,8 @@ sim_geno_cline <- function(transect_distances, n_ind,
                                 Fis, decrease,
                                 center, width,
                                 pmin = 0, pmax = 1,
-                                deltaL = NULL, tauL = NULL,
-                                deltaR = NULL, tauR = NULL) {
+                                deltaL = NA, tauL = NA,
+                                deltaR = NA, tauR = NA) {
 
 
   # Check the sampling and inbreeding options

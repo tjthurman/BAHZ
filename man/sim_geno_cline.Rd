@@ -5,8 +5,8 @@
 \title{Simulate genetic data from a cline}
 \usage{
 sim_geno_cline(transect_distances, n_ind, Fis, decrease, center, width,
-  pmin = 0, pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
-  tauR = NULL)
+  pmin = 0, pmax = 1, deltaL = NA, tauL = NA, deltaR = NA,
+  tauR = NA)
 }
 \arguments{
 \item{transect_distances}{The distances along the transect for the simulated
@@ -34,11 +34,11 @@ in the tails of the cline. Default values are \code{0} and \code{1}, respectivel
 Must be between 0 and 1 (inclusive). Numeric.}
 
 \item{deltaL, tauL}{Optional delta and tau parameters which describe the left
-exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+exponential tail. Must supply both to generate a tail. Default is \code{NA} (no
 tails). Numeric. tauL must be between 0 and 1 (inclusive).}
 
 \item{deltaR, tauR}{Optional delta and tau parameters which describe the right
-exponential tail. Must supply both to generate a tail. Default is \code{NULL} (no
+exponential tail. Must supply both to generate a tail. Default is \code{NA} (no
 tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 }
 \value{

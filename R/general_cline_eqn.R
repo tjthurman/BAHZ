@@ -48,10 +48,10 @@
 #'   respectively. Must be between 0 and 1 (inclusive). Numeric.
 #' @param deltaL,tauL Optional delta and tau parameters which describe the left
 #'   exponential introgression tail. Must supply both to generate a tail. Default is
-#'   \code{NULL} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).
+#'   \code{NA} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).
 #' @param deltaR,tauR Optional delta and tau parameters which describe the right
 #'   exponential introgression tail. Must supply both to generate a tail. Default is
-#'   \code{NULL} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).
+#'   \code{NA} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).
 #'
 #' @return The result of evaluating a cline equation with the specified
 #'   parameters at the specified distance(s) (that is, \eqn{p'} in the notation of the
@@ -82,8 +82,8 @@
 general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
                                       center, width,
                                       pmin = 0, pmax = 1,
-                                      deltaL = NULL, tauL = NULL,
-                                      deltaR = NULL, tauR = NULL) {
+                                      deltaL = NA, tauL = NA,
+                                      deltaR = NA, tauR = NA) {
   # Start with an ungodly amount of argument checking
   # check transect distance is a numeric vector
   assertthat::assert_that(is.vector(transectDist) == T, msg = "transect_distances must be a vector")
@@ -92,12 +92,17 @@ general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
   # Check decrease is T/F
   assertthat::assert_that(is.logical(decrease) == T, msg = "decrease must be either TRUE (T) or FALSE (F)")
 
-  # Check the cline parameters are numeric vectors of length 1
+  # Check the cline parameters are of length 1
   for (num.arg in alist(center, width, pmin, pmax, deltaL, deltaR, tauL, tauR)) {
     if (is.null(eval(num.arg)) == F) {
+      assertthat::assert_that(length(eval(num.arg)) == 1, msg = paste(num.arg, "must be of length 1", sep = " "))
+    }
+  }
+  # Check that the cline parameters are numeric and vectors
+  for (num.arg in alist(center, width, pmin, pmax, deltaL, deltaR, tauL, tauR)) {
+    if (is.na(eval(num.arg)) == F) {
       assertthat::assert_that(is.vector(eval(num.arg)) == T, msg = paste(num.arg, "must be a vector", sep = " "))
       assertthat::assert_that(is.numeric(eval(num.arg)) == T, msg = paste(num.arg, "must be numeric", sep = " "))
-      assertthat::assert_that(length(eval(num.arg)) == 1, msg = paste(num.arg, "must be of length 1", sep = " "))
     }
   }
   # Width must be greater than 0
@@ -105,16 +110,16 @@ general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
 
   # Pmin, pmax, tauL, and tauR must be between 0 and 1
   for (num.arg in alist(tauL, tauR)) {
-    if (is.null(eval(num.arg)) == F) {
+    if (is.na(eval(num.arg)) == F) {
       assertthat::assert_that(eval(num.arg) >= 0, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))
       assertthat::assert_that(eval(num.arg) <= 1, msg = paste(num.arg, " must be between 0 and 1 (inclusive)", sep = ""))
     }
   }
 
   # Check to make sure both delta and tau are supplied for a given set of tails
-  assertthat::assert_that(sum(is.null(deltaL), is.null(tauL)) %in% c(0,2),
+  assertthat::assert_that(sum(is.na(deltaL), is.na(tauL)) %in% c(0,2),
                           msg = "If using deltaL or tauL, must supply both of them")
-  assertthat::assert_that(sum(is.null(deltaR), is.null(tauR)) %in% c(0,2),
+  assertthat::assert_that(sum(is.na(deltaR), is.na(tauR)) %in% c(0,2),
                           msg = "If using deltaR or tauR, must supply both of them")
 
   # Then call internal_cline_eqn within sapply
@@ -153,10 +158,10 @@ general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
 #'   respectively. Must be between 0 and 1 (inclusive). Numeric.
 #' @param deltaL,tauL Optional delta and tau parameters which describe the left
 #'   exponential introgression tail. Must supply both to generate a tail. Default is
-#'   \code{NULL} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).
+#'   \code{NA} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).
 #' @param deltaR,tauR Optional delta and tau parameters which describe the right
 #'   exponential introgression tail. Must supply both to generate a tail. Default is
-#'   \code{NULL} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).
+#'   \code{NA} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).
 #'
 #' @keywords internal
 #'
@@ -168,8 +173,8 @@ general_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
 internal_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
                               center, width,
                               pmin = 0, pmax = 1,
-                              deltaL = NULL, tauL = NULL,
-                              deltaR = NULL, tauR = NULL) {
+                              deltaL = NA, tauL = NA,
+                              deltaR = NA, tauR = NA) {
 
 
 
@@ -179,10 +184,10 @@ internal_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
   # Will do that at the end, after computng p.
 
   # Calculate p, using the proper equation based on the parameters prodived
-  if (sum(is.null(deltaL), is.null(deltaR)) == 2) { # if no tails
+  if (sum(is.na(deltaL), is.na(deltaR)) == 2) { # if no tails
     prop <- (exp(4*(transectDist - center)/width)/(1 + exp(4 * (transectDist - center)/width)))
   }
-  else if (sum(is.null(deltaL), is.null(deltaR)) == 0) {# If both tails
+  else if (sum(is.na(deltaL), is.na(deltaR)) == 0) {# If both tails
     if (transectDist <= center - deltaL) { # and we're in the left tail
       # use the left tail equation
       prop <- (1/(1 + exp(4*deltaL/width)))*exp((4*tauL*(transectDist - center + deltaL)/width)/(1 + exp(-4*deltaL/width)))
@@ -195,7 +200,7 @@ internal_cline_eqn <- function(transectDist, decrease = c(TRUE, FALSE),
       prop <- (exp(4*(transectDist - center)/width)/(1 + exp(4 * (transectDist - center)/width)))
     }
   }
-  else if (is.null(deltaL) == F) { # If left tail only
+  else if (is.na(deltaL) == F) { # If left tail only
     if (transectDist <= center - deltaL) { # and we're in the left tail
       # use the left tail equation
       prop <- (1/(1 + exp(4*deltaL/width)))*exp((4*tauL*(transectDist - center + deltaL)/width)/(1 + exp(-4*deltaL/width)))
