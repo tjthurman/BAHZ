@@ -6,7 +6,7 @@
 
 # This file is used to specify the prior distributions
 # for each parameter in a cline analysis.
-# We strongly recommend editing this file and not
+# I strongly recommend editing this file and not
 # relying on the default values, which are likely to be
 # inappropriate for your analysis
 

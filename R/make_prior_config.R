@@ -44,7 +44,7 @@ make_prior_config <- function(path = getwd(),
   newfile <- file.path(normalizePath(path), name, fsep = .Platform$file.sep)
   if (overwrite == F) { # If overwriting is not allowed
     if (file.exists(newfile) == T) { # Stop if file exists
-      stop("Template file already exists, set overwrite = T if you want to overwrite it")
+      stop(paste0("\n\n", newfile, "\n\nalready exists.\nSet overwrite = T if you want to overwrite it"))
     }
     else {
       file.copy(from = system.file("extdata", "prior_config_template.yaml", package = "bahz", mustWork = TRUE),
@@ -54,7 +54,7 @@ make_prior_config <- function(path = getwd(),
   }
   else { # If overwriting is allowed
     if (file.exists(newfile) == T) { # Notify when overwriting
-      message(paste0(name, " alrady exists, overwriting"))
+      message(paste0(newfile, "\nalready exists, overwriting\n"))
       file.copy(from = system.file("extdata", "prior_config_template.yaml", package = "bahz", mustWork = TRUE),
                 to = newfile,
                 overwrite = overwrite)
@@ -65,7 +65,7 @@ make_prior_config <- function(path = getwd(),
     }
   }
   if (file.exists(newfile) == T) {
-    message("Configuration file successfully generated")
+    message(paste0("Configuration file successfully generated at:\n", newfile))
   } else {
     stop("Configuration file not generated")
   }
