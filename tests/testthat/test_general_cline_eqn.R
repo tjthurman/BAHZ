@@ -6,7 +6,7 @@ test_that("general cline equation checks arguments for type", {
   expect_error(general_cline_eqn(transectDist = "hello"), "numeric")
   expect_error(general_cline_eqn(transectDist = 20, decrease = "xxx"), "decrease")
   expect_error(general_cline_eqn(transectDist = 20, decrease = T,
-                                 center = as.matrix(c(1,2,3)), width = 10), "vector")
+                                 center = as.matrix(c(1)), width = 10), "vector")
   expect_error(general_cline_eqn(transectDist = 20, decrease = T,
                                  center = 20, width = "10"), "numeric")
   expect_error(general_cline_eqn(transectDist = 20, decrease = T,

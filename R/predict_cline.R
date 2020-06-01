@@ -160,10 +160,10 @@ predict_cline <- memoise::memoise(function(stanfit,
       tR.median <- summ$median[which(summ$param == "tauR")]
 
     } else { # else left only
-      dR.mean <- NULL
-      dR.median <- NULL
-      tR.mean <- NULL
-      tR.median <- NULL
+      dR.mean <- NA
+      dR.median <- NA
+      tR.mean <- NA
+      tR.median <- NA
     }
   } else if ("deltaR" %in% summ$param) { # if right only
     dR.mean <- summ$mean[which(summ$param == "deltaR")]
@@ -172,19 +172,19 @@ predict_cline <- memoise::memoise(function(stanfit,
     tR.mean <- summ$mean[which(summ$param == "tauR")]
     tR.median <- summ$median[which(summ$param == "tauR")]
 
-    dL.mean <- NULL
-    dL.median <- NULL
-    tL.mean <- NULL
-    tL.median <- NULL
+    dL.mean <- NA
+    dL.median <- NA
+    tL.mean <- NA
+    tL.median <- NA
   } else { # no tails
-    dL.mean <- NULL
-    dL.median <- NULL
-    tL.mean <- NULL
-    tL.median <- NULL
-    dR.mean <- NULL
-    dR.median <- NULL
-    tR.mean <- NULL
-    tR.median <- NULL
+    dL.mean <- NA
+    dL.median <- NA
+    tL.mean <- NA
+    tL.median <- NA
+    dR.mean <- NA
+    dR.median <- NA
+    tR.mean <- NA
+    tR.median <- NA
   }
 
   #Pass those to general cline equation to get the
@@ -241,19 +241,19 @@ predict_cline <- memoise::memoise(function(stanfit,
         post_deltaR <-  posterior[ , which(colnames(posterior) == "deltaR")]
         post_tauR <- posterior[ , which(colnames(posterior) == "tauR")]
       } else { # else left only
-        post_deltaR <- NULL
-        post_tauR <- NULL
+        post_deltaR <- NA
+        post_tauR <- NA
       }
     } else if ("deltaR" %in% colnames(posterior)) { # if right only
       post_deltaR <-  posterior[ , which(colnames(posterior) == "deltaR")]
       post_tauR <- posterior[ , which(colnames(posterior) == "tauR")]
-      post_deltaL <- NULL
-      post_tauL <- NULL
+      post_deltaL <- NA
+      post_tauL <- NA
     } else { # no tails
-      post_deltaL <- NULL
-      post_deltaR <- NULL
-      post_tauL <- NULL
-      post_tauR <- NULL
+      post_deltaL <- NA
+      post_deltaR <- NA
+      post_tauL <- NA
+      post_tauR <- NA
     }
     if (progress) {
       pb <- progress::progress_bar$new(total = dim(posterior)[1],

@@ -5,8 +5,8 @@
 \title{Calculate allele frequencies for a cline}
 \usage{
 general_cline_eqn(transectDist, decrease = c(TRUE, FALSE), center, width,
-  pmin = 0, pmax = 1, deltaL = NULL, tauL = NULL, deltaR = NULL,
-  tauR = NULL)
+  pmin = 0, pmax = 1, deltaL = NA, tauL = NA, deltaR = NA,
+  tauR = NA)
 }
 \arguments{
 \item{transectDist}{The position(s) at which to evaluate the cline equation.
@@ -27,11 +27,11 @@ respectively. Must be between 0 and 1 (inclusive). Numeric.}
 
 \item{deltaL, tauL}{Optional delta and tau parameters which describe the left
 exponential introgression tail. Must supply both to generate a tail. Default is
-\code{NULL} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).}
+\code{NA} (no tails). Numeric. tauL must be between 0 and 1 (inclusive).}
 
 \item{deltaR, tauR}{Optional delta and tau parameters which describe the right
 exponential introgression tail. Must supply both to generate a tail. Default is
-\code{NULL} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).}
+\code{NA} (no tails). Numeric. tauR must be between 0 and 1 (inclusive).}
 }
 \value{
 The result of evaluating a cline equation with the specified
